@@ -3,17 +3,14 @@
 <head>
   
 <link href='https://fonts.googleapis.com/css?family=Crimson+Text' rel='stylesheet' type='text/css'>
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
-</script>
 <meta charset="UTF-8" />
 <title>FYP!</title>
 <header>
-<h1> Addition and Subtraction Drag and Drop Game </h1>
+<h1> Natural Deduction Drag and Drop Game </h1>
 </header>
 </head>
 <body>
+<!--<img id="bin" width="220" height="277" src="bin.jpg" alt="bin"> --> 
 
 <p>The goal is to create A and B.</p> 
 <section>
@@ -24,14 +21,18 @@ This text is displayed if your browser does not support HTML5 Canvas.
 </canvas>
 </div>
 
-<button onclick="create()">Create</button>
-<button onclick="deleteAll()">Delete All</button>
+<button onclick="createTwoUpOneDown()">2 Top / 1 Bottom</button>
+<button onclick="createTwoUpTwoDown()">2 Top / 2 Bottom</button>
+<button onclick="createOneUpTwoDown()">1 Top / 2 Bottom</button>
 
 <button onclick="createA()">A</button>
 <button onclick="createB()">B</button>
 <button onclick="createC()">C</button>
+
 <button onclick="createConjunction()">∧</button>
 <button onclick="createImplication()">→</button>
+
+<button onclick="deleteAll()">Delete All</button>
 
 <script type="text/javascript">
 
@@ -39,7 +40,6 @@ var canvas;
 var ctx;
 var x = 75;
 var y = 50;
-var number = 1;
 var WIDTH = 700;
 var HEIGHT = 700;
 var dragok = false;
@@ -49,50 +49,56 @@ var border = "black";
 var taken = false;
 var texttopleft = " ";
 var texttopright = " ";
-var textbottom = " ";
-var type = 0; //0 is variable, 1 is operator, 2 is a form
+var textbottomleft = " ";
+var textbottomright = " ";
+var type = 0; //0 is variable, 1 is operator, 2, 3, 4 are forms
 
-function object(x, y, w, h, number, texttopleft, texttopright, textbottom, type) {
+function object(x, y, w, h, texttopleft, texttopright, textbottomleft, textbottomright, type) {
 	this.x = x;
 	this.y = y;
 	this.w = w;
 	this.h = h;
-	this.number = number;
 	this.border = border;
 	this.taken = taken; 
 	this.texttopleft = texttopleft;
 	this.texttopright = texttopright;
-	this.textbottom = textbottom;
+	this.textbottomleft = textbottomleft;
+	this.textbottomright = textbottomright;
 	this.type = type;
 }
 
-function create(){
-	r.push(new object(355, 600, 100, 100, 4, "%",  "%",   "%", 2));
+function createTwoUpOneDown(){
+	r.push(new object(355, 600, 100, 100, "%", "%", "%", "%", 2));
 } 
+function createTwoUpTwoDown() {
+	r.push(new object(355, 500, 100, 100, "%", "%", "%", "%", 3));
+}
+function createOneUpTwoDown() {
+	r.push(new object(355, 500, 100, 100, "%", "%", "%", "%", 4));
+}
 function createA(){
-	r.push(new object(55,  55,  100, 100, 1, "A", "none", "none", 0));
+	r.push(new object(55,  55,  100, 100, "A", "none", "none", "none", 0));
 } 
 
 function createB(){
-	r.push(new object(335, 55,  100, 100, 2, "B", "none", "none", 0));
+	r.push(new object(335, 55,  100, 100, "B", "none", "none", "none", 0));
 } 
 
 function createC(){
-	r.push(new object(195, 55,  100, 100, 6, "C", "none", "none", 0));
+	r.push(new object(195, 55,  100, 100, "C", "none", "none", "none", 0));
 } 
 
 function createConjunction(){
-	r.push(new object(645, 55,  100, 100, 3, "∧", "none", "none", 1));
+	r.push(new object(645, 55,  100, 100, "∧", "none", "none", "none", 1));
 }
 
 function createImplication(){
-	r.push(new object(505, 55,  100, 100, 5, "→", "none", "none", 1));
+	r.push(new object(505, 55,  100, 100, "→", "none", "none", "none", 1));
 }
 
 
 function deleteAll(){
 	r.splice(0,r.length);
-	number = 1;
 }
 
 function rect(x,y,w,h) {
@@ -110,18 +116,19 @@ function init() {
 
 	canvas = document.getElementById("canvas");
 	ctx = canvas.getContext("2d");
-	create();
 	return setInterval(drawIterate, 10);
 }
 
 function drawIterate() {
 	clear();
 	for (i = 0; i < r.length ; i++) {
-		draw(r[i].x, r[i].y, r[i].w, r[i].h, i, r[i].border, r[i].texttopleft, r[i].texttopright, r[i].textbottom);
+		draw(r[i].x, r[i].y, r[i].w, r[i].h, i, r[i].border, r[i].texttopleft, r[i].texttopright, r[i].textbottomleft, r[i].textbottomright);
 	}
 }
 
-function draw(x, y, w, h, i, border, texttopleft, texttopright, textbottom) {
+function draw(x, y, w, h, i, border, texttopleft, texttopright, textbottomleft, textbottomright) {
+	//****var bin = document.getElementById("bin").onload;
+    //****ctx.drawImage(bin,100,100, 50, 50);
 	ctx.fillStyle = "#FAF7F8";
 	rect(x-(w/2), y-(h/2), w, h);
 	ctx.strokeStyle = border;
@@ -130,14 +137,14 @@ function draw(x, y, w, h, i, border, texttopleft, texttopright, textbottom) {
 	ctx.font="32px Georgia";
 	ctx.fillStyle = "#444444";
 	ctx.textAlign = 'center';
-	if (textbottom == "none") {
-		r[i].w = texttopleft.length * 50;
+	if (textbottomleft == "none") { //Figures out whether it is a form or a var/operator.
+		r[i].w = Math.max(50, texttopleft.length * 30);
 		r[i].h = 50;
 		ctx.textAlign = "center";
 		ctx. fillText(texttopleft, x, y+(h/4));
 	}
 	else {
-		r[i].w = Math.max((texttopleft.length + texttopright.length)*50, textbottom.length * 30, 50); //Sets box size
+		r[i].w = Math.max((texttopleft.length + texttopright.length)*40, (textbottomleft.length + textbottomright.length)*40, 100); //Sets box size
 		ctx.fillStyle = "#444444";
 		ctx.beginPath();
 		ctx.strokeStyle = "black";
@@ -146,25 +153,35 @@ function draw(x, y, w, h, i, border, texttopleft, texttopright, textbottom) {
 		ctx.stroke();
 		
 		ctx.textAlign = 'center'; //Draws text in the various boxes in the correct positions.
-		if(texttopleft != "%") {
+		if(texttopleft != "%" && r[i].type != 4) {
 		ctx.fillText(texttopleft, x-(w/4), y-(h/6));		
+		} else if (texttopleft != "%") {
+			ctx.fillText(texttopleft, x, y-(h/6));
 		}
+		
 		if(texttopright != "%"){
 			ctx.fillText(texttopright, x+(w/4), y-(h/6));
 		}
-		if(textbottom != "%") {
-		ctx.fillText(textbottom, x, y+(h/3));
+		
+		if(textbottomleft != "%" && r[i].type != 2) {
+			ctx.fillText(textbottomleft, x-(w/4), y+(h/3));
+		} else if (textbottomleft != "%"){
+			ctx.fillText(textbottomleft, x, y+(h/3));
+		}
+		
+		if(textbottomright != "%") {
+			ctx.fillText(textbottomright, x+(w/4), y+(h/3));
 		}
 	}
 }
 
 function doneCheck() { //Checks to see if the code is correct and fill it in.
-	if (r[i].texttopleft == "A" && r[i].texttopright == "B" && r[i].textbottom == "∧") {
-		r[i].textbottom = "A ∧ B";
+	if (r[i].texttopleft == "A" && r[i].texttopright == "B" && r[i].textbottomleft == "∧") {
+		r[i].textbottomleft = "A ∧ B";
 		return true;
 	}
-	else if (r[i].texttopleft == "B" && r[i].texttopright == "A" && r[i].textbottom == "∧") {
-		r[i].textbottom = "B ∧ A";
+	else if (r[i].texttopleft == "B" && r[i].texttopright == "A" && r[i].textbottomleft == "∧") {
+		r[i].textbottomleft = "B ∧ A";
 		return true;
 	}
 	else {
@@ -172,78 +189,78 @@ function doneCheck() { //Checks to see if the code is correct and fill it in.
 	}
 }
 
-function validMoveTopLeft() {
-	if (r[i].number == 4) {
-		if (r[move].number == 1 || r[move].number == 2) {
-			if(r[i].texttopleft == "%"){
-				r[i].texttopleft = r[move].texttopleft;
-				r[i].border = "black";
-				r[i].taken = false;
-				var done = doneCheck();
-				r.splice(move,1);
-				if (done == true) {
-					drawIterate();
-					drawIterate();
-					window.alert("Congratulations! Level 1 Complete.");
-				}
-			}
-			else {
-				window.alert("This is not a valid move!");
-			}
-		}
-		else{
-			window.alert("This is not a valid move!");
-		}
+function delShape(i, move) {
+	r[i].border = "black";
+	r[i].taken = false;
+	var done = doneCheck();
+	r.splice(move,1);
+	if (done == true) {
+		drawIterate();
+		drawIterate();
+		window.alert("Congratulations! Level 1 Complete.");
 	}
-	else{
-			window.alert("This is not a valid move!");
-		}
 }
 
-function validMoveTopRight() {
-	if (r[i].number == 4) {
-		if (r[move].number == 1 || r[move].number == 2) {
-			if(r[i].texttopright == "%"){
-				r[i].texttopright = r[move].texttopleft;
-				r[i].border = "black";
-				r[i].taken = false;
-				var done = doneCheck();
-				r.splice(move,1);
-				if (done == true) {
-					drawIterate();
-					drawIterate();					
-					window.alert("Congratulations! Level 1 Complete.");
-				}
-			}
-			else {
-				window.alert("This is not a valid move!");
-			}
+function validMoveTopLeft() {
+	if (r[i].type == 1 || r[i].type == 0) {
+		r[i].texttopleft = r[move].texttopleft + " " + r[i].texttopleft;
+		delShape(i, move);
+	}
+	else if (r[i].type == 2 || r[i].type == 3 || r[i].type == 4) {
+		if(r[i].texttopleft == "%"){
+			r[i].texttopleft = r[move].texttopleft;
+			delShape(i, move);
 		}
-		else{
-			window.alert("This is not a valid move!");
+		else {
+			r[i].texttopleft = r[i].texttopleft + " " + r[move].texttopleft;
+			delShape(i, move);
 		}
 	}
-	else{
-			window.alert("This is not a valid move!");
+	else {
+		window.alert("This is not a valid move!");
+	}
+}
+
+
+function validMoveTopRight() {
+	if (r[i].type == 1 || r[i].type == 0) {
+		r[i].texttopleft = r[i].texttopleft + " " + r[move].texttopleft;
+		delShape(i, move);
+	}
+	else if (r[i].type == 2 || r[i].type == 3) {
+		if(r[i].texttopright == "%"){
+			r[i].texttopright = r[move].texttopleft;
+			delShape(i, move);
 		}
+		else {
+			r[i].texttopright = r[i].texttopright + " " + r[move].texttopleft;
+			delShape(i, move);
+		}
+	}
+	else if (r[i].type == 4) {
+		if(r[i].texttopleft == "%"){
+			r[i].texttopleft = r[move].texttopleft;
+			delShape(i, move);
+		}
+		else {
+			r[i].texttopleft = r[i].texttopleft + " " + r[move].texttopleft;
+			delShape(i, move);
+		}
+	}
+	else {
+		window.alert("This is not a valid move!");
+	}
 }
 
 function validMoveBottomLeft() {
-	if (r[i].number == 4) {
-		if (r[move].number == 3) {
-			r[i].textbottom = r[move].texttopleft;
-			r[i].border = "black";
-			r[i].taken = false;
-			var done = doneCheck();
-			r.splice(move,1);
-			if (done == true) {
-				drawIterate();
-				drawIterate();
-				window.alert("Congratulations! Level 1 Complete.");
-			}
+	if (r[i].type == 2 || r[i].type == 3 || r[i].type == 4) {
+		if (r[i].textbottomleft == "%") {
+			r[i].textbottomleft = r[move].texttopleft;
+			delShape(i, move);
 		}
 		else {
-			window.alert("This is not a valid move!");
+			r[i].textbottomleft = r[i].textbottomleft + " " + r[move].texttopleft;
+			delShape(i, move);
 		}
 	}
 	else {
@@ -252,21 +269,24 @@ function validMoveBottomLeft() {
 }
 
 function validMoveBottomRight() {
-	if (r[i].number == 4) {
-		if (r[move].number == 3) {
-			r[i].textbottom = r[move].texttopleft;
-			r[i].border = "black";
-			r[i].taken = false;
-			var done = doneCheck();
-			r.splice(move,1);
-			if (done == true) {
-				drawIterate();
-				drawIterate();
-				window.alert("Congratulations! Level 1 Complete.");
-			}
+	if (r[i].type == 2) {
+		if (r[i].textbottomleft == "%") {
+			r[i].textbottomleft = r[move].texttopleft;
+			delShape(i, move);
 		}
 		else {
-			window.alert("This is not a valid move!");
+			r[i].textbottomleft = r[i].textbottomleft + " " + r[move].texttopleft;
+			delShape(i, move);
+		}
+	}
+	else if (r[i].type == 3 || r[i].type == 4) {
+		if (r[i].textbottomright == "%") {
+			r[i].textbottomright = r[move].texttopleft;
+			delShape(i, move);
+		}
+		else {
+			r[i].textbottomright = r[i].textbottomright + " " + r[move].texttopleft;
+			delShape(i, move);
 		}
 	}
 	else {
@@ -294,17 +314,19 @@ function myMove(e){ //Runs when an object is being moved
 						break;
 					}
 					else if (r[i].type == 2) {
+						r[i].border = "LightBlue";
+						r[move].border = "LightBlue";
+						r[i].taken = true;
+						r[move].taken = true;
+						break;
+					}
+					else if (r[i].type == 3 || r[i].type == 4) {
 						r[i].border = "olive";
 						r[move].border = "olive";
 						r[i].taken = true;
 						r[move].taken = true;
 						break;
 					}
-					//r[i].border = "green";
-					//r[move].border = "green";
-					//r[i].taken = true;
-					//r[move].taken = true;
-					//break;
 				}
 				else if (i != move && r[i].taken == r[move].taken && //Move over bottom right
 				((r[i].x < (r[move].x + (r[move].w/2))) && ((r[move].x - (r[move].w/2)) < (r[i].x + (r[i].w/2)))) 
@@ -318,7 +340,7 @@ function myMove(e){ //Runs when an object is being moved
 						r[move].taken = true;
 						break;
 					}
-					else if (r[i].type == 2) {
+					else if (r[i].type == 2 || r[i].type == 3 || r[i].type ==4) {
 						r[i].border = "LightBlue";
 						r[move].border = "LightBlue";
 						r[i].taken = true;
@@ -338,19 +360,20 @@ function myMove(e){ //Runs when an object is being moved
 						r[move].taken = true;
 						break;
 					}
-					else if (r[i].type == 2) {
+					else if (r[i].type == 2 || r[i].type == 3) {
 						r[i].border = "deeppink";
 						r[move].border = "deeppink";
 						r[i].taken = true;
 						r[move].taken = true;
 						break;
 					}
-					
-						//r[i].border = "red";
-						//r[move].border = "red";
-						//r[i].taken = true;
-						//r[move].taken = true;
-						//break;
+					else if (r[i].type == 4) {
+						r[i].border = "yellow";
+						r[move].border = "yellow";
+						r[i].taken = true;
+						r[move].taken = true;
+						break;
+					}
 				}
 				else if (i != move && r[i].taken == r[move].taken && //Move over top left
 					(((r[i].x - (r[i].w/2)) < (r[move].x + (r[move].w/2))) && ((r[move].x - (r[move].w/2)) < r[i].x))
@@ -364,7 +387,7 @@ function myMove(e){ //Runs when an object is being moved
 						r[move].taken = true;
 						break;
 					}
-					else if (r[i].type == 2) {
+					else if (r[i].type == 2 || r[i].type == 3 || r[i].type == 4) {
 						r[i].border = "yellow";
 						r[move].border = "yellow";
 						r[i].taken = true;
