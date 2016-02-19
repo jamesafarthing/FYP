@@ -1,7 +1,6 @@
 <!doctype html>
 <html>
 <head>
-  
 <link href='https://fonts.googleapis.com/css?family=Crimson+Text' rel='stylesheet' type='text/css'>
 <meta charset="UTF-8" />
 <title>FYP!</title>
@@ -10,7 +9,7 @@
 </header>
 </head>
 <body>
-<!--<img id="bin" width="220" height="277" src="bin.jpg" alt="bin"> --> 
+<!-- <img id="bin" width="220" height="277" src="bin.jpg" alt="bin"> -->
 
 <p>The goal is to create A and B.</p> 
 <section>
@@ -33,6 +32,8 @@ This text is displayed if your browser does not support HTML5 Canvas.
 <button onclick="createImplication()">→</button>
 
 <button onclick="deleteAll()">Delete All</button>
+
+<img id="bin" width="0" height="0" src="bin.jpg" alt="bin" style="visibility:hidden"> 
 
 <script type="text/javascript">
 
@@ -116,19 +117,20 @@ function init() {
 
 	canvas = document.getElementById("canvas");
 	ctx = canvas.getContext("2d");
+	//var bin = document.getElementById("bin");
 	return setInterval(drawIterate, 10);
 }
 
 function drawIterate() {
 	clear();
+	var bin = document.getElementById("bin");
+    ctx.drawImage(bin, 590, 562, 110, 138); 
 	for (i = 0; i < r.length ; i++) {
 		draw(r[i].x, r[i].y, r[i].w, r[i].h, i, r[i].border, r[i].texttopleft, r[i].texttopright, r[i].textbottomleft, r[i].textbottomright);
 	}
 }
 
 function draw(x, y, w, h, i, border, texttopleft, texttopright, textbottomleft, textbottomright) {
-	//****var bin = document.getElementById("bin").onload;
-    //****ctx.drawImage(bin,100,100, 50, 50);
 	ctx.fillStyle = "#FAF7F8";
 	rect(x-(w/2), y-(h/2), w, h);
 	ctx.strokeStyle = border;
@@ -301,106 +303,113 @@ function myMove(e){ //Runs when an object is being moved
 		
 		for(i = 0; i < r.length; i ++) { //Cycle through static elements
 			
-				if (i != move && r[i].taken == r[move].taken && //Move over bottom left
-				(((r[i].x - (r[i].w/2)) < (r[move].x + (r[move].w/2))) && ((r[move].x) < r[i].x)) 
-				&& ((r[move].y -(r[move].h/2)) < (r[i].y + (r[i].h/2))) 
-				&& ((r[move].y -(r[move].h/2)) >= r[i].y - (r[i].h/2))){
+			if (i != move && r[i].taken == r[move].taken && //Move over bottom left
+			(((r[i].x - (r[i].w/2)) < (r[move].x + (r[move].w/2))) && ((r[move].x) < r[i].x)) 
+			&& ((r[move].y -(r[move].h/2)) < (r[i].y + (r[i].h/2))) 
+			&& ((r[move].y -(r[move].h/2)) >= r[i].y - (r[i].h/2))){
+			
+				if (r[i].type == 0 || r[i].type == 1) {
+					r[i].border = "green";
+					r[move].border = "green";
+					r[i].taken = true;
+					r[move].taken = true;
+					break;
+				}
+				else if (r[i].type == 2) {
+					r[i].border = "LightBlue";
+					r[move].border = "LightBlue";
+					r[i].taken = true;
+					r[move].taken = true;
+					break;
+				}
+				else if (r[i].type == 3 || r[i].type == 4) {
+					r[i].border = "olive";
+					r[move].border = "olive";
+					r[i].taken = true;
+					r[move].taken = true;
+					break;
+				}
+			}
+			else if (i != move && r[i].taken == r[move].taken && //Move over bottom right
+			((r[i].x < (r[move].x + (r[move].w/2))) && ((r[move].x - (r[move].w/2)) < (r[i].x + (r[i].w/2)))) 
+			&& ((r[move].y -(r[move].h/2)) < (r[i].y + (r[i].h/2))) 
+			&& ((r[move].y -(r[move].h/2)) >= r[i].y - (r[i].h/2))){
+			
+				if (r[i].type == 0 || r[i].type == 1) {
+					r[i].border = "red";
+					r[move].border = "red";
+					r[i].taken = true;
+					r[move].taken = true;
+					break;
+				}
+				else if (r[i].type == 2 || r[i].type == 3 || r[i].type ==4) {
+					r[i].border = "LightBlue";
+					r[move].border = "LightBlue";
+					r[i].taken = true;
+					r[move].taken = true;
+					break;
+				}
+			}
+			else if (i != move && r[i].taken == r[move].taken && //Move over top right
+				((r[i].x < r[move].x) && ((r[move].x - (r[move].w/2)) < (r[i].x + (r[i].w/2))))
+				&& ((r[move].y + (r[move].h/2)) > (r[i].y -(r[i].h/2)))
+				&& ((r[move].y + (r[move].h/2)) <= r[i].y + (r[i].h/2))){
 				
-					if (r[i].type == 0 || r[i].type == 1) {
-						r[i].border = "green";
-						r[move].border = "green";
-						r[i].taken = true;
-						r[move].taken = true;
-						break;
-					}
-					else if (r[i].type == 2) {
-						r[i].border = "LightBlue";
-						r[move].border = "LightBlue";
-						r[i].taken = true;
-						r[move].taken = true;
-						break;
-					}
-					else if (r[i].type == 3 || r[i].type == 4) {
-						r[i].border = "olive";
-						r[move].border = "olive";
-						r[i].taken = true;
-						r[move].taken = true;
-						break;
-					}
+				if (r[i].type == 0 || r[i].type == 1) {
+					r[i].border = "red";
+					r[move].border = "red";
+					r[i].taken = true;
+					r[move].taken = true;
+					break;
 				}
-				else if (i != move && r[i].taken == r[move].taken && //Move over bottom right
-				((r[i].x < (r[move].x + (r[move].w/2))) && ((r[move].x - (r[move].w/2)) < (r[i].x + (r[i].w/2)))) 
-				&& ((r[move].y -(r[move].h/2)) < (r[i].y + (r[i].h/2))) 
-				&& ((r[move].y -(r[move].h/2)) >= r[i].y - (r[i].h/2))){
+				else if (r[i].type == 2 || r[i].type == 3) {
+					r[i].border = "deeppink";
+					r[move].border = "deeppink";
+					r[i].taken = true;
+					r[move].taken = true;
+					break;
+				}
+				else if (r[i].type == 4) {
+					r[i].border = "yellow";
+					r[move].border = "yellow";
+					r[i].taken = true;
+					r[move].taken = true;
+					break;
+				}
+			}
+			else if (i != move && r[i].taken == r[move].taken && //Move over top left
+				(((r[i].x - (r[i].w/2)) < (r[move].x + (r[move].w/2))) && ((r[move].x - (r[move].w/2)) < r[i].x))
+				&& ((r[move].y + (r[move].h/2)) > (r[i].y -(r[i].h/2)))
+				&& ((r[move].y + (r[move].h/2)) <= r[i].y + (r[i].h/2))){
 				
-					if (r[i].type == 0 || r[i].type == 1) {
-						r[i].border = "red";
-						r[move].border = "red";
-						r[i].taken = true;
-						r[move].taken = true;
-						break;
-					}
-					else if (r[i].type == 2 || r[i].type == 3 || r[i].type ==4) {
-						r[i].border = "LightBlue";
-						r[move].border = "LightBlue";
-						r[i].taken = true;
-						r[move].taken = true;
-						break;
-					}
+				if (r[i].type == 0 || r[i].type == 1) {
+					r[i].border = "green";
+					r[move].border = "green";
+					r[i].taken = true;
+					r[move].taken = true;
+					break;
 				}
-				else if (i != move && r[i].taken == r[move].taken && //Move over top right
-					((r[i].x < r[move].x) && ((r[move].x - (r[move].w/2)) < (r[i].x + (r[i].w/2))))
-					&& ((r[move].y + (r[move].h/2)) > (r[i].y -(r[i].h/2)))
-					&& ((r[move].y + (r[move].h/2)) <= r[i].y + (r[i].h/2))){
-					
-					if (r[i].type == 0 || r[i].type == 1) {
-						r[i].border = "red";
-						r[move].border = "red";
-						r[i].taken = true;
-						r[move].taken = true;
-						break;
-					}
-					else if (r[i].type == 2 || r[i].type == 3) {
-						r[i].border = "deeppink";
-						r[move].border = "deeppink";
-						r[i].taken = true;
-						r[move].taken = true;
-						break;
-					}
-					else if (r[i].type == 4) {
-						r[i].border = "yellow";
-						r[move].border = "yellow";
-						r[i].taken = true;
-						r[move].taken = true;
-						break;
-					}
+				else if (r[i].type == 2 || r[i].type == 3 || r[i].type == 4) {
+					r[i].border = "yellow";
+					r[move].border = "yellow";
+					r[i].taken = true;
+					r[move].taken = true;
+					break;
 				}
-				else if (i != move && r[i].taken == r[move].taken && //Move over top left
-					(((r[i].x - (r[i].w/2)) < (r[move].x + (r[move].w/2))) && ((r[move].x - (r[move].w/2)) < r[i].x))
-					&& ((r[move].y + (r[move].h/2)) > (r[i].y -(r[i].h/2)))
-					&& ((r[move].y + (r[move].h/2)) <= r[i].y + (r[i].h/2))){
-					
-					if (r[i].type == 0 || r[i].type == 1) {
-						r[i].border = "green";
-						r[move].border = "green";
-						r[i].taken = true;
-						r[move].taken = true;
-						break;
-					}
-					else if (r[i].type == 2 || r[i].type == 3 || r[i].type == 4) {
-						r[i].border = "yellow";
-						r[move].border = "yellow";
-						r[i].taken = true;
-						r[move].taken = true;
-						break;
-					}
-				}
-				else if (i != move && r[i].taken == true && r[move].taken == true) { //If it over none of the squares
-					r[i].border = "black";
-					r[move].border = "black";
-					r[i].taken = false;
-					r[move].taken = false;
-				}
+			}
+			else if (i != move && r[i].taken == true && r[move].taken == true) { //If it over none of the squares
+				r[i].border = "black";
+				r[move].border = "black";
+				r[i].taken = false;
+				r[move].taken = false;
+			}
+				
+			if (r[move].x + (r[move].w/2) >= 590 && r[move].y + (r[move].h/2) >= 562) {
+				r[move].border = "Navy";
+			}
+			else {
+				r[move].border = "black";
+			}
 		}
 	}
 }
@@ -423,7 +432,7 @@ function myDown(e){ //When the mouse is pressed down
 function myUp(){ //When the mouse is released.
 	dragok = false;
 	canvas.onmousemove = null;
-	for(i = 0; i < r.length; i ++) { //Checking which two elements should be joined
+	for(i = 0; i < r.length; i ++) { //Checking which two elements should be joined or if bin is selected
 		if (i != move && r[i].border == "green" && r[i].taken == r[move].taken) {
 			validMoveTopLeft();
 		}if (i != move && r[i].border == "LightBlue" && r[i].taken == r[move].taken) {
@@ -436,6 +445,8 @@ function myUp(){ //When the mouse is released.
 			validMoveTopRight();
 		}if (i != move && r[i].border == "olive" && r[i].taken == r[move].taken) {
 			validMoveBottomLeft();
+		}if (r[move].border == "Navy") {
+			r.splice(move,1);
 		}
 	}
 }
