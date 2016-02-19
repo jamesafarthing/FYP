@@ -44,10 +44,11 @@ var r = [];
 var move;
 var border = "black";
 var taken = false;
-var texttop = " ";
+var texttopleft = " ";
+var texttopright = " ";
 var textbottom = " ";
 
-function object(x, y, w, h, number, texttop, textbottom) {
+function object(x, y, w, h, number, texttopleft, texttopright, textbottom) {
 	this.x = x;
 	this.y = y;
 	this.w = w;
@@ -55,17 +56,18 @@ function object(x, y, w, h, number, texttop, textbottom) {
 	this.number = number;
 	this.border = border;
 	this.taken = taken; 
-	this.texttop = texttop;
+	this.texttopleft = texttopleft;
+	this.texttopright = texttopright;
 	this.textbottom = textbottom;
 }
 
 function create(){
 	//r.push(new object(55, 55, 100, 100));
-	r.push(new object(55, 55, 100, 100, 1, "A", "none"));
-	r.push(new object(335, 55, 100, 100, 2, "B", "none"));
-	r.push(new object(645, 55, 100, 100, 3, "∧", "none"));
-	r.push(new object(355, 600, 100, 100, 4, " ", " "));
-	
+	r.push(new object(55,  55,  100, 100, 1, "A", "none", "none"));
+	r.push(new object(335, 55,  100, 100, 2, "B", "none", "none"));
+	r.push(new object(645, 55,  100, 100, 3, "∧", "none", "none"));
+	r.push(new object(355, 600, 100, 100, 4, "%",  "%",   "%"));
+	r.push(new object(505, 55,  100, 100, 5, "→", "none", "none"));	
 } 
 
 function deleteAll(){
@@ -76,8 +78,6 @@ function deleteAll(){
 function rect(x,y,w,h) {
 	ctx.beginPath();
 	ctx.rect(x,y,w,h);
-	var img = document.getElementById("scream");
-    //ctx.drawImage(img, x, y, w*2, h*2);
 	ctx.closePath();
 	ctx.fill();
 }
@@ -97,11 +97,11 @@ function init() {
 function drawIterate() {
 	clear();
 	for (i = 0; i < r.length ; i++) {
-		draw(r[i].x, r[i].y, r[i].w, r[i].h, i, r[i].border, r[i].texttop, r[i].textbottom);
+		draw(r[i].x, r[i].y, r[i].w, r[i].h, i, r[i].border, r[i].texttopleft, r[i].texttopright, r[i].textbottom);
 	}
 }
 
-function draw(x, y, w, h, i, border, texttop, textbottom) {
+function draw(x, y, w, h, i, border, texttopleft, texttopright, textbottom) {
 	ctx.fillStyle = "#FAF7F8";
 	rect(x-(w/2), y-(h/2), w, h);
 	ctx.strokeStyle = border;
@@ -110,21 +110,29 @@ function draw(x, y, w, h, i, border, texttop, textbottom) {
 	ctx.fillStyle = "#444444";
 	ctx.textAlign = 'center';
 	if (textbottom == "none") {
-		r[i].w = texttop.length * 50;
+		r[i].w = texttopleft.length * 50;
 		r[i].h = 50;
 		//ctx.fillText(texttop, x-(texttop.length*16), y);
-		ctx. fillText(texttop, x, y+12.5);
+		ctx.textAlign = "center";
+		ctx. fillText(texttopleft, x, y+(h/4));
 	}
 	else {
-		r[i].w = Math.max(texttop.length * 30, textbottom.length * 30, 50);
+		r[i].w = Math.max((texttopleft.length + texttopright.length)*50, textbottom.length * 30, 50);
+		ctx.fillStyle = "#444444";
 		ctx.beginPath();
 		ctx.moveTo (x -((3*w)/8), y);
 		ctx.lineTo( x + ((3*w)/8) , y);
 		ctx.stroke();
-		//ctx.fillText(texttop, x-(texttop.length*8), y-(h/6));
-		//ctx.fillText(textbottom, x-(texttop.length*8), y+(h/3));
-		ctx.fillText(texttop, x, y-(h/6));
+		ctx.textAlign = 'center';
+		if(texttopleft != "%") {
+		ctx.fillText(texttopleft, x-(w/4), y-(h/6));		
+		}
+		if(texttopright != "%"){
+			ctx.fillText(texttopright, x+(w/4), y-(h/6));
+		}
+		if(textbottom != "%") {
 		ctx.fillText(textbottom, x, y+(h/3));
+		}
 	}
 	//else{
 		//ctx.fillText(texttop, x-10, y);
@@ -138,11 +146,11 @@ function draw(x, y, w, h, i, border, texttop, textbottom) {
 }
 
 function doneCheck() {
-	if (r[i].texttop == "A, B" && r[i].textbottom == "∧") {
+	if (r[i].texttopleft == "A" && r[i].texttopright == "B" && r[i].textbottom == "∧") {
 		r[i].textbottom = "A ∧ B";
 		return true;
 	}
-	else if (r[i].texttop == "B, A" && r[i].textbottom == "∧") {
+	else if (r[i].texttopleft == "B" && r[i].texttopright == "A" && r[i].textbottom == "∧") {
 		r[i].textbottom = "B ∧ A";
 		return true;
 	}
@@ -151,21 +159,53 @@ function doneCheck() {
 	}
 }
 
-function validMoveTop() {
+function validMoveTopLeft() {
 	if (r[i].number == 4) {
 		if (r[move].number == 1 || r[move].number == 2) {
-			if(r[i].texttop == " "){
-				r[i].texttop = r[move].texttop;
+			if(r[i].texttopleft == "%"){
+				r[i].texttopleft = r[move].texttopleft;
+				r[i].border = "black";
+				r[i].taken = false;
+				var done = doneCheck();
+				r.splice(move,1);
+				if (done == true) {
+					drawIterate();
+					drawIterate();
+					window.alert("Congratulations! Level 1 Complete.");
+				}
 			}
 			else {
-				r[i].texttop = r[i].texttop + ", "+ r[move].texttop;
+				window.alert("This is not a valid move!");
+				//r[i].texttopleft = r[i].texttopleft + ", "+ r[move].texttopleft;
 			}
-			r[i].border = "black";
-			r[i].taken = false;
-			doneCheck();
-			r.splice(move,1);
-			if (done == true) {
-				window.alert("Congratulations! Level 1 Complete.");
+		}
+		else{
+			window.alert("This is not a valid move!");
+		}
+	}
+	else{
+			window.alert("This is not a valid move!");
+		}
+}
+
+function validMoveTopRight() {
+	if (r[i].number == 4) {
+		if (r[move].number == 1 || r[move].number == 2) {
+			if(r[i].texttopright == "%"){
+				r[i].texttopright = r[move].texttopleft;
+				r[i].border = "black";
+				r[i].taken = false;
+				var done = doneCheck();
+				r.splice(move,1);
+				if (done == true) {
+					drawIterate();
+					drawIterate();					
+					window.alert("Congratulations! Level 1 Complete.");
+				}
+			}
+			else {
+				window.alert("This is not a valid move!");
+				//r[i].texttopright = r[i].texttopright + ", "+ r[move].texttopright;
 			}
 		}
 		else{
@@ -180,12 +220,14 @@ function validMoveTop() {
 function validMoveBottom() {
 	if (r[i].number == 4) {
 		if (r[move].number == 3) {
-			r[i].textbottom = r[move].texttop;
+			r[i].textbottom = r[move].texttopleft;
 			r[i].border = "black";
 			r[i].taken = false;
 			var done = doneCheck();
 			r.splice(move,1);
 			if (done == true) {
+				drawIterate();
+				drawIterate();
 				window.alert("Congratulations! Level 1 Complete.");
 			}
 		}
@@ -215,7 +257,7 @@ function myMove(e){
 				break;
 			}
 			else if (i != move && r[i].taken == r[move].taken &&
-				(((r[i].x - (r[i].w/2)) < (r[move].x + (r[move].w/2))) && ((r[move].x - (r[move].w/2)) < (r[i].x + (r[i].w/2))))
+				((r[i].x < r[move].x) && ((r[move].x - (r[move].w/2)) < (r[i].x + (r[i].w/2))))
 				&& ((r[move].y + (r[move].h/2)) > (r[i].y -(r[i].h/2)))
 				&& ((r[move].y + (r[move].h/2)) < r[i].y)){
 					r[i].border = "red";
@@ -223,18 +265,23 @@ function myMove(e){
 					r[i].taken = true;
 					r[move].taken = true;
 					break;
-				}
+			}
+			else if (i != move && r[i].taken == r[move].taken &&
+				(((r[i].x - (r[i].w/2)) < (r[move].x + (r[move].w/2))) && ((r[move].x - (r[move].w/2)) < r[i].x))
+				&& ((r[move].y + (r[move].h/2)) > (r[i].y -(r[i].h/2)))
+				&& ((r[move].y + (r[move].h/2)) < r[i].y)){
+					r[i].border = "yellow";
+					r[move].border = "yellow";
+					r[i].taken = true;
+					r[move].taken = true;
+					break;
+			}
 			else if (i != move && r[i].taken == true && r[move].taken == true) {
 				r[i].border = "black";
 				r[move].border = "black";
 				r[i].taken = false;
 				r[move].taken = false;
 			}
-			/*else if (r[i].taken = false && r[move].taken = false)
-			{
-				r[i].border = "black";
-				r[move].border = "black";
-			}*/
 		}
 	}
 }
@@ -278,8 +325,12 @@ function myUp(){
 				//r[i].border = "black";
 				//r[i].taken = false;
 				//r.splice(move,1);
-				validMoveTop();
+			validMoveTopRight();
 		}
+		if (i != move && r[i].border == "yellow" && r[i].taken == r[move].taken) {
+			validMoveTopLeft();
+		}
+		
 	}
 }
 
