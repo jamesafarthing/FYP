@@ -2,7 +2,6 @@
 <html>
 <head>
 
-<script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
  <!-- <script src="canvasmath\jquery.js"></script>
   <script src="canvasmath\lib.js"></script>
   <script src="canvasmath\box.js"></script>
@@ -30,18 +29,21 @@
 </script>
 <!--<script type='text/javascript' src='http://mathdox.org/formulaeditor/main.js'></script> -->
 <meta charset="UTF-8" />
-<title>Natural Deduction!</title>
+<title>FYP!</title>
 <header>
-<h1> Natural Deduction Drag and Drop Game </h1>
+<h1> Addition and Subtraction Drag and Drop Game </h1>
 </header>
 </head>
 <body>
 <!-- $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$ -->
 <!-- <p>This one is neither selectable nor editable: <cvm>sqrt(x^2+y^2)</cvm>!</p> -->
+
+<!--<img id="scream" width="100" height="100" src="C:\Users\James\Pictures\james2photo.jpg" alt="The Scream"> -->
+<p>Drag numbers to the bottom half to add them together (when it goes green). Drag a number of the top half of another one and it will subtract the one you are moving from the static one (when it goes red). Click create to begin. Numbers are created in order, starting with 1.</p> 
 <section>
 
 <div class = "canvasholder">
-<div id="latexContent">\(3 + 4 = 7\)</div>
+<!--<div id="latexContent">\(3 + 4 = 7\)</div> -->
 <canvas id="canvas" width="700" height="700" style="border:1px solid #000000;">
 This text is displayed if your browser does not support HTML5 Canvas.
 </canvas>
@@ -63,35 +65,34 @@ var dragok = false;
 var r = [];
 var move;
 var border = "black";
+var taken = false;
 
-function object(x, y) {
+function object(x, y, w, h) {
 	this.x = x;
 	this.y = y;
+	this.w = w;
+	this.h = h;
 	this.number = number++;
 	this.border = border;
+	this.taken = taken; 
 }
 
 function create(){
-	r.push(new object(55, 55));
+	r.push(new object(55, 55, 100, 100));
 } 
 
 function deleteAll(){
 	r.splice(0,r.length);
-	number = 0;
+	number = 1;
 }
 
 function rect(x,y,w,h) {
-	/*ctx.beginPath();
+	ctx.beginPath();
 	ctx.rect(x,y,w,h);
+	var img = document.getElementById("scream");
+    //ctx.drawImage(img, x, y, w*2, h*2);
 	ctx.closePath();
-	ctx.fill();*/
-	
-	var graphics = new createjs.Graphics().beginFill("#ff0000").drawRect(0, 0, 100, 100);
-	var rec = new createjs.Shape(graphics);
-	//rec.x = x;
-	//rec.y = y;
-	stage.addChild(rec);
-	stage.update();
+	ctx.fill();
 }
 
 function clear() {
@@ -99,32 +100,27 @@ function clear() {
 }
 
 function init() {
-var stage = new createjs.Stage("canvas");
-var domElement = new createjs.DOMElement(document.getElementById("latexContent"));
-stage.addChild(domElement);
-	//canvas = document.getElementById("canvas");
-	//ctx = canvas.getContext("2d");
-	
-	//return setInterval(drawIterate, 10);
-	drawIterate();
+
+	canvas = document.getElementById("canvas");
+	ctx = canvas.getContext("2d");
+	return setInterval(drawIterate, 10);
 }
 
 function drawIterate() {
 	clear();
 	for (i = 0; i < r.length ; i++) {
-		draw(r[i].x, r[i].y, i, r[i].border);
+		draw(r[i].x, r[i].y, r[i].w, r[i].h, i, r[i].border);
 	}
 }
 
-function draw(a, b, i, border) {
-	//ctx.fillStyle = "#FAF7F8";
-	rect(a - 50, b - 50, 100, 100);
-	//ctx.strokeStyle = border;
-	//ctx.stroke();
-	//ctx.font="32px Georgia";
-	//ctx.fillStyle = "#444444";
-	//ctx.fillText(r[i].number.toString(), a -25, b);
-	//ctx.fillText(r[i].number.toString(), a -25, b);
+function draw(x, y, w, h, i, border) {
+	ctx.fillStyle = "#FAF7F8";
+	rect(x-(w/2), y-(h/2), w, h);
+	ctx.strokeStyle = border;
+	ctx.stroke();
+	ctx.font="32px Georgia";
+	ctx.fillStyle = "#444444";
+	ctx.fillText(r[i].number.toString(), x-10, y);
 }
 
 function myMove(e){
@@ -133,26 +129,37 @@ function myMove(e){
 		r[move].y = e.pageY - canvas.offsetTop;
 		
 		for(i = 0; i < r.length; i ++) {
-			if (i != move && 
-			(((r[i].x - 50) < (r[move].x + 50)) && ((r[move].x - 50) < (r[i].x + 50))) 
-			&& ((r[move].y -50) < (r[i].y + 50)) 
-			&& ((r[move].y -50) > r[i].y)){
+			if (i != move && r[i].taken == r[move].taken &&
+			(((r[i].x - (r[i].w/2)) < (r[move].x + (r[move].w/2))) && ((r[move].x - (r[move].w/2)) < (r[i].x + (r[i].w/2)))) 
+			&& ((r[move].y -(r[move].h/2)) < (r[i].y + (r[i].h/2))) 
+			&& ((r[move].y -(r[move].h/2)) > r[i].y)){
 				r[i].border = "green";
 				r[move].border = "green";
+				r[i].taken = true;
+				r[move].taken = true;
 				break;
 			}
-			else if (i != move &&
-				(((r[i].x - 50) < (r[move].x + 50)) && ((r[move].x - 50) < (r[i].x + 50)))
-				&& ((r[move].y + 50) > (r[i].y -50))
-				&& ((r[move].y + 50) < r[i].y)){
+			else if (i != move && r[i].taken == r[move].taken &&
+				(((r[i].x - (r[i].w/2)) < (r[move].x + (r[move].w/2))) && ((r[move].x - (r[move].w/2)) < (r[i].x + (r[i].w/2))))
+				&& ((r[move].y + (r[move].h/2)) > (r[i].y -(r[i].h/2)))
+				&& ((r[move].y + (r[move].h/2)) < r[i].y)){
 					r[i].border = "red";
 					r[move].border = "red";
+					r[i].taken = true;
+					r[move].taken = true;
 					break;
 				}
-			else if (i != move) {
+			else if (i != move && r[i].taken == true && r[move].taken == true) {
 				r[i].border = "black";
 				r[move].border = "black";
+				r[i].taken = false;
+				r[move].taken = false;
 			}
+			/*else if (r[i].taken = false && r[move].taken = false)
+			{
+				r[i].border = "black";
+				r[move].border = "black";
+			}*/
 		}
 	}
 }
@@ -160,9 +167,9 @@ function myMove(e){
 function myDown(e){
 	move = 0;
 	for (j = 0; j < r.length; j++) {
-		if (e.pageX < r[j].x + 50 + canvas.offsetLeft && e.pageX > r[j].x - 50 +
-			canvas.offsetLeft && e.pageY < r[j].y + 50 + canvas.offsetTop &&
-			e.pageY > r[j].y - 50 + canvas.offsetTop){
+		if (e.pageX < r[j].x + (r[j].w/2) + canvas.offsetLeft && e.pageX > r[j].x - (r[j].w/2) +
+			canvas.offsetLeft && e.pageY < r[j].y + (r[j].h/2) + canvas.offsetTop &&
+			e.pageY > r[j].y - (r[j].h/2) + canvas.offsetTop){
 				move = j;
 				r[j].x = e.pageX - canvas.offsetLeft;
 				r[j].y = e.pageY - canvas.offsetTop;
@@ -176,20 +183,24 @@ function myUp(){
 	dragok = false;
 	canvas.onmousemove = null;
 	for(i = 0; i < r.length; i ++) {
-		if (i != move && 
-			(((r[i].x - 50) < (r[move].x + 50)) && ((r[move].x - 50) < (r[i].x + 50))) 
-			&& ((r[move].y -50) < (r[i].y + 50)) 
-			&& ((r[move].y -50) > r[i].y)){
+		//if (i != move && 
+			//(((r[i].x - 50) < (r[move].x + 50)) && ((r[move].x - 50) < (r[i].x + 50))) 
+			//&& ((r[move].y -50) < (r[i].y + 50)) 
+			//&& ((r[move].y -50) > r[i].y)){
+			if (i != move && r[i].border == "green" && r[i].taken == r[move].taken) {
 				r[i].number = r[i].number + r[move].number;
 				r[i].border = "black";
+				r[i].taken = false;
 				r.splice(move,1);	
 		}
-		if (i != move &&
-			(((r[i].x - 50) < (r[move].x + 50)) && ((r[move].x - 50) < (r[i].x + 50)))
-			&& ((r[move].y + 50) > (r[i].y -50))
-			&& ((r[move].y + 50) < r[i].y)){
+		//if (i != move &&
+		//	(((r[i].x - 50) < (r[move].x + 50)) && ((r[move].x - 50) < (r[i].x + 50)))
+		//	&& ((r[move].y + 50) > (r[i].y -50))
+		//	&& ((r[move].y + 50) < r[i].y)){
+			if (i != move && r[i].border == "red" && r[i].taken == r[move].taken) {
 				r[i].number = r[i].number - r[move].number;
 				r[i].border = "black";
+				r[i].taken = false;
 				r.splice(move,1);	
 		}
 	}
