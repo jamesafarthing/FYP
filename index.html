@@ -1,33 +1,12 @@
 <!doctype html>
 <html>
 <head>
-
- <!-- <script src="canvasmath\jquery.js"></script>
-  <script src="canvasmath\lib.js"></script>
-  <script src="canvasmath\box.js"></script>
-  <script src="canvasmath\layout.js"></script>
-  <script src="canvasmath\operators.js"></script>
-  <script src="canvasmath\expr.js"></script>
-  <script src="canvasmath\parse.js"></script>
-  <script src="canvasmath\select.js"></script>
-  <script src="canvasmath\edit.js"></script>
-  <script src="canvasmath\inline.js"></script>
-  <style>
-  .selectable {
-    cursor: text; 
-  }
-  .editor-button {
-    border: 1px solid gray;
-    margin: 1px;
-    background-color: white;
-  }
-  </style> -->
-
+  
+<link href='https://fonts.googleapis.com/css?family=Crimson+Text' rel='stylesheet' type='text/css'>
 <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
 </script>
-<!--<script type='text/javascript' src='http://mathdox.org/formulaeditor/main.js'></script> -->
 <meta charset="UTF-8" />
 <title>FYP!</title>
 <header>
@@ -35,15 +14,14 @@
 </header>
 </head>
 <body>
-<!-- $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$ -->
-<!-- <p>This one is neither selectable nor editable: <cvm>sqrt(x^2+y^2)</cvm>!</p> -->
 
-<!--<img id="scream" width="100" height="100" src="C:\Users\James\Pictures\james2photo.jpg" alt="The Scream"> -->
-<p>Drag numbers to the bottom half to add them together (when it goes green). Drag a number of the top half of another one and it will subtract the one you are moving from the static one (when it goes red). Click create to begin. Numbers are created in order, starting with 1.</p> 
+<p>Drag numbers to the bottom half to add them together (when it goes green). 
+Drag a number of the top half of another one and it will subtract the one you 
+are moving from the static one (when it goes red). Click create to begin. 
+Numbers are created in order, starting with 1.</p> 
 <section>
 
 <div class = "canvasholder">
-<!--<div id="latexContent">\(3 + 4 = 7\)</div> -->
 <canvas id="canvas" width="700" height="700" style="border:1px solid #000000;">
 This text is displayed if your browser does not support HTML5 Canvas.
 </canvas>
@@ -66,19 +44,28 @@ var r = [];
 var move;
 var border = "black";
 var taken = false;
+var texttop = " ";
+var textbottom = " ";
 
-function object(x, y, w, h) {
+function object(x, y, w, h, number, texttop, textbottom) {
 	this.x = x;
 	this.y = y;
 	this.w = w;
 	this.h = h;
-	this.number = number++;
+	this.number = number;
 	this.border = border;
 	this.taken = taken; 
+	this.texttop = texttop;
+	this.textbottom = textbottom;
 }
 
 function create(){
-	r.push(new object(55, 55, 100, 100));
+	//r.push(new object(55, 55, 100, 100));
+	r.push(new object(55, 55, 100, 100, 1, "A", "none"));
+	r.push(new object(335, 55, 100, 100, 2, "B", "none"));
+	r.push(new object(645, 55, 100, 100, 3, "∧", "none"));
+	r.push(new object(355, 600, 100, 100, 4, " ", " "));
+	
 } 
 
 function deleteAll(){
@@ -103,24 +90,112 @@ function init() {
 
 	canvas = document.getElementById("canvas");
 	ctx = canvas.getContext("2d");
+	create();
 	return setInterval(drawIterate, 10);
 }
 
 function drawIterate() {
 	clear();
 	for (i = 0; i < r.length ; i++) {
-		draw(r[i].x, r[i].y, r[i].w, r[i].h, i, r[i].border);
+		draw(r[i].x, r[i].y, r[i].w, r[i].h, i, r[i].border, r[i].texttop, r[i].textbottom);
 	}
 }
 
-function draw(x, y, w, h, i, border) {
+function draw(x, y, w, h, i, border, texttop, textbottom) {
 	ctx.fillStyle = "#FAF7F8";
 	rect(x-(w/2), y-(h/2), w, h);
 	ctx.strokeStyle = border;
 	ctx.stroke();
 	ctx.font="32px Georgia";
 	ctx.fillStyle = "#444444";
-	ctx.fillText(r[i].number.toString(), x-10, y);
+	ctx.textAlign = 'center';
+	if (textbottom == "none") {
+		r[i].w = texttop.length * 50;
+		r[i].h = 50;
+		//ctx.fillText(texttop, x-(texttop.length*16), y);
+		ctx. fillText(texttop, x, y+12.5);
+	}
+	else {
+		r[i].w = Math.max(texttop.length * 30, textbottom.length * 30, 50);
+		ctx.beginPath();
+		ctx.moveTo (x -((3*w)/8), y);
+		ctx.lineTo( x + ((3*w)/8) , y);
+		ctx.stroke();
+		//ctx.fillText(texttop, x-(texttop.length*8), y-(h/6));
+		//ctx.fillText(textbottom, x-(texttop.length*8), y+(h/3));
+		ctx.fillText(texttop, x, y-(h/6));
+		ctx.fillText(textbottom, x, y+(h/3));
+	}
+	//else{
+		//ctx.fillText(texttop, x-10, y);
+	//}
+	//ctx.moveTo (x -((3*w)/8), y);
+	//ctx.lineTo( x + ((3*w)/8) , y);
+	//ctx.fillText(r[i].number.toString(), x-10, y-(h/6));
+	//ctx.fillText(r[i].number.toString(), x-10, y+(h/3));
+	//ctx.fillText(texttop, x-10, y-(h/6));
+	//ctx.fillText(textbottom, x-10, y+(h/3));
+}
+
+function doneCheck() {
+	if (r[i].texttop == "A, B" && r[i].textbottom == "∧") {
+		r[i].textbottom = "A ∧ B";
+		return true;
+	}
+	else if (r[i].texttop == "B, A" && r[i].textbottom == "∧") {
+		r[i].textbottom = "B ∧ A";
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+function validMoveTop() {
+	if (r[i].number == 4) {
+		if (r[move].number == 1 || r[move].number == 2) {
+			if(r[i].texttop == " "){
+				r[i].texttop = r[move].texttop;
+			}
+			else {
+				r[i].texttop = r[i].texttop + ", "+ r[move].texttop;
+			}
+			r[i].border = "black";
+			r[i].taken = false;
+			doneCheck();
+			r.splice(move,1);
+			if (done == true) {
+				window.alert("Congratulations! Level 1 Complete.");
+			}
+		}
+		else{
+			window.alert("This is not a valid move!");
+		}
+	}
+	else{
+			window.alert("This is not a valid move!");
+		}
+}
+
+function validMoveBottom() {
+	if (r[i].number == 4) {
+		if (r[move].number == 3) {
+			r[i].textbottom = r[move].texttop;
+			r[i].border = "black";
+			r[i].taken = false;
+			var done = doneCheck();
+			r.splice(move,1);
+			if (done == true) {
+				window.alert("Congratulations! Level 1 Complete.");
+			}
+		}
+		else {
+			window.alert("This is not a valid move!");
+		}
+	}
+	else {
+		window.alert("This is not a valid move!");
+	}
 }
 
 function myMove(e){
@@ -187,24 +262,27 @@ function myUp(){
 			//(((r[i].x - 50) < (r[move].x + 50)) && ((r[move].x - 50) < (r[i].x + 50))) 
 			//&& ((r[move].y -50) < (r[i].y + 50)) 
 			//&& ((r[move].y -50) > r[i].y)){
-			if (i != move && r[i].border == "green" && r[i].taken == r[move].taken) {
-				r[i].number = r[i].number + r[move].number;
-				r[i].border = "black";
-				r[i].taken = false;
-				r.splice(move,1);	
+		if (i != move && r[i].border == "green" && r[i].taken == r[move].taken) {
+				//r[i].number = r[i].number + r[move].number;
+				//r[i].border = "black";
+				//r[i].taken = false;
+				//r.splice(move,1);	
+				validMoveBottom();
 		}
 		//if (i != move &&
 		//	(((r[i].x - 50) < (r[move].x + 50)) && ((r[move].x - 50) < (r[i].x + 50)))
 		//	&& ((r[move].y + 50) > (r[i].y -50))
 		//	&& ((r[move].y + 50) < r[i].y)){
-			if (i != move && r[i].border == "red" && r[i].taken == r[move].taken) {
-				r[i].number = r[i].number - r[move].number;
-				r[i].border = "black";
-				r[i].taken = false;
-				r.splice(move,1);	
+		if (i != move && r[i].border == "red" && r[i].taken == r[move].taken) {
+				//r[i].number = r[i].number - r[move].number;
+				//r[i].border = "black";
+				//r[i].taken = false;
+				//r.splice(move,1);
+				validMoveTop();
 		}
 	}
 }
+
 
 init();
 canvas.onmousedown = myDown;
