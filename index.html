@@ -48,53 +48,47 @@ var r = [];
 var move;
 var border = "black";
 var taken = false;
-var texttopleft = " ";
-var texttopright = " ";
-var textbottomleft = " ";
-var textbottomright = " ";
+var text = [];
 var type = 0; //0 is variable, 1 is operator, 2, 3, 4 are forms
 
-function object(x, y, w, h, texttopleft, texttopright, textbottomleft, textbottomright, type) {
+function object(x, y, w, h, text, type) {
 	this.x = x;
 	this.y = y;
 	this.w = w;
 	this.h = h;
 	this.border = border;
-	this.taken = taken; 
-	this.texttopleft = texttopleft;
-	this.texttopright = texttopright;
-	this.textbottomleft = textbottomleft;
-	this.textbottomright = textbottomright;
+	this.taken = taken;
+	this.text = text;
 	this.type = type;
 }
 
 function createTwoUpOneDown(){
-	r.push(new object(355, 600, 100, 100, "%", "%", "%", "%", 2));
+	r.push(new object(355, 600, 100, 100, ["%", "%", "%", "%"], 2));
 } 
 function createTwoUpTwoDown() {
-	r.push(new object(355, 500, 100, 100, "%", "%", "%", "%", 3));
+	r.push(new object(355, 500, 100, 100, ["%", "%", "%", "%"], 3));
 }
 function createOneUpTwoDown() {
-	r.push(new object(355, 500, 100, 100, "%", "%", "%", "%", 4));
+	r.push(new object(355, 500, 100, 100, ["%", "%", "%", "%"], 4));
 }
 function createA(){
-	r.push(new object(55,  55,  100, 100, "A", "none", "none", "none", 0));
+	r.push(new object(55,  55,  100, 100, ["A", "none", "none", "none"], 0));
 } 
 
 function createB(){
-	r.push(new object(335, 55,  100, 100, "B", "none", "none", "none", 0));
+	r.push(new object(335, 55,  100, 100, ["B", "none", "none", "none"], 0));
 } 
 
 function createC(){
-	r.push(new object(195, 55,  100, 100, "C", "none", "none", "none", 0));
+	r.push(new object(195, 55,  100, 100, ["C", "none", "none", "none"], 0));
 } 
 
 function createConjunction(){
-	r.push(new object(645, 55,  100, 100, "∧", "none", "none", "none", 1));
+	r.push(new object(645, 55,  100, 100, ["∧", "none", "none", "none"], 1));
 }
 
 function createImplication(){
-	r.push(new object(505, 55,  100, 100, "→", "none", "none", "none", 1));
+	r.push(new object(505, 55,  100, 100, ["→", "none", "none", "none"], 1));
 }
 
 
@@ -117,7 +111,6 @@ function init() {
 
 	canvas = document.getElementById("canvas");
 	ctx = canvas.getContext("2d");
-	//var bin = document.getElementById("bin");
 	return setInterval(drawIterate, 10);
 }
 
@@ -126,11 +119,11 @@ function drawIterate() {
 	var bin = document.getElementById("bin");
     ctx.drawImage(bin, 590, 562, 110, 138); 
 	for (i = 0; i < r.length ; i++) {
-		draw(r[i].x, r[i].y, r[i].w, r[i].h, i, r[i].border, r[i].texttopleft, r[i].texttopright, r[i].textbottomleft, r[i].textbottomright);
+		draw(r[i].x, r[i].y, r[i].w, r[i].h, i, r[i].border, r[i].text);
 	}
 }
 
-function draw(x, y, w, h, i, border, texttopleft, texttopright, textbottomleft, textbottomright) {
+function draw(x, y, w, h, i, border, text) {
 	ctx.fillStyle = "#FAF7F8";
 	rect(x-(w/2), y-(h/2), w, h);
 	ctx.strokeStyle = border;
@@ -139,14 +132,14 @@ function draw(x, y, w, h, i, border, texttopleft, texttopright, textbottomleft, 
 	ctx.font="32px Georgia";
 	ctx.fillStyle = "#444444";
 	ctx.textAlign = 'center';
-	if (textbottomleft == "none") { //Figures out whether it is a form or a var/operator.
-		r[i].w = Math.max(50, texttopleft.length * 30);
+	if (text[2] == "none") { //Figures out whether it is a form or a var/operator.
+		r[i].w = Math.max(50, text[0].length * 30);
 		r[i].h = 50;
 		ctx.textAlign = "center";
-		ctx. fillText(texttopleft, x, y+(h/4));
+		ctx. fillText(text[0], x, y+(h/4));
 	}
 	else {
-		r[i].w = Math.max((texttopleft.length + texttopright.length)*40, (textbottomleft.length + textbottomright.length)*40, 100); //Sets box size
+		r[i].w = Math.max((text[0].length + text[1].length)*40, (text[2].length + text[3].length)*40, 100); //Sets box size
 		ctx.fillStyle = "#444444";
 		ctx.beginPath();
 		ctx.strokeStyle = "black";
@@ -155,35 +148,35 @@ function draw(x, y, w, h, i, border, texttopleft, texttopright, textbottomleft, 
 		ctx.stroke();
 		
 		ctx.textAlign = 'center'; //Draws text in the various boxes in the correct positions.
-		if(texttopleft != "%" && r[i].type != 4) {
-		ctx.fillText(texttopleft, x-(w/4), y-(h/6));		
-		} else if (texttopleft != "%") {
-			ctx.fillText(texttopleft, x, y-(h/6));
+		if(text[0] != "%" && r[i].type != 4) {
+		ctx.fillText(text[0], x-(w/4), y-(h/6));		
+		} else if (text[0] != "%") {
+			ctx.fillText(text[0], x, y-(h/6));
 		}
 		
-		if(texttopright != "%"){
-			ctx.fillText(texttopright, x+(w/4), y-(h/6));
+		if(text[1] != "%"){
+			ctx.fillText(text[1], x+(w/4), y-(h/6));
 		}
 		
-		if(textbottomleft != "%" && r[i].type != 2) {
-			ctx.fillText(textbottomleft, x-(w/4), y+(h/3));
-		} else if (textbottomleft != "%"){
-			ctx.fillText(textbottomleft, x, y+(h/3));
+		if(text[2] != "%" && r[i].type != 2) {
+			ctx.fillText(text[2], x-(w/4), y+(h/3));
+		} else if (text[2] != "%"){
+			ctx.fillText(text[2], x, y+(h/3));
 		}
 		
-		if(textbottomright != "%") {
-			ctx.fillText(textbottomright, x+(w/4), y+(h/3));
+		if(text[3] != "%") {
+			ctx.fillText(text[3], x+(w/4), y+(h/3));
 		}
 	}
 }
 
 function doneCheck() { //Checks to see if the code is correct and fill it in.
-	if (r[i].texttopleft == "A" && r[i].texttopright == "B" && r[i].textbottomleft == "∧") {
-		r[i].textbottomleft = "A ∧ B";
+	if (r[i].text[0] == "A" && r[i].text[1] == "B" && r[i].text[2] == "∧") {
+		r[i].text[2] = "A ∧ B";
 		return true;
 	}
-	else if (r[i].texttopleft == "B" && r[i].texttopright == "A" && r[i].textbottomleft == "∧") {
-		r[i].textbottomleft = "B ∧ A";
+	else if (r[i].text[0] == "B" && r[i].text[1] == "A" && r[i].text[2] == "∧") {
+		r[i].text[2] = "B ∧ A";
 		return true;
 	}
 	else {
@@ -205,17 +198,26 @@ function delShape(i, move) {
 
 function validMoveTopLeft() {
 	if (r[i].type == 1 || r[i].type == 0) {
-		r[i].texttopleft = r[move].texttopleft + " " + r[i].texttopleft;
+		r[i].text[0] = r[move].text[0] + " " + r[i].text[0];
 		delShape(i, move);
 	}
 	else if (r[i].type == 2 || r[i].type == 3 || r[i].type == 4) {
-		if(r[i].texttopleft == "%"){
-			r[i].texttopleft = r[move].texttopleft;
+		if (r[move].type == 2){
+			r[i].text[0] = r[move].text[2];
 			delShape(i, move);
 		}
+		else if (r[move].type == 1 || r[move].type == 0) {
+			if (r[i].text[0] == "%"){
+				r[i].text[0] = r[move].text[0];
+				delShape(i, move);
+			}
+			else {
+				r[i].text[0] = r[i].text[0] + " " + r[move].text[0];
+				delShape(i, move);
+			}
+		}
 		else {
-			r[i].texttopleft = r[i].texttopleft + " " + r[move].texttopleft;
-			delShape(i, move);
+			window.alert("This is not a valid move!");
 		}
 	}
 	else {
@@ -223,30 +225,47 @@ function validMoveTopLeft() {
 	}
 }
 
-
 function validMoveTopRight() {
 	if (r[i].type == 1 || r[i].type == 0) {
-		r[i].texttopleft = r[i].texttopleft + " " + r[move].texttopleft;
+		r[i].text[0] = r[i].text[0] + " " + r[move].text[0];
 		delShape(i, move);
 	}
 	else if (r[i].type == 2 || r[i].type == 3) {
-		if(r[i].texttopright == "%"){
-			r[i].texttopright = r[move].texttopleft;
+		if(r[move].type == 2) {
+			r[i].text[1] = r[move].text[2];
 			delShape(i, move);
 		}
+		else if (r[move].type == 1 || r[move].type == 0) {
+			if(r[i].text[1] == "%"){
+				r[i].text[1] = r[move].text[0];
+				delShape(i, move);
+			}
+			else {
+				r[i].text[1] = r[i].text[1] + " " + r[move].text[0];
+				delShape(i, move);
+			}
+		}
 		else {
-			r[i].texttopright = r[i].texttopright + " " + r[move].texttopleft;
-			delShape(i, move);
+			window.alert("This is not a valid move!");
 		}
 	}
 	else if (r[i].type == 4) {
-		if(r[i].texttopleft == "%"){
-			r[i].texttopleft = r[move].texttopleft;
+		if(r[move].type == 2) {
+			r[i].text[0] = r[move].text[2];
 			delShape(i, move);
 		}
+		else if (r[move].type == 1 || r[move].type == 0) {
+			if(r[i].text[0] == "%"){
+				r[i].text[0] = r[move].text[0];
+				delShape(i, move);
+			}
+			else {
+				r[i].text[0] = r[i].text[0] + " " + r[move].text[0];
+				delShape(i, move);
+			}
+		}
 		else {
-			r[i].texttopleft = r[i].texttopleft + " " + r[move].texttopleft;
-			delShape(i, move);
+			window.alert("This is not a valid move!");
 		}
 	}
 	else {
@@ -256,13 +275,22 @@ function validMoveTopRight() {
 
 function validMoveBottomLeft() {
 	if (r[i].type == 2 || r[i].type == 3 || r[i].type == 4) {
-		if (r[i].textbottomleft == "%") {
-			r[i].textbottomleft = r[move].texttopleft;
+		if(r[move].type == 4) {
+			r[i].text[2] = r[move].text[0];
 			delShape(i, move);
 		}
+		else if (r[move].type == 1 || r[move].type == 0) {
+			if (r[i].text[2] == "%") {
+				r[i].text[2] = r[move].text[0];
+				delShape(i, move);
+			}
+			else {
+				r[i].text[2] = r[i].text[2] + " " + r[move].text[0];
+				delShape(i, move);
+			}
+		}
 		else {
-			r[i].textbottomleft = r[i].textbottomleft + " " + r[move].texttopleft;
-			delShape(i, move);
+			window.alert("This is not a valid move!");
 		}
 	}
 	else {
@@ -272,23 +300,38 @@ function validMoveBottomLeft() {
 
 function validMoveBottomRight() {
 	if (r[i].type == 2) {
-		if (r[i].textbottomleft == "%") {
-			r[i].textbottomleft = r[move].texttopleft;
-			delShape(i, move);
+		if(r[move].type == 4) {
+			r[i].text[2] = r[move].text[0];
+			delShape(i, move);			
 		}
-		else {
-			r[i].textbottomleft = r[i].textbottomleft + " " + r[move].texttopleft;
-			delShape(i, move);
+		else if (r[move].type == 1 || r[move].type == 0) {
+			if (r[i].text[2] == "%") {
+				r[i].text[2] = r[move].text[0];
+				delShape(i, move);
+			}
+			else {
+				r[i].text[2] = r[i].text[2] + " " + r[move].text[0];
+				delShape(i, move);
+			}
 		}
 	}
 	else if (r[i].type == 3 || r[i].type == 4) {
-		if (r[i].textbottomright == "%") {
-			r[i].textbottomright = r[move].texttopleft;
-			delShape(i, move);
+		if(r[move].type == 4) {
+			r[i].text[3] = r[move].text[0];
+			delShape(i, move);			
+		}
+		else if (r[move].type == 1 || r[move].type == 0) {
+			if (r[i].text[3] == "%") {
+				r[i].text[3] = r[move].text[0];
+				delShape(i, move);
+			}
+			else {
+				r[i].text[3] = r[i].text[3] + " " + r[move].text[0];
+				delShape(i, move);
+			}
 		}
 		else {
-			r[i].textbottomright = r[i].textbottomright + " " + r[move].texttopleft;
-			delShape(i, move);
+			window.alert("This is not a valid move!");
 		}
 	}
 	else {
