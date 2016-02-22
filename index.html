@@ -11,7 +11,8 @@
 <body>
 <!-- <img id="bin" width="220" height="277" src="bin.jpg" alt="bin"> -->
 
-<p>The goal is to create A and B.</p> 
+<!-- <p>The goal is to create A and B.</p> -->
+<h3 id="level"></h3>
 <section>
 
 <div class = "canvasholder">
@@ -50,6 +51,7 @@ var border = "black";
 var taken = false;
 var text = [];
 var type = 0; //0 is variable, 1 is operator, 2, 3, 4 are forms
+var levelNum = 0;
 
 function object(x, y, w, h, text, type) {
 	this.x = x;
@@ -91,6 +93,20 @@ function createImplication(){
 	r.push(new object(505, 55,  100, 100, ["→", "none", "none", "none"], 1));
 }
 
+function levelText(){
+	if (levelNum == 1) {
+		document.getElementById("level").innerHTML = "Level 1: The goal is to create A ∧ B.";
+	}
+	else if (levelNum == 2) {
+		document.getElementById("level").innerHTML = "Level 2: The goal is to create B using A, B and →. Assume A is true.";
+	}
+	else if (levelNum == 3) {
+		document.getElementById("level").innerHTML = "Level 3: The goal is to create A → C using A, B, C and →.";
+	}
+	else if (levelNum > 3){
+		levelNum = 1;
+	}
+}
 
 function deleteAll(){
 	r.splice(0,r.length);
@@ -108,14 +124,16 @@ function clear() {
 }
 
 function init() {
-
 	canvas = document.getElementById("canvas");
 	ctx = canvas.getContext("2d");
+	levelNum = 1;
+	levelText();
 	return setInterval(drawIterate, 10);
 }
 
 function drawIterate() {
 	clear();
+	levelText();
 	var bin = document.getElementById("bin");
     ctx.drawImage(bin, 590, 562, 110, 138); 
 	for (i = 0; i < r.length ; i++) {
@@ -171,16 +189,38 @@ function draw(x, y, w, h, i, border, text) {
 }
 
 function doneCheck() { //Checks to see if the code is correct and fill it in.
-	if (r[i].text[0] == "A" && r[i].text[1] == "B" && r[i].text[2] == "∧") {
-		r[i].text[2] = "A ∧ B";
-		return true;
+	if(levelNum == 1) {
+		if (r[i].text == "A,B,∧,%" || r[i].text == "A,B,A ∧ B,%") {
+			r[i].text[2] = "A ∧ B";
+			return true;
+		}
+		else if (r[i].text == "B,A,∧,%" || r[i].text == "B,A,B ∧ A,%") {
+			r[i].text[2] = "B ∧ A";
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
-	else if (r[i].text[0] == "B" && r[i].text[1] == "A" && r[i].text[2] == "∧") {
-		r[i].text[2] = "B ∧ A";
-		return true;
+	else if(levelNum == 2) {
+		if (r[i].text == "A → B,A,B,%" || r[i].text == "A,A → B,B,%") {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
-	else {
-		return false;
+	else if (levelNum == 3){
+		if (r[i].text == "A → B,B → C,→,%" || r[i].text == "B → C,A → B,→,%") {
+			r[i].text[2] = "A → C";
+			return true;
+		}
+		else if (r[i].text == "A → B,B → C,A → C,%" || r[i].text == "B → C,A → B,A → C,%") {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }
 
@@ -192,7 +232,9 @@ function delShape(i, move) {
 	if (done == true) {
 		drawIterate();
 		drawIterate();
-		window.alert("Congratulations! Level 1 Complete.");
+		window.alert("Congratulations! Level " + levelNum + " Complete.");
+		levelNum++;
+		deleteAll();
 	}
 }
 
