@@ -34,7 +34,11 @@ This text is displayed if your browser does not support HTML5 Canvas.
 
 <button onclick="deleteAll()">Delete All</button>
 
-<img id="bin" width="0" height="0" src="bin.jpg" alt="bin" style="visibility:hidden"> 
+<button onclick="createImp()">Create Imp</button>
+<button onclick="newA()">New A</button>
+
+<img id="bin" width="0" height="0" src="bin.jpg" alt="bin" style="visibility:hidden">
+<img id="brackets" width="0" height="0" src="brackets.jpg" alt="brackets" style="visibility:hidden"> 
 
 <script type="text/javascript">
 
@@ -52,6 +56,13 @@ var taken = false;
 var text = [];
 var type = 0; //0 is variable, 1 is operator, 2, 3, 4 are forms
 var levelNum = 0;
+var variables = [];
+var operators = [];
+var statements = [];
+var conclusion = "";
+var left_premise;
+var right_premise;
+var levels =2;
 
 function object(x, y, w, h, text, type) {
 	this.x = x;
@@ -62,6 +73,36 @@ function object(x, y, w, h, text, type) {
 	this.taken = taken;
 	this.text = text;
 	this.type = type;
+	this.levels = 2;
+}
+
+function varop(text){
+	this.conclusion = text;
+}
+
+function createEverything(){
+	variables.push(new varop("A"));
+	variables.push(new varop("B"));
+	variables.push(new varop("C"));
+	operators.push(new varop("∧"));
+	operators.push(new varop("→"));
+}
+
+function statement(left, right, operator) {
+	this.left_premise = left;
+	this.right_premise = right;
+	this.conclusion = left +" "+ operator +" "+ right;
+}
+
+function createImp() {
+	//statements.push(new statement(variables[0].conclusion,variables[1].conclusion,operators[0].conclusion));
+	statements.push(new statement(".",".",operators[0].conclusion));
+	r.push(new object(355, 600, 100, 100, [statements[0].left_premise, statements[0].right_premise, statements[0].conclusion, "%"], 2));
+}
+
+function newA(){
+	r.push(new object(55,  55,  100, 100, [variables[0].conclusion, "none", "none", "none"], 0));
+	//statements[0].conclusion = variables[0].conclusion;
 }
 
 function createTwoUpOneDown(){
@@ -95,10 +136,10 @@ function createImplication(){
 
 function levelText(){
 	if (levelNum == 1) {
-		document.getElementById("level").innerHTML = "Level 1: The goal is to create A ∧ B.";
+		document.getElementById("level").innerHTML = "Level 1: The goal is to create A ∧ B. <br> This uses Conjunction Introduction.";
 	}
 	else if (levelNum == 2) {
-		document.getElementById("level").innerHTML = "Level 2: The goal is to create B using A, B and →. Assume A is true.";
+		document.getElementById("level").innerHTML = "Level 2: The goal is to create B using A, B and →. Assume A is true. <br> This uses Implication Elimination.";
 	}
 	else if (levelNum == 3) {
 		document.getElementById("level").innerHTML = "Level 3: The goal is to create A → C using A, B, C and →.";
@@ -128,6 +169,7 @@ function init() {
 	ctx = canvas.getContext("2d");
 	levelNum = 1;
 	levelText();
+	createEverything();
 	return setInterval(drawIterate, 10);
 }
 
@@ -135,7 +177,9 @@ function drawIterate() {
 	clear();
 	levelText();
 	var bin = document.getElementById("bin");
+	var brackets = document.getElementById("brackets");
     ctx.drawImage(bin, 590, 562, 110, 138); 
+	ctx.drawImage(brackets, 0, 600, 100, 100); 
 	for (i = 0; i < r.length ; i++) {
 		draw(r[i].x, r[i].y, r[i].w, r[i].h, i, r[i].border, r[i].text);
 	}
@@ -150,41 +194,120 @@ function draw(x, y, w, h, i, border, text) {
 	ctx.font="32px Georgia";
 	ctx.fillStyle = "#444444";
 	ctx.textAlign = 'center';
+	ctx.textBaseline = 'middle';
 	if (text[2] == "none") { //Figures out whether it is a form or a var/operator.
 		r[i].w = Math.max(50, text[0].length * 30);
 		r[i].h = 50;
 		ctx.textAlign = "center";
-		ctx. fillText(text[0], x, y+(h/4));
+		ctx. fillText(text[0], x, y);
 	}
 	else {
-		r[i].w = Math.max((text[0].length + text[1].length)*40, (text[2].length + text[3].length)*40, 100); //Sets box size
-		ctx.fillStyle = "#444444";
-		ctx.beginPath();
-		ctx.strokeStyle = "black";
-		ctx.moveTo (x -((3*w)/8), y);
-		ctx.lineTo( x + ((3*w)/8) , y); //Draws middle line for the proof
-		ctx.stroke();
-		
-		ctx.textAlign = 'center'; //Draws text in the various boxes in the correct positions.
-		if(text[0] != "%" && r[i].type != 4) {
-		ctx.fillText(text[0], x-(w/4), y-(h/6));		
-		} else if (text[0] != "%") {
-			ctx.fillText(text[0], x, y-(h/6));
+		if (r[i].levels == 2) {
+			drawLines(x,y,w,h, h/(r[i].levels*2), text);
 		}
-		
-		if(text[1] != "%"){
-			ctx.fillText(text[1], x+(w/4), y-(h/6));
+		if (r[i].levels == 3) {
+			drawLines(x,y+h/6,w,h, h/(r[i].levels*2), text);
+			
+			//left branch
+			if (typeof text[0] !== 'string' && text[0] !== undefined){
+				drawLines(x-w/4,y-h/6,w/2,h/3, h/(r[i].levels*2), text[0]);
+			}
+			//right branch
+			if (typeof text[1] !== 'string' && text[1] !== undefined){
+				drawLines(x+w/4,y-h/6,w/2,h/3, h/(r[i].levels*2), text[1]);
+			}
 		}
-		
-		if(text[2] != "%" && r[i].type != 2) {
-			ctx.fillText(text[2], x-(w/4), y+(h/3));
-		} else if (text[2] != "%"){
-			ctx.fillText(text[2], x, y+(h/3));
+		if (r[i].levels == 4) {
+			
+			drawLines(x,y+h/4,w,h, h/(r[i].levels*2), text);
+			
+			//left branch
+			if (typeof text[0] !== 'string' && text[0] !== undefined){
+				drawLines(x-w/4,y,w/2,h/2, h/(r[i].levels*2), text[0]);
+			}
+			//right branch
+			if (typeof text[1] !== 'string' && text[1] !== undefined){
+				drawLines(x+w/4,y,w/2,h/2, h/(r[i].levels*2), text[1]);
+			}	
+			//left branch
+			if (typeof text[0][0] !== 'string' && text[0][0] !== undefined){
+				drawLines(x-(3*w/8),y-h/4,w/4,h/4, h/(r[i].levels*2), text[0][0]);
+			} if (typeof text[0][1] !== 'string' && text[0][1] !== undefined){
+				drawLines(x-(1*w/8),y-h/4,w/4,h/4, h/(r[i].levels*2), text[0][1]);
+			}
+			//right branch
+			if (typeof text[1][0] !== 'string' && text[1][0] !== undefined){
+				drawLines(x+(1*w/8),y-h/4,w/4,h/4, h/(r[i].levels*2), text[1][0]);
+			} if (typeof text[1][1] !== 'string' && text[1][1] !== undefined){
+				drawLines(x+(3*w/8),y-h/4,w/4,h/4, h/(r[i].levels*2), text[1][1]);
+			}
 		}
+
+		//////***********************///////
+		//r[i].w = Math.max((text[0].length + text[1].length)*40, (text[2].length + text[3].length)*40, 100); //Sets box size
+		//r[i].w = 400;
+		//r[i].h = 300;
+		r[i].w = r[i].levels*100;
+		r[i].h = r[i].levels*75;
+		//ctx.fillStyle = "#444444";
+		//ctx.beginPath();
+		//ctx.strokeStyle = "black";
+		//ctx.moveTo (x -((3*w)/8), y);
+		//ctx.lineTo( x + ((3*w)/8) , y); //Draws middle line for the proof
+		//ctx.stroke();
+		//ctx.textAlign = 'center'; //Draws text in the various boxes in the correct positions.
+		//if(text[0] != "%" && r[i].type != 4) {
+		//ctx.fillText(text[0], x-(w/4), y-(h/6));		
+		//} else if (text[0] != "%") {
+		//	ctx.fillText(text[0], x, y-(h/6));
+		//}
 		
-		if(text[3] != "%") {
-			ctx.fillText(text[3], x+(w/4), y+(h/3));
-		}
+		//if(text[1] != "%"){
+		//	ctx.fillText(text[1], x+(w/4), y-(h/6));
+		//}
+		
+		//if(text[2] != "%" && r[i].type != 2) {
+		//	ctx.fillText(text[2], x-(w/4), y+(h/3));
+		//} else if (text[2] != "%"){
+		//	ctx.fillText(text[2], x, y+(h/3));
+		//}
+		
+		//if(text[3] != "%") {
+		//	ctx.fillText(text[3], x+(w/4), y+(h/3));
+		//}
+		////////******************/////////////
+	}
+}
+
+function drawLines(x,y,w,h,dist,text) {
+	//r[i].w = Math.max((text[0].length + text[1].length)*40, (text[2].length + text[3].length)*40, 100); //Sets box size
+	ctx.fillStyle = "#444444";
+	ctx.beginPath();
+	ctx.strokeStyle = "black";
+	ctx.moveTo (x -((3*w)/8), y);
+	ctx.lineTo( x + ((3*w)/8) , y); //Draws middle line for the proof
+	ctx.stroke();
+	
+	ctx.textAlign = 'center'; //Draws text in the various boxes in the correct positions.
+	ctx.textBaseline = 'middle';
+	if(text[0] != "%" && r[i].type != 4 && typeof text[0] === 'string') {
+		ctx.fillText(text[0], x-(w/4), y-dist);		
+	} else if (text[0] != "%" && typeof text[0] === 'string') {
+		ctx.fillText(text[0], x, y-dist);
+	}
+	
+	if(text[1] != "%" && typeof text[1] === 'string'){
+		ctx.fillText(text[1], x+(w/4), y-dist);
+	}
+	
+	if(text[2] != "%" && r[i].type != 2 && typeof text[2] === 'string') {
+		ctx.fillText(text[2], x-(w/4), y+dist);
+	} else if (text[2] != "%" && typeof text[2] === 'string'){
+		ctx.fillText(text[2], x, y+dist);
+	}
+	
+	if(text[3] != "%" && typeof text[3] === 'string') {
+		ctx.fillText(text[3], x+(w/4), y+dist);
 	}
 }
 
@@ -245,7 +368,10 @@ function validMoveTopLeft() {
 	}
 	else if (r[i].type == 2 || r[i].type == 3 || r[i].type == 4) {
 		if (r[move].type == 2){
-			r[i].text[0] = r[move].text[2];
+			//r[i].text[0] = r[move].text[2];
+			//statements[0].left_premise = variables[0].conclusion;
+			r[i].text[0] = r[move].text;
+			r[i].levels = r[move].levels + 1;
 			delShape(i, move);
 		}
 		else if (r[move].type == 1 || r[move].type == 0) {
@@ -274,7 +400,9 @@ function validMoveTopRight() {
 	}
 	else if (r[i].type == 2 || r[i].type == 3) {
 		if(r[move].type == 2) {
-			r[i].text[1] = r[move].text[2];
+			//r[i].text[1] = r[move].text[2];
+			r[i].text[1] = r[move].text;
+			r[i].levels = r[move].levels + 1;
 			delShape(i, move);
 		}
 		else if (r[move].type == 1 || r[move].type == 0) {
@@ -492,6 +620,9 @@ function myMove(e){ //Runs when an object is being moved
 			if (r[move].x + (r[move].w/2) >= 590 && r[move].y + (r[move].h/2) >= 562) {
 				r[move].border = "Navy";
 			}
+			else if (r[move].x - (r[move].w/2) <= 100 && r[move].y + (r[move].h/2) >= 600) {
+				r[move].border = "Crimson";
+			}
 			else {
 				r[move].border = "black";
 			}
@@ -532,6 +663,8 @@ function myUp(){ //When the mouse is released.
 			validMoveBottomLeft();
 		}if (r[move].border == "Navy") {
 			r.splice(move,1);
+		}if (r[move].border == "Crimson" && i == move && (r[move].type == 1 || r[move].type == 0)) {
+			r[move].text[0] = "("+r[move].text[0]+")";
 		}
 	}
 }
