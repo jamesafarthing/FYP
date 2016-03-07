@@ -9,14 +9,11 @@
 </header>
 </head>
 <body>
-<!-- <img id="bin" width="220" height="277" src="bin.jpg" alt="bin"> -->
-
-<!-- <p>The goal is to create A and B.</p> -->
 <h3 id="level"></h3>
 <section>
 
 <div class = "canvasholder">
-<canvas id="canvas" width="700" height="700" style="border:1px solid #000000;">
+<canvas id="canvas" width="1500" height="700" style="border:1px solid #000000;">
 This text is displayed if your browser does not support HTML5 Canvas.
 </canvas>
 </div>
@@ -24,6 +21,7 @@ This text is displayed if your browser does not support HTML5 Canvas.
 <button onclick="createTwoUpOneDown()">2 Top / 1 Bottom</button>
 <button onclick="createTwoUpTwoDown()">2 Top / 2 Bottom</button>
 <button onclick="createOneUpTwoDown()">1 Top / 2 Bottom</button>
+<button onclick="createOneUpOneDown()">1 Top / 1 Bottom</button>
 
 <button onclick="createA()">A</button>
 <button onclick="createB()">B</button>
@@ -34,11 +32,9 @@ This text is displayed if your browser does not support HTML5 Canvas.
 
 <button onclick="deleteAll()">Delete All</button>
 
-<button onclick="createImp()">Create Imp</button>
-<button onclick="newA()">New A</button>
-
 <img id="bin" width="0" height="0" src="bin.jpg" alt="bin" style="visibility:hidden">
 <img id="brackets" width="0" height="0" src="brackets.jpg" alt="brackets" style="visibility:hidden"> 
+<img id="premise" width="0" height="0" src="premise.jpg" alt="brackets" style="visibility:hidden"> 
 
 <script type="text/javascript">
 
@@ -46,7 +42,7 @@ var canvas;
 var ctx;
 var x = 75;
 var y = 50;
-var WIDTH = 700;
+var WIDTH = 1500;
 var HEIGHT = 700;
 var dragok = false;
 var r = [];
@@ -56,12 +52,7 @@ var taken = false;
 var text = [];
 var type = 0; //0 is variable, 1 is operator, 2, 3, 4 are forms
 var levelNum = 0;
-var variables = [];
-var operators = [];
-var statements = [];
 var conclusion = "";
-var left_premise;
-var right_premise;
 var levels =2;
 
 function object(x, y, w, h, text, type) {
@@ -76,62 +67,36 @@ function object(x, y, w, h, text, type) {
 	this.levels = 2;
 }
 
-function varop(text){
-	this.conclusion = text;
-}
-
-function createEverything(){
-	variables.push(new varop("A"));
-	variables.push(new varop("B"));
-	variables.push(new varop("C"));
-	operators.push(new varop("∧"));
-	operators.push(new varop("→"));
-}
-
-function statement(left, right, operator) {
-	this.left_premise = left;
-	this.right_premise = right;
-	this.conclusion = left +" "+ operator +" "+ right;
-}
-
-function createImp() {
-	//statements.push(new statement(variables[0].conclusion,variables[1].conclusion,operators[0].conclusion));
-	statements.push(new statement(".",".",operators[0].conclusion));
-	r.push(new object(355, 600, 100, 100, [statements[0].left_premise, statements[0].right_premise, statements[0].conclusion, "%"], 2));
-}
-
-function newA(){
-	r.push(new object(55,  55,  100, 100, [variables[0].conclusion, "none", "none", "none"], 0));
-	//statements[0].conclusion = variables[0].conclusion;
-}
-
 function createTwoUpOneDown(){
-	r.push(new object(355, 600, 100, 100, ["%", "%", "%", "%"], 2));
+	r.push(new object(355, 600, 100, 100, ["•", "•", "•", "%"], 2));
 } 
 function createTwoUpTwoDown() {
-	r.push(new object(355, 500, 100, 100, ["%", "%", "%", "%"], 3));
+	r.push(new object(355, 500, 100, 100, ["•", "•", "•", "•"], 3));
 }
 function createOneUpTwoDown() {
-	r.push(new object(355, 500, 100, 100, ["%", "%", "%", "%"], 4));
+	r.push(new object(355, 500, 100, 100, ["•", "%", "•", "•"], 4));
+}
+function createOneUpOneDown() {
+	r.push(new object(355, 500, 100, 100, ["•", "%", "•", "%"], 5));
 }
 function createA(){
 	r.push(new object(55,  55,  100, 100, ["A", "none", "none", "none"], 0));
 } 
 
 function createB(){
-	r.push(new object(335, 55,  100, 100, ["B", "none", "none", "none"], 0));
+	r.push(new object(155, 55,  100, 100, ["B", "none", "none", "none"], 0));
 } 
 
 function createC(){
-	r.push(new object(195, 55,  100, 100, ["C", "none", "none", "none"], 0));
+	r.push(new object(255, 55,  100, 100, ["C", "none", "none", "none"], 0));
 } 
 
 function createConjunction(){
-	r.push(new object(645, 55,  100, 100, ["∧", "none", "none", "none"], 1));
+	r.push(new object(355, 55,  100, 100, ["∧", "none", "none", "none"], 1));
 }
 
 function createImplication(){
-	r.push(new object(505, 55,  100, 100, ["→", "none", "none", "none"], 1));
+	r.push(new object(455, 55,  100, 100, ["→", "none", "none", "none"], 1));
 }
 
 function levelText(){
@@ -144,7 +109,10 @@ function levelText(){
 	else if (levelNum == 3) {
 		document.getElementById("level").innerHTML = "Level 3: The goal is to create A → C using A, B, C and →.";
 	}
-	else if (levelNum > 3){
+	else if (levelNum == 4) {
+		document.getElementById("level").innerHTML = "Level 4: The goal is to create (A ∧ B) → C using A, B, C, ∧, →.";
+	}
+	else if (levelNum > 4){
 		levelNum = 1;
 	}
 }
@@ -169,7 +137,6 @@ function init() {
 	ctx = canvas.getContext("2d");
 	levelNum = 1;
 	levelText();
-	createEverything();
 	return setInterval(drawIterate, 10);
 }
 
@@ -178,8 +145,10 @@ function drawIterate() {
 	levelText();
 	var bin = document.getElementById("bin");
 	var brackets = document.getElementById("brackets");
-    ctx.drawImage(bin, 590, 562, 110, 138); 
-	ctx.drawImage(brackets, 0, 600, 100, 100); 
+	var premise = document.getElementById("premise");
+    ctx.drawImage(bin, WIDTH-110, HEIGHT-138, 110, 138); 
+	ctx.drawImage(brackets, 0, HEIGHT-100, 100, 100); 
+	ctx.drawImage(premise, WIDTH-150, 0, 150, 75);
 	for (i = 0; i < r.length ; i++) {
 		draw(r[i].x, r[i].y, r[i].w, r[i].h, i, r[i].border, r[i].text);
 	}
@@ -203,14 +172,21 @@ function draw(x, y, w, h, i, border, text) {
 	}
 	else {
 		if (r[i].levels == 2) {
+			ctx.strokeStyle = "black";
 			drawLines(x,y,w,h, h/(r[i].levels*2), text);
 		}
 		if (r[i].levels == 3) {
+			ctx.font="28px Georgia";
 			drawLines(x,y+h/6,w,h, h/(r[i].levels*2), text);
 			
-			//left branch
+			//left branch			
 			if (typeof text[0] !== 'string' && text[0] !== undefined){
-				drawLines(x-w/4,y-h/6,w/2,h/3, h/(r[i].levels*2), text[0]);
+				if (text[1] != "%"){
+					drawLines(x-w/4,y-h/6,w/2,h/3, h/(r[i].levels*2), text[0]);
+				}
+				else {
+					drawLines(x,y-h/6,w,h/3, h/6, text[0]);
+				}
 			}
 			//right branch
 			if (typeof text[1] !== 'string' && text[1] !== undefined){
@@ -218,79 +194,70 @@ function draw(x, y, w, h, i, border, text) {
 			}
 		}
 		if (r[i].levels == 4) {
-			
+			ctx.font="24px Georgia";
 			drawLines(x,y+h/4,w,h, h/(r[i].levels*2), text);
 			
 			//left branch
 			if (typeof text[0] !== 'string' && text[0] !== undefined){
-				drawLines(x-w/4,y,w/2,h/2, h/(r[i].levels*2), text[0]);
+				if (text[1] != "%") {
+					drawLines(x-w/4,y,w/2,h/2, h/(r[i].levels*2), text[0]);
+				}
+				else {
+					drawLines(x,y,w,h/2, h/(r[i].levels*2), text[0]);
+				}
 			}
 			//right branch
 			if (typeof text[1] !== 'string' && text[1] !== undefined){
 				drawLines(x+w/4,y,w/2,h/2, h/(r[i].levels*2), text[1]);
 			}	
-			//left branch
+			//left left branch
 			if (typeof text[0][0] !== 'string' && text[0][0] !== undefined){
-				drawLines(x-(3*w/8),y-h/4,w/4,h/4, h/(r[i].levels*2), text[0][0]);
-			} if (typeof text[0][1] !== 'string' && text[0][1] !== undefined){
+				if(text[0][1] != "%" && text[1] != "%"){
+					drawLines(x-(3*w/8),y-h/4,w/4,h/4, h/(r[i].levels*2), text[0][0]);
+				}
+				else if (text[0][1] != "%" || text[1] != "%") {
+					drawLines(x-w/4,y-h/4,w/2,h/4, h/(r[i].levels*2), text[0][0]);
+				}
+				else {
+					drawLines(x,y-h/4,w,h/4, h/(r[i].levels*2), text[0][0]);
+				}
+				
+			} 
+			
+			// left right branch
+			if (typeof text[0][1] !== 'string' && text[0][1] !== undefined){
 				drawLines(x-(1*w/8),y-h/4,w/4,h/4, h/(r[i].levels*2), text[0][1]);
 			}
-			//right branch
+			//right left branch
 			if (typeof text[1][0] !== 'string' && text[1][0] !== undefined){
-				drawLines(x+(1*w/8),y-h/4,w/4,h/4, h/(r[i].levels*2), text[1][0]);
-			} if (typeof text[1][1] !== 'string' && text[1][1] !== undefined){
+				if(text[1][1] != "%"){
+					drawLines(x+(1*w/8),y-h/4,w/4,h/4, h/(r[i].levels*2), text[1][0]);
+				}
+				else{
+					drawLines(x+w/4,y-h/4,w/2,h/4, h/(r[i].levels*2), text[1][0]);
+				}
+			} 
+			
+			//right right branch
+			if (typeof text[1][1] !== 'string' && text[1][1] !== undefined){
 				drawLines(x+(3*w/8),y-h/4,w/4,h/4, h/(r[i].levels*2), text[1][1]);
 			}
 		}
-
-		//////***********************///////
-		//r[i].w = Math.max((text[0].length + text[1].length)*40, (text[2].length + text[3].length)*40, 100); //Sets box size
-		//r[i].w = 400;
-		//r[i].h = 300;
-		r[i].w = r[i].levels*100;
 		r[i].h = r[i].levels*75;
-		//ctx.fillStyle = "#444444";
-		//ctx.beginPath();
-		//ctx.strokeStyle = "black";
-		//ctx.moveTo (x -((3*w)/8), y);
-		//ctx.lineTo( x + ((3*w)/8) , y); //Draws middle line for the proof
-		//ctx.stroke();
-		//ctx.textAlign = 'center'; //Draws text in the various boxes in the correct positions.
-		//if(text[0] != "%" && r[i].type != 4) {
-		//ctx.fillText(text[0], x-(w/4), y-(h/6));		
-		//} else if (text[0] != "%") {
-		//	ctx.fillText(text[0], x, y-(h/6));
-		//}
-		
-		//if(text[1] != "%"){
-		//	ctx.fillText(text[1], x+(w/4), y-(h/6));
-		//}
-		
-		//if(text[2] != "%" && r[i].type != 2) {
-		//	ctx.fillText(text[2], x-(w/4), y+(h/3));
-		//} else if (text[2] != "%"){
-		//	ctx.fillText(text[2], x, y+(h/3));
-		//}
-		
-		//if(text[3] != "%") {
-		//	ctx.fillText(text[3], x+(w/4), y+(h/3));
-		//}
-		////////******************/////////////
 	}
 }
 
 function drawLines(x,y,w,h,dist,text) {
-	//r[i].w = Math.max((text[0].length + text[1].length)*40, (text[2].length + text[3].length)*40, 100); //Sets box size
+	r[i].w = Math.max((text[0].length + text[1].length)*40, (text[2].length + text[3].length)*40, 100, Math.pow(2, r[i].levels) * 50); //Sets box size
 	ctx.fillStyle = "#444444";
 	ctx.beginPath();
-	ctx.strokeStyle = "black";
 	ctx.moveTo (x -((3*w)/8), y);
 	ctx.lineTo( x + ((3*w)/8) , y); //Draws middle line for the proof
 	ctx.stroke();
 	
 	ctx.textAlign = 'center'; //Draws text in the various boxes in the correct positions.
 	ctx.textBaseline = 'middle';
-	if(text[0] != "%" && r[i].type != 4 && typeof text[0] === 'string') {
+	if(text[0] != "%" && text[1] != "%" && typeof text[0] === 'string') {
 		ctx.fillText(text[0], x-(w/4), y-dist);		
 	} else if (text[0] != "%" && typeof text[0] === 'string') {
 		ctx.fillText(text[0], x, y-dist);
@@ -300,7 +267,7 @@ function drawLines(x,y,w,h,dist,text) {
 		ctx.fillText(text[1], x+(w/4), y-dist);
 	}
 	
-	if(text[2] != "%" && r[i].type != 2 && typeof text[2] === 'string') {
+	if(text[2] != "%" && text[3] != "%" && typeof text[2] === 'string') {
 		ctx.fillText(text[2], x-(w/4), y+dist);
 	} else if (text[2] != "%" && typeof text[2] === 'string'){
 		ctx.fillText(text[2], x, y+dist);
@@ -345,6 +312,14 @@ function doneCheck() { //Checks to see if the code is correct and fill it in.
 			return false;
 		}
 	}
+	else if (levelNum == 4){
+		if (r[i].text == "A,B,A ∧ B,%,C,(A ∧ B) ∧ C,%") {
+			return true; 0
+		}
+		else {
+			return false;
+		}
+	}
 }
 
 function delShape(i, move) {
@@ -366,16 +341,17 @@ function validMoveTopLeft() {
 		r[i].text[0] = r[move].text[0] + " " + r[i].text[0];
 		delShape(i, move);
 	}
-	else if (r[i].type == 2 || r[i].type == 3 || r[i].type == 4) {
-		if (r[move].type == 2){
-			//r[i].text[0] = r[move].text[2];
-			//statements[0].left_premise = variables[0].conclusion;
+	else if (r[i].type == 2 || r[i].type == 3 || r[i].type == 4 || r[i].type == 5) {
+		if (r[move].type == 2 || r[move].type == 5){
+			if(r[move].text[2] == "•") {
+				r[move].text[2] = r[i].text[0];
+			}
 			r[i].text[0] = r[move].text;
-			r[i].levels = r[move].levels + 1;
+			r[i].levels = Math.max(r[move].levels + 1, r[i].levels);
 			delShape(i, move);
 		}
 		else if (r[move].type == 1 || r[move].type == 0) {
-			if (r[i].text[0] == "%"){
+			if (r[i].text[0] == "•" || typeof r[i].text[0] !== 'string'){
 				r[i].text[0] = r[move].text[0];
 				delShape(i, move);
 			}
@@ -399,14 +375,16 @@ function validMoveTopRight() {
 		delShape(i, move);
 	}
 	else if (r[i].type == 2 || r[i].type == 3) {
-		if(r[move].type == 2) {
-			//r[i].text[1] = r[move].text[2];
+		if(r[move].type == 2 || r[move].type == 5) {
+			if(r[move].text[2] == "•") {
+				r[move].text[2] = r[i].text[1];
+			}
 			r[i].text[1] = r[move].text;
-			r[i].levels = r[move].levels + 1;
+			r[i].levels = Math.max(r[move].levels + 1, r[i].levels);
 			delShape(i, move);
 		}
 		else if (r[move].type == 1 || r[move].type == 0) {
-			if(r[i].text[1] == "%"){
+			if(r[i].text[1] == "•" || typeof r[i].text[1] !== 'string'){
 				r[i].text[1] = r[move].text[0];
 				delShape(i, move);
 			}
@@ -425,7 +403,7 @@ function validMoveTopRight() {
 			delShape(i, move);
 		}
 		else if (r[move].type == 1 || r[move].type == 0) {
-			if(r[i].text[0] == "%"){
+			if(r[i].text[0] == "•"){
 				r[i].text[0] = r[move].text[0];
 				delShape(i, move);
 			}
@@ -444,13 +422,13 @@ function validMoveTopRight() {
 }
 
 function validMoveBottomLeft() {
-	if (r[i].type == 2 || r[i].type == 3 || r[i].type == 4) {
-		if(r[move].type == 4) {
+	if (r[i].type == 2 || r[i].type == 3 || r[i].type == 4 || r[i].type == 5) {
+		if(r[move].type == 4 || r[move].type == 5) {
 			r[i].text[2] = r[move].text[0];
 			delShape(i, move);
 		}
 		else if (r[move].type == 1 || r[move].type == 0) {
-			if (r[i].text[2] == "%") {
+			if (r[i].text[2] == "•") {
 				r[i].text[2] = r[move].text[0];
 				delShape(i, move);
 			}
@@ -469,13 +447,13 @@ function validMoveBottomLeft() {
 }
 
 function validMoveBottomRight() {
-	if (r[i].type == 2) {
+	if (r[i].type == 2 || r[i].type == 5) {
 		if(r[move].type == 4) {
 			r[i].text[2] = r[move].text[0];
 			delShape(i, move);			
 		}
 		else if (r[move].type == 1 || r[move].type == 0) {
-			if (r[i].text[2] == "%") {
+			if (r[i].text[2] == "•") {
 				r[i].text[2] = r[move].text[0];
 				delShape(i, move);
 			}
@@ -491,7 +469,7 @@ function validMoveBottomRight() {
 			delShape(i, move);			
 		}
 		else if (r[move].type == 1 || r[move].type == 0) {
-			if (r[i].text[3] == "%") {
+			if (r[i].text[3] == "•") {
 				r[i].text[3] = r[move].text[0];
 				delShape(i, move);
 			}
@@ -528,7 +506,7 @@ function myMove(e){ //Runs when an object is being moved
 					r[move].taken = true;
 					break;
 				}
-				else if (r[i].type == 2) {
+				else if (r[i].type == 2 || r[i].type == 5) {
 					r[i].border = "LightBlue";
 					r[move].border = "LightBlue";
 					r[i].taken = true;
@@ -555,7 +533,7 @@ function myMove(e){ //Runs when an object is being moved
 					r[move].taken = true;
 					break;
 				}
-				else if (r[i].type == 2 || r[i].type == 3 || r[i].type ==4) {
+				else if (r[i].type == 2 || r[i].type == 3 || r[i].type ==4 || r[i].type ==5) {
 					r[i].border = "LightBlue";
 					r[move].border = "LightBlue";
 					r[i].taken = true;
@@ -582,7 +560,7 @@ function myMove(e){ //Runs when an object is being moved
 					r[move].taken = true;
 					break;
 				}
-				else if (r[i].type == 4) {
+				else if (r[i].type == 4 || r[i].type == 5) {
 					r[i].border = "yellow";
 					r[move].border = "yellow";
 					r[i].taken = true;
@@ -602,7 +580,7 @@ function myMove(e){ //Runs when an object is being moved
 					r[move].taken = true;
 					break;
 				}
-				else if (r[i].type == 2 || r[i].type == 3 || r[i].type == 4) {
+				else if (r[i].type == 2 || r[i].type == 3 || r[i].type == 4 || r[i].type == 5) {
 					r[i].border = "yellow";
 					r[move].border = "yellow";
 					r[i].taken = true;
@@ -617,11 +595,14 @@ function myMove(e){ //Runs when an object is being moved
 				r[move].taken = false;
 			}
 				
-			if (r[move].x + (r[move].w/2) >= 590 && r[move].y + (r[move].h/2) >= 562) {
+			if (r[move].x + (r[move].w/2) >= WIDTH-110 && r[move].y + (r[move].h/2) >= HEIGHT-138) {
 				r[move].border = "Navy";
 			}
-			else if (r[move].x - (r[move].w/2) <= 100 && r[move].y + (r[move].h/2) >= 600) {
+			else if (r[move].x - (r[move].w/2) <= 100 && r[move].y + (r[move].h/2) >= HEIGHT-100) {
 				r[move].border = "Crimson";
+			}
+			else if (r[move].x + (r[move].w/2) >= WIDTH-150  && r[move].y - (r[move].h/2) <= 100) {
+				r[move].border = "Chocolate";
 			}
 			else {
 				r[move].border = "black";
@@ -665,6 +646,8 @@ function myUp(){ //When the mouse is released.
 			r.splice(move,1);
 		}if (r[move].border == "Crimson" && i == move && (r[move].type == 1 || r[move].type == 0)) {
 			r[move].text[0] = "("+r[move].text[0]+")";
+		}if (r[move].border == "Chocolate" && i == move && (r[move].type == 1 || r[move].type == 0)) {
+			r[move].text[0] = "["+r[move].text[0]+"]";
 		}
 	}
 }
