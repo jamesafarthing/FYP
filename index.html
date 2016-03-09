@@ -154,6 +154,20 @@ function drawIterate() {
 	}
 }
 
+function colourReplace(border, colour, i, lines) {
+	if (border != "ignore") {
+		if (border == colour && i != move) {
+			if (lines == true) {
+				ctx.strokeStyle = border;
+			}
+			ctx.fillStyle = border;
+		} else {
+			ctx.strokeStyle = "black";
+			ctx.fillStyle = "black";
+		}
+	}
+}
+
 function draw(x, y, w, h, i, border, text) {
 	ctx.fillStyle = "#FAF7F8";
 	rect(x-(w/2), y-(h/2), w, h);
@@ -164,6 +178,7 @@ function draw(x, y, w, h, i, border, text) {
 	ctx.fillStyle = "#444444";
 	ctx.textAlign = 'center';
 	ctx.textBaseline = 'middle';
+	//ctx.strokeStyle = "black";
 	if (text[2] == "none") { //Figures out whether it is a form or a var/operator.
 		r[i].w = Math.max(50, text[0].length * 30);
 		r[i].h = 50;
@@ -173,83 +188,95 @@ function draw(x, y, w, h, i, border, text) {
 	else {
 		if (r[i].levels == 2) {
 			ctx.strokeStyle = "black";
-			drawLines(x,y,w,h, h/(r[i].levels*2), text);
+			drawLines(x,y,w,h, h/(r[i].levels*2), text, border);
 		}
 		if (r[i].levels == 3) {
 			ctx.font="28px Georgia";
-			drawLines(x,y+h/6,w,h, h/(r[i].levels*2), text);
+			ctx.strokeStyle = "black";
+			ctx.fillStyle = "black";
+			drawLines(x,y+h/6,w,h, h/(r[i].levels*2), text, border);
 			
 			//left branch			
 			if (typeof text[0] !== 'string' && text[0] !== undefined){
+				colourReplace(border, "yellow", i, true);
 				if (text[1] != "%"){
-					drawLines(x-w/4,y-h/6,w/2,h/3, h/(r[i].levels*2), text[0]);
+					drawLines(x-w/4,y-h/6,w/2,h/3, h/(r[i].levels*2), text[0], "ignore");
 				}
 				else {
-					drawLines(x,y-h/6,w,h/3, h/6, text[0]);
+					drawLines(x,y-h/6,w,h/3, h/6, text[0], "ignore");
 				}
 			}
 			//right branch
 			if (typeof text[1] !== 'string' && text[1] !== undefined){
-				drawLines(x+w/4,y-h/6,w/2,h/3, h/(r[i].levels*2), text[1]);
+				colourReplace(border, "deeppink", i, true);
+				drawLines(x+w/4,y-h/6,w/2,h/3, h/(r[i].levels*2), text[1], "ignore");
 			}
 		}
 		if (r[i].levels == 4) {
 			ctx.font="24px Georgia";
-			drawLines(x,y+h/4,w,h, h/(r[i].levels*2), text);
+			ctx.strokeStyle = "black";
+			ctx.fillStyle = "black";
+			drawLines(x,y+h/4,w,h, h/(r[i].levels*2), text, border);
 			
 			//left branch
 			if (typeof text[0] !== 'string' && text[0] !== undefined){
+				colourReplace(border, "yellow", i, true);
 				if (text[1] != "%") {
-					drawLines(x-w/4,y,w/2,h/2, h/(r[i].levels*2), text[0]);
+					drawLines(x-w/4,y,w/2,h/2, h/(r[i].levels*2), text[0], "ignore");
 				}
 				else {
-					drawLines(x,y,w,h/2, h/(r[i].levels*2), text[0]);
+					drawLines(x,y,w,h/2, h/(r[i].levels*2), text[0], "ignore");
 				}
 			}
 			//right branch
 			if (typeof text[1] !== 'string' && text[1] !== undefined){
-				drawLines(x+w/4,y,w/2,h/2, h/(r[i].levels*2), text[1]);
+				colourReplace(border, "deeppink", i, true);
+				drawLines(x+w/4,y,w/2,h/2, h/(r[i].levels*2), text[1], "ignore");
 			}	
 			//left left branch
 			if (typeof text[0][0] !== 'string' && text[0][0] !== undefined){
+				colourReplace(border, "yellow", i, true);
 				if(text[0][1] != "%" && text[1] != "%"){
-					drawLines(x-(3*w/8),y-h/4,w/4,h/4, h/(r[i].levels*2), text[0][0]);
+					drawLines(x-(3*w/8),y-h/4,w/4,h/4, h/(r[i].levels*2), text[0][0], "ignore");
 				}
 				else if (text[0][1] != "%" || text[1] != "%") {
-					drawLines(x-w/4,y-h/4,w/2,h/4, h/(r[i].levels*2), text[0][0]);
+					drawLines(x-w/4,y-h/4,w/2,h/4, h/(r[i].levels*2), text[0][0], "ignore");
 				}
 				else {
-					drawLines(x,y-h/4,w,h/4, h/(r[i].levels*2), text[0][0]);
+					drawLines(x,y-h/4,w,h/4, h/(r[i].levels*2), text[0][0], "ignore");
 				}
 				
 			} 
 			
 			// left right branch
 			if (typeof text[0][1] !== 'string' && text[0][1] !== undefined){
-				drawLines(x-(1*w/8),y-h/4,w/4,h/4, h/(r[i].levels*2), text[0][1]);
+				colourReplace(border, "yellow", i, true);
+				drawLines(x-(1*w/8),y-h/4,w/4,h/4, h/(r[i].levels*2), text[0][1], "ignore");
 			}
 			//right left branch
 			if (typeof text[1][0] !== 'string' && text[1][0] !== undefined){
+				colourReplace(border, "deeppink", i, true);
 				if(text[1][1] != "%"){
-					drawLines(x+(1*w/8),y-h/4,w/4,h/4, h/(r[i].levels*2), text[1][0]);
+					drawLines(x+(1*w/8),y-h/4,w/4,h/4, h/(r[i].levels*2), text[1][0], "ignore");
 				}
 				else{
-					drawLines(x+w/4,y-h/4,w/2,h/4, h/(r[i].levels*2), text[1][0]);
+					drawLines(x+w/4,y-h/4,w/2,h/4, h/(r[i].levels*2), text[1][0], "ignore");
 				}
 			} 
 			
 			//right right branch
 			if (typeof text[1][1] !== 'string' && text[1][1] !== undefined){
-				drawLines(x+(3*w/8),y-h/4,w/4,h/4, h/(r[i].levels*2), text[1][1]);
+				colourReplace(border, "deeppink", i, true);
+				drawLines(x+(3*w/8),y-h/4,w/4,h/4, h/(r[i].levels*2), text[1][1], "ignore");
 			}
 		}
 		r[i].h = r[i].levels*75;
 	}
 }
 
-function drawLines(x,y,w,h,dist,text) {
+function drawLines(x,y,w,h,dist,text,colour) {
 	r[i].w = Math.max((text[0].length + text[1].length)*40, (text[2].length + text[3].length)*40, 100, Math.pow(2, r[i].levels) * 50); //Sets box size
-	ctx.fillStyle = "#444444";
+	//ctx.fillStyle = "#444444";
 	ctx.beginPath();
 	ctx.moveTo (x -((3*w)/8), y);
 	ctx.lineTo( x + ((3*w)/8) , y); //Draws middle line for the proof
@@ -258,22 +285,27 @@ function drawLines(x,y,w,h,dist,text) {
 	ctx.textAlign = 'center'; //Draws text in the various boxes in the correct positions.
 	ctx.textBaseline = 'middle';
 	if(text[0] != "%" && text[1] != "%" && typeof text[0] === 'string') {
+		colourReplace(colour, "yellow", i, false);
 		ctx.fillText(text[0], x-(w/4), y-dist);		
 	} else if (text[0] != "%" && typeof text[0] === 'string') {
 		ctx.fillText(text[0], x, y-dist);
 	}
 	
 	if(text[1] != "%" && typeof text[1] === 'string'){
+		colourReplace(colour, "deeppink", i, false);
 		ctx.fillText(text[1], x+(w/4), y-dist);
 	}
 	
 	if(text[2] != "%" && text[3] != "%" && typeof text[2] === 'string') {
+		colourReplace(colour, "olive", i, false);
 		ctx.fillText(text[2], x-(w/4), y+dist);
 	} else if (text[2] != "%" && typeof text[2] === 'string'){
+		colourReplace(colour, "LightBlue", i, false);
 		ctx.fillText(text[2], x, y+dist);
 	}
 	
 	if(text[3] != "%" && typeof text[3] === 'string') {
+		colourReplace(colour, "LightBlue", i, false);
 		ctx.fillText(text[3], x+(w/4), y+dist);
 	}
 }
