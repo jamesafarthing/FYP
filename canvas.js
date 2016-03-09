@@ -13,7 +13,8 @@ var text = [];
 var type = 0; //0 is variable, 1 is operator, 2, 3, 4, 5 are forms
 var levelNum = 0;
 var conclusion = "";
-var levels =2;
+var proofHeight = 2;
+var connection = -1;
 
 function object(x, y, w, h, text, type) {
 	this.x = x;
@@ -24,7 +25,8 @@ function object(x, y, w, h, text, type) {
 	this.taken = taken;
 	this.text = text;
 	this.type = type;
-	this.levels = 2;
+	this.proofHeight = 2;
+	this.connection = -1;
 }
 
 function createTwoUpOneDown(){
@@ -146,21 +148,21 @@ function draw(x, y, w, h, i, border, text) {
 		ctx. fillText(text[0], x, y);
 	}
 	else {
-		if (r[i].levels == 2) {
+		if (r[i].proofHeight == 2) {
 			ctx.strokeStyle = "black";
-			drawLines(x,y,w,h, h/(r[i].levels*2), text, border);
+			drawLines(x,y,w,h, h/(r[i].proofHeight*2), text, border);
 		}
-		if (r[i].levels == 3) {
+		if (r[i].proofHeight == 3) {
 			ctx.font="28px Georgia";
 			ctx.strokeStyle = "black";
 			ctx.fillStyle = "black";
-			drawLines(x,y+h/6,w,h, h/(r[i].levels*2), text, border);
+			drawLines(x,y+h/6,w,h, h/(r[i].proofHeight*2), text, border);
 			
 			//left branch			
 			if (typeof text[0] !== 'string' && text[0] !== undefined){
 				colourReplace(border, "yellow", i, true);
 				if (text[1] != "%"){
-					drawLines(x-w/4,y-h/6,w/2,h/3, h/(r[i].levels*2), text[0], "ignore");
+					drawLines(x-w/4,y-h/6,w/2,h/3, h/(r[i].proofHeight*2), text[0], "ignore");
 				}
 				else {
 					drawLines(x,y-h/6,w,h/3, h/6, text[0], "ignore");
@@ -169,41 +171,41 @@ function draw(x, y, w, h, i, border, text) {
 			//right branch
 			if (typeof text[1] !== 'string' && text[1] !== undefined){
 				colourReplace(border, "deeppink", i, true);
-				drawLines(x+w/4,y-h/6,w/2,h/3, h/(r[i].levels*2), text[1], "ignore");
+				drawLines(x+w/4,y-h/6,w/2,h/3, h/(r[i].proofHeight*2), text[1], "ignore");
 			}
 		}
-		if (r[i].levels == 4) {
+		if (r[i].proofHeight == 4) {
 			ctx.font="24px Georgia";
 			ctx.strokeStyle = "black";
 			ctx.fillStyle = "black";
-			drawLines(x,y+h/4,w,h, h/(r[i].levels*2), text, border);
+			drawLines(x,y+h/4,w,h, h/(r[i].proofHeight*2), text, border);
 			
 			//left branch
 			if (typeof text[0] !== 'string' && text[0] !== undefined){
 				colourReplace(border, "yellow", i, true);
 				if (text[1] != "%") {
-					drawLines(x-w/4,y,w/2,h/2, h/(r[i].levels*2), text[0], "ignore");
+					drawLines(x-w/4,y,w/2,h/2, h/(r[i].proofHeight*2), text[0], "ignore");
 				}
 				else {
-					drawLines(x,y,w,h/2, h/(r[i].levels*2), text[0], "ignore");
+					drawLines(x,y,w,h/2, h/(r[i].proofHeight*2), text[0], "ignore");
 				}
 			}
 			//right branch
 			if (typeof text[1] !== 'string' && text[1] !== undefined){
 				colourReplace(border, "deeppink", i, true);
-				drawLines(x+w/4,y,w/2,h/2, h/(r[i].levels*2), text[1], "ignore");
+				drawLines(x+w/4,y,w/2,h/2, h/(r[i].proofHeight*2), text[1], "ignore");
 			}	
 			//left left branch
 			if (typeof text[0][0] !== 'string' && text[0][0] !== undefined){
 				colourReplace(border, "yellow", i, true);
 				if(text[0][1] != "%" && text[1] != "%"){
-					drawLines(x-(3*w/8),y-h/4,w/4,h/4, h/(r[i].levels*2), text[0][0], "ignore");
+					drawLines(x-(3*w/8),y-h/4,w/4,h/4, h/(r[i].proofHeight*2), text[0][0], "ignore");
 				}
 				else if (text[0][1] != "%" || text[1] != "%") {
-					drawLines(x-w/4,y-h/4,w/2,h/4, h/(r[i].levels*2), text[0][0], "ignore");
+					drawLines(x-w/4,y-h/4,w/2,h/4, h/(r[i].proofHeight*2), text[0][0], "ignore");
 				}
 				else {
-					drawLines(x,y-h/4,w,h/4, h/(r[i].levels*2), text[0][0], "ignore");
+					drawLines(x,y-h/4,w,h/4, h/(r[i].proofHeight*2), text[0][0], "ignore");
 				}
 				
 			} 
@@ -211,31 +213,31 @@ function draw(x, y, w, h, i, border, text) {
 			// left right branch
 			if (typeof text[0][1] !== 'string' && text[0][1] !== undefined){
 				colourReplace(border, "yellow", i, true);
-				drawLines(x-(1*w/8),y-h/4,w/4,h/4, h/(r[i].levels*2), text[0][1], "ignore");
+				drawLines(x-(1*w/8),y-h/4,w/4,h/4, h/(r[i].proofHeight*2), text[0][1], "ignore");
 			}
 			//right left branch
 			if (typeof text[1][0] !== 'string' && text[1][0] !== undefined){
 				colourReplace(border, "deeppink", i, true);
 				if(text[1][1] != "%"){
-					drawLines(x+(1*w/8),y-h/4,w/4,h/4, h/(r[i].levels*2), text[1][0], "ignore");
+					drawLines(x+(1*w/8),y-h/4,w/4,h/4, h/(r[i].proofHeight*2), text[1][0], "ignore");
 				}
 				else{
-					drawLines(x+w/4,y-h/4,w/2,h/4, h/(r[i].levels*2), text[1][0], "ignore");
+					drawLines(x+w/4,y-h/4,w/2,h/4, h/(r[i].proofHeight*2), text[1][0], "ignore");
 				}
 			} 
 			
 			//right right branch
 			if (typeof text[1][1] !== 'string' && text[1][1] !== undefined){
 				colourReplace(border, "deeppink", i, true);
-				drawLines(x+(3*w/8),y-h/4,w/4,h/4, h/(r[i].levels*2), text[1][1], "ignore");
+				drawLines(x+(3*w/8),y-h/4,w/4,h/4, h/(r[i].proofHeight*2), text[1][1], "ignore");
 			}
 		}
-		r[i].h = r[i].levels*75;
+		r[i].h = r[i].proofHeight*75;
 	}
 }
 
 function drawLines(x,y,w,h,dist,text,colour) {
-	r[i].w = Math.max((text[0].length + text[1].length)*40, (text[2].length + text[3].length)*40, 100, Math.pow(2, r[i].levels) * 50); //Sets box size
+	r[i].w = Math.max((text[0].length + text[1].length)*40, (text[2].length + text[3].length)*40, 100, Math.pow(2, r[i].proofHeight) * 50); //Sets box size
 	//ctx.fillStyle = "#444444";
 	ctx.beginPath();
 	ctx.moveTo (x -((3*w)/8), y);
@@ -338,9 +340,16 @@ function validMoveTopLeft() {
 			if(r[move].text[2] == "•") {
 				r[move].text[2] = r[i].text[0];
 			}
-			r[i].text[0] = r[move].text;
-			r[i].levels = Math.max(r[move].levels + 1, r[i].levels);
-			delShape(i, move);
+			if(r[move].proofHeight == 4) {
+				r[i].text[0] = "line: " + r[i].text[0];
+				r[move].text[2] = "line: " + r[move].text[2];
+				window.alert("NO NO NO");
+			}
+			else {
+				r[i].text[0] = r[move].text;
+				r[i].proofHeight = Math.max(r[move].proofHeight + 1, r[i].proofHeight);
+				delShape(i, move);
+			}
 		}
 		else if (r[move].type == 1 || r[move].type == 0) {
 			if (r[i].text[0] == "•" || typeof r[i].text[0] !== 'string'){
@@ -371,9 +380,14 @@ function validMoveTopRight() {
 			if(r[move].text[2] == "•") {
 				r[move].text[2] = r[i].text[1];
 			}
-			r[i].text[1] = r[move].text;
-			r[i].levels = Math.max(r[move].levels + 1, r[i].levels);
-			delShape(i, move);
+			if(r[move].proofHeight == 4) {
+				window.alert("NO NO NO");
+			}
+			else {
+				r[i].text[1] = r[move].text;
+				r[i].proofHeight = Math.max(r[move].proofHeight + 1, r[i].proofHeight);
+				delShape(i, move);
+			}
 		}
 		else if (r[move].type == 1 || r[move].type == 0) {
 			if(r[i].text[1] == "•" || typeof r[i].text[1] !== 'string'){
