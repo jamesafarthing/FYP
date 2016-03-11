@@ -3,7 +3,7 @@ var ctx;
 var x = 75;
 var y = 50;
 var WIDTH = 1500;
-var HEIGHT = 700;
+var HEIGHT = 1000;
 var dragok = false;
 var r = [];
 var move;
@@ -112,8 +112,20 @@ function drawIterate() {
 	ctx.drawImage(brackets, 0, HEIGHT-100, 100, 100); 
 	ctx.drawImage(premise, WIDTH-150, 0, 150, 75);
 	for (i = 0; i < r.length ; i++) {
-		draw(r[i].x, r[i].y, r[i].w, r[i].h, i, r[i].border, r[i].text);
+		draw(r[i].x, r[i].y, r[i].w, r[i].h, i, r[i].border, r[i].text, r[i].proofHeight);
+		//drawConnections(r[i].connection);
 	}
+}
+
+function drawConnections(connection){
+	if (connection != -1){
+		ctx.strokeStyle = "grey";
+		ctx.beginPath();
+		ctx.moveTo (r[i].x - r[i].w/2,r[i].y - r[i].h/2);
+		ctx.lineTo(r[connection].x,(r[connection].y + (r[connection].h/2))); 
+		ctx.stroke();	
+	}
+	
 }
 
 function colourReplace(border, colour, i, lines) {
@@ -130,7 +142,7 @@ function colourReplace(border, colour, i, lines) {
 	}
 }
 
-function draw(x, y, w, h, i, border, text) {
+function draw(x, y, w, h, i, border, text, ph) {
 	ctx.fillStyle = "#FAF7F8";
 	rect(x-(w/2), y-(h/2), w, h);
 	ctx.strokeStyle = border;
@@ -148,96 +160,207 @@ function draw(x, y, w, h, i, border, text) {
 		ctx. fillText(text[0], x, y);
 	}
 	else {
-		if (r[i].proofHeight == 2) {
+		multiLineDrawing(x, y, w, h, i, border, text, ph);
+	}
+}
+
+function multiLineDrawing(x, y, w, h, i, border, text, ph){
+	if (ph == 2) {
 			ctx.strokeStyle = "black";
-			drawLines(x,y,w,h, h/(r[i].proofHeight*2), text, border);
+			drawLines(x,y,w,h, h/(ph*2), text, border);
 		}
-		if (r[i].proofHeight == 3) {
-			ctx.font="28px Georgia";
-			ctx.strokeStyle = "black";
-			ctx.fillStyle = "black";
-			drawLines(x,y+h/6,w,h, h/(r[i].proofHeight*2), text, border);
-			
-			//left branch			
-			if (typeof text[0] !== 'string' && text[0] !== undefined){
-				colourReplace(border, "yellow", i, true);
-				if (text[1] != "%"){
-					drawLines(x-w/4,y-h/6,w/2,h/3, h/(r[i].proofHeight*2), text[0], "ignore");
-				}
-				else {
-					drawLines(x,y-h/6,w,h/3, h/6, text[0], "ignore");
-				}
+	if (ph == 3) {
+		ctx.font="28px Georgia";
+		ctx.strokeStyle = "black";
+		ctx.fillStyle = "black";
+		drawLines(x,y+h/6,w,h, h/(ph*2), text, border);
+		
+		//left branch			
+		if (typeof text[0] !== 'string' && text[0] !== undefined){
+			colourReplace(border, "yellow", i, true);
+			if (text[1] != "%"){
+				drawLines(x-w/4,y-h/6,w/2,h/3, h/(ph*2), text[0], "ignore");
 			}
-			//right branch
-			if (typeof text[1] !== 'string' && text[1] !== undefined){
-				colourReplace(border, "deeppink", i, true);
-				drawLines(x+w/4,y-h/6,w/2,h/3, h/(r[i].proofHeight*2), text[1], "ignore");
+			else {
+				drawLines(x,y-h/6,w,h/3, h/6, text[0], "ignore");
 			}
 		}
-		if (r[i].proofHeight == 4) {
-			ctx.font="24px Georgia";
-			ctx.strokeStyle = "black";
-			ctx.fillStyle = "black";
-			drawLines(x,y+h/4,w,h, h/(r[i].proofHeight*2), text, border);
-			
-			//left branch
-			if (typeof text[0] !== 'string' && text[0] !== undefined){
-				colourReplace(border, "yellow", i, true);
-				if (text[1] != "%") {
-					drawLines(x-w/4,y,w/2,h/2, h/(r[i].proofHeight*2), text[0], "ignore");
-				}
-				else {
-					drawLines(x,y,w,h/2, h/(r[i].proofHeight*2), text[0], "ignore");
-				}
+		//right branch
+		if (typeof text[1] !== 'string' && text[1] !== undefined){
+			colourReplace(border, "deeppink", i, true);
+			drawLines(x+w/4,y-h/6,w/2,h/3, h/(ph*2), text[1], "ignore");
+		}
+	}
+	if (ph == 4) {
+		ctx.font="24px Georgia";
+		ctx.strokeStyle = "black";
+		ctx.fillStyle = "black";
+		drawLines(x,y+h/4,w,h, h/(ph*2), text, border);
+		
+		//left branch
+		if (typeof text[0] !== 'string' && text[0] !== undefined){
+			colourReplace(border, "yellow", i, true);
+			if (text[1] != "%") {
+				drawLines(x-w/4,y,w/2,h/2, h/(ph*2), text[0], "ignore");
 			}
-			//right branch
-			if (typeof text[1] !== 'string' && text[1] !== undefined){
-				colourReplace(border, "deeppink", i, true);
-				drawLines(x+w/4,y,w/2,h/2, h/(r[i].proofHeight*2), text[1], "ignore");
-			}	
-			//left left branch
-			if (typeof text[0][0] !== 'string' && text[0][0] !== undefined){
-				colourReplace(border, "yellow", i, true);
-				if(text[0][1] != "%" && text[1] != "%"){
-					drawLines(x-(3*w/8),y-h/4,w/4,h/4, h/(r[i].proofHeight*2), text[0][0], "ignore");
-				}
-				else if (text[0][1] != "%" || text[1] != "%") {
-					drawLines(x-w/4,y-h/4,w/2,h/4, h/(r[i].proofHeight*2), text[0][0], "ignore");
-				}
-				else {
-					drawLines(x,y-h/4,w,h/4, h/(r[i].proofHeight*2), text[0][0], "ignore");
-				}
+			else {
+				drawLines(x,y,w,h/2, h/(ph*2), text[0], "ignore");
+			}
+		}
+		//right branch
+		if (typeof text[1] !== 'string' && text[1] !== undefined){
+			colourReplace(border, "deeppink", i, true);
+			drawLines(x+w/4,y,w/2,h/2, h/(ph*2), text[1], "ignore");
+		}	
+		//left left branch
+		if (typeof text[0][0] !== 'string' && text[0][0] !== undefined){
+			colourReplace(border, "yellow", i, true);
+			if(text[0][1] != "%" && text[1] != "%"){
+				drawLines(x-(3*w/8),y-h/4,w/4,h/4, h/(ph*2), text[0][0], "ignore");
+			}
+			else if (text[0][1] != "%" || text[1] != "%") {
+				drawLines(x-w/4,y-h/4,w/2,h/4, h/(ph*2), text[0][0], "ignore");
+			}
+			else {
+				drawLines(x,y-h/4,w,h/4, h/(ph*2), text[0][0], "ignore");
+			}
+			
+		} 
+		
+		// left right branch
+		if (typeof text[0][1] !== 'string' && text[0][1] !== undefined){
+			colourReplace(border, "yellow", i, true);
+			drawLines(x-(1*w/8),y-h/4,w/4,h/4, h/(ph*2), text[0][1], "ignore");
+		}
+		//right left branch
+		if (typeof text[1][0] !== 'string' && text[1][0] !== undefined){
+			colourReplace(border, "deeppink", i, true);
+			if(text[1][1] != "%"){
+				drawLines(x+(1*w/8),y-h/4,w/4,h/4, h/(ph*2), text[1][0], "ignore");
+			}
+			else{
+				drawLines(x+w/4,y-h/4,w/2,h/4, h/(ph*2), text[1][0], "ignore");
+			}
+		} 
+		
+		//right right branch
+		if (typeof text[1][1] !== 'string' && text[1][1] !== undefined){
+			colourReplace(border, "deeppink", i, true);
+			drawLines(x+(3*w/8),y-h/4,w/4,h/4, h/(ph*2), text[1][1], "ignore");
+		}
+	}
+	if (ph > 4) {
+		ctx.font="24px Georgia";
+		ctx.strokeStyle = "black";
+		ctx.fillStyle = "black";
+		drawLines(x,y+h/4,w,h, h/(ph*2), text, border);
+		
+		//left branch
+		if (typeof text[0] !== 'string' && text[0] !== undefined){
+			colourReplace(border, "yellow", i, true);
+			if (text[1] != "%") {
+				drawLines(x-w/4,y,w/2,h/2, h/(ph*2), text[0], "ignore");
+			}
+			else {
+				drawLines(x,y,w,h/2, h/(ph*2), text[0], "ignore");
+			}
+		}
+		//right branch
+		if (typeof text[1] !== 'string' && text[1] !== undefined){
+			colourReplace(border, "deeppink", i, true);
+			drawLines(x+w/4,y,w/2,h/2, h/(ph*2), text[1], "ignore");
+		}	
+		//left left branch
+		if (typeof text[0][0] !== 'string' && text[0][0] !== undefined){
+			colourReplace(border, "yellow", i, true);
+			if(text[0][1] != "%" && text[1] != "%"){
+				drawLines(x-(3*w/8),y-h/4,w/4,h/4, h/(ph*2), text[0][0], "ignore");
+				drawExtraBoxes(x -((3*w)/8), y-h/4-h/(ph*2), x-w/2-400, y-h/2-200, 
+				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
+				text[0][0], ph-3, w/4);
 				
-			} 
-			
-			// left right branch
-			if (typeof text[0][1] !== 'string' && text[0][1] !== undefined){
-				colourReplace(border, "yellow", i, true);
-				drawLines(x-(1*w/8),y-h/4,w/4,h/4, h/(r[i].proofHeight*2), text[0][1], "ignore");
+				//ctx.beginPath();
+				//ctx.moveTo (x -((3*w)/8), y-h/4);
+				//ctx.lineTo(x-w/2-50,y-h/2-50); //Draws middle line for the proof
+				//ctx.stroke();
+				//draw(x-w/2-50, y-h/2-50, 200, 200, i, r[i].border, text[0][0][0], ph-3);
 			}
-			//right left branch
-			if (typeof text[1][0] !== 'string' && text[1][0] !== undefined){
-				colourReplace(border, "deeppink", i, true);
-				if(text[1][1] != "%"){
-					drawLines(x+(1*w/8),y-h/4,w/4,h/4, h/(r[i].proofHeight*2), text[1][0], "ignore");
-				}
-				else{
-					drawLines(x+w/4,y-h/4,w/2,h/4, h/(r[i].proofHeight*2), text[1][0], "ignore");
-				}
-			} 
-			
-			//right right branch
-			if (typeof text[1][1] !== 'string' && text[1][1] !== undefined){
-				colourReplace(border, "deeppink", i, true);
-				drawLines(x+(3*w/8),y-h/4,w/4,h/4, h/(r[i].proofHeight*2), text[1][1], "ignore");
+			else if (text[0][1] != "%" || text[1] != "%") {
+				drawLines(x-w/4,y-h/4,w/2,h/4, h/(ph*2), text[0][0], "ignore");
+				drawExtraBoxes(x-w/4, y-h/4-h/(ph*2), x-w/2-400, y-h/2-200, 
+				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
+				text[0][0], ph-3, w/2);
 			}
+			else {
+				drawLines(x,y-h/4,w,h/4, h/(ph*2), text[0][0], "ignore");
+				drawExtraBoxes(x, y-h/4-h/(ph*2), x-w/2-400, y-h/2-200, 
+				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
+				text[0][0], ph-3, w);
+			}
+			
+		} 
+		
+		// left right branch
+		if (typeof text[0][1] !== 'string' && text[0][1] !== undefined){
+			colourReplace(border, "yellow", i, true);
+			drawLines(x-(1*w/8),y-h/4,w/4,h/4, h/(ph*2), text[0][1], "ignore");
+			drawExtraBoxes(x -((1*w)/8), y-h/4-h/(ph*2), x-w/2, y-h/2-200, 
+				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
+				text[0][1], ph-3, w/4);
 		}
-		r[i].h = r[i].proofHeight*75;
+		//right left branch
+		if (typeof text[1][0] !== 'string' && text[1][0] !== undefined){
+			colourReplace(border, "deeppink", i, true);
+			if(text[1][1] != "%"){
+				drawLines(x+(1*w/8),y-h/4,w/4,h/4, h/(ph*2), text[1][0], "ignore");
+				drawExtraBoxes(x +((1*w)/8), y-h/4-h/(ph*2), x+w/2, y-h/2-200, 
+				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
+				text[1][0], ph-3, w/4);
+			}
+			else{
+				drawLines(x+w/4,y-h/4,w/2,h/4, h/(ph*2), text[1][0], "ignore");
+				drawExtraBoxes(x + w/4, y-h/4-h/(ph*2), x+w/2, y-h/2-200, 
+				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
+				text[1][0], ph-3, w/2);
+			}
+		} 
+		
+		//right right branch
+		if (typeof text[1][1] !== 'string' && text[1][1] !== undefined){
+			colourReplace(border, "deeppink", i, true);
+			drawLines(x+(3*w/8),y-h/4,w/4,h/4, h/(ph*2), text[1][1], "ignore");
+			drawExtraBoxes(x +((3*w)/8), y-h/4-h/(ph*2), x+w/2+200, y-h/2-200, 
+				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
+				text[1][1], ph-3, w/4);
+		}
+	}
+	r[i].h = Math.min(ph*75, 400);
+}
+
+function drawExtraBoxes(beginX, beginY, x,y, w, h, i, border, text, ph, width) {
+	if (typeof text[0] !== 'string' && text[0] !== undefined){
+		ctx.beginPath();
+		if (text[1] != "%"){
+			ctx.moveTo (beginX - width/4,beginY);
+		}
+		else{
+			ctx.moveTo (beginX,beginY);
+		}
+		ctx.lineTo(x,y);
+		ctx.stroke();
+		draw(x, y, w, h, i, border, text[0], ph);
+	}
+	if (typeof text[1] !== 'string' && text[1] !== undefined){
+		ctx.beginPath();
+		ctx.moveTo (beginX + width/4,beginY);
+		ctx.lineTo(x,y-300);
+		ctx.stroke();
+		draw(x, y-300, w, h, i, border, text[1], ph);
 	}
 }
 
 function drawLines(x,y,w,h,dist,text,colour) {
-	r[i].w = Math.max((text[0].length + text[1].length)*40, (text[2].length + text[3].length)*40, 100, Math.pow(2, r[i].proofHeight) * 50); //Sets box size
+	r[i].w = Math.min(600, Math.max((text[0].length + text[1].length)*40, (text[2].length + text[3].length)*40, 100, Math.pow(2, r[i].proofHeight) * 50)); //Sets box size
 	//ctx.fillStyle = "#444444";
 	ctx.beginPath();
 	ctx.moveTo (x -((3*w)/8), y);
@@ -319,6 +442,14 @@ function doneCheck() { //Checks to see if the code is correct and fill it in.
 function delShape(i, move) {
 	r[i].border = "black";
 	r[i].taken = false;
+	if (r[i].connection == -1) {
+		if (move > r[move].connection){
+		r[i].connection = r[move].connection;
+		}
+		else {
+				r[i].connection = r[move].connection -1;
+		}
+	}
 	var done = doneCheck();
 	r.splice(move,1);
 	if (done == true) {
@@ -340,16 +471,17 @@ function validMoveTopLeft() {
 			if(r[move].text[2] == "•") {
 				r[move].text[2] = r[i].text[0];
 			}
-			if(r[move].proofHeight == 4) {
-				r[i].text[0] = "line: " + r[i].text[0];
-				r[move].text[2] = "line: " + r[move].text[2];
-				window.alert("NO NO NO");
-			}
-			else {
+			//if(r[move].proofHeight == 4 && r[i].connection == -1) {
+			//	r[i].text[0] = "line: " + r[i].text[0];
+			//	r[move].text[2] = "line: " + r[move].text[2];
+			//	r[i].connection = move;
+			//	window.alert("NO NO NO");
+			//}
+			//else {
 				r[i].text[0] = r[move].text;
 				r[i].proofHeight = Math.max(r[move].proofHeight + 1, r[i].proofHeight);
 				delShape(i, move);
-			}
+			//}
 		}
 		else if (r[move].type == 1 || r[move].type == 0) {
 			if (r[i].text[0] == "•" || typeof r[i].text[0] !== 'string'){
@@ -380,14 +512,14 @@ function validMoveTopRight() {
 			if(r[move].text[2] == "•") {
 				r[move].text[2] = r[i].text[1];
 			}
-			if(r[move].proofHeight == 4) {
-				window.alert("NO NO NO");
-			}
-			else {
+			//if(r[move].proofHeight == 4) {
+				//window.alert("NO NO NO");
+			//}
+			//else {
 				r[i].text[1] = r[move].text;
 				r[i].proofHeight = Math.max(r[move].proofHeight + 1, r[i].proofHeight);
 				delShape(i, move);
-			}
+			//}
 		}
 		else if (r[move].type == 1 || r[move].type == 0) {
 			if(r[i].text[1] == "•" || typeof r[i].text[1] !== 'string'){
