@@ -6,6 +6,7 @@ var WIDTH = 1500;
 var HEIGHT = 1000;
 var dragok = false;
 var r = [];
+var dotsArray = [];
 var move;
 var border = "black";
 var taken = false;
@@ -44,19 +45,15 @@ function createOneUpOneDown() {
 function createA(){
 	r.push(new object(55,  55,  100, 100, ["A", "none", "none", "none"], 0));
 } 
-
 function createB(){
 	r.push(new object(155, 55,  100, 100, ["B", "none", "none", "none"], 0));
 } 
-
 function createC(){
 	r.push(new object(255, 55,  100, 100, ["C", "none", "none", "none"], 0));
 } 
-
 function createConjunction(){
 	r.push(new object(355, 55,  100, 100, ["∧", "none", "none", "none"], 1));
 }
-
 function createImplication(){
 	r.push(new object(455, 55,  100, 100, ["→", "none", "none", "none"], 1));
 }
@@ -101,6 +98,24 @@ function init() {
 	levelText();
 	return setInterval(drawIterate, 10);
 }
+
+function dotsIterate(updatedX, updatedY) {
+	int i;
+	for (i=0; i++; i<dotsArray.length()){
+		if(dotsArray[i].number == dotNumber) {
+			dotsArray[i].Xpos = updatedX;
+			dotsArray[i].Ypos = updatedY;
+		}
+	}
+}
+
+//***** TO DO *****
+// 
+//	1) Input numbers instead of dots and create an element of the dot array
+//	2) Put conditionals in to make sure that when numbers appear then they are rendered as dots in the proof tree.
+//	3) Start to put in logic that will set the colour of the dot to change when a proof is dragged over it.
+//
+//*****************
 
 function drawIterate() {
 	clear();
@@ -303,10 +318,24 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 		// left right branch
 		if (typeof text[0][1] !== 'string' && text[0][1] !== undefined){
 			colourReplace(border, "yellow", i, true);
-			drawLines(x-(1*w/8),y-h/4,w/4,h/4, h/(ph*2), text[0][1], "ignore");
-			drawExtraBoxes(x -((1*w)/8), y-h/4-h/(ph*2), x-w/2, y-h/2-200, 
+			if(text[0][1] != "%" && text[1] != "%"){
+				drawLines(x-(1*w/8),y-h/4,w/4,h/4, h/(ph*2), text[0][1], "ignore");
+				drawExtraBoxes(x -((1*w)/8), y-h/4-h/(ph*2), x-w/2, y-h/2-200, 
+					Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
+					text[0][1], ph-3, w/4);
+			}
+			else if (text[0][1] != "%" || text[1] != "%") {
+				drawLines(x+w/4,y,w/2,h/2, h/(ph*2), text[0][1], "ignore");
+				drawExtraBoxes(x +(w/4), y-h/4-h/(ph*2), x-w/2-400, y-h/2-200, 
 				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
-				text[0][1], ph-3, w/4);
+				text[0][1], ph-3, w/2);
+			}
+			else {
+				drawLines(x,y-h/4,w,h/4, h/(ph*2), text[0][0], "ignore");
+				drawExtraBoxes(x, y-h/4-h/(ph*2), x-w/2-400, y-h/2-200, 
+				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
+				text[0][1], ph-3, w);
+			}
 		}
 		//right left branch
 		if (typeof text[1][0] !== 'string' && text[1][0] !== undefined){
