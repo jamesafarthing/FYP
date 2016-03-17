@@ -16,8 +16,19 @@ var levelNum = 0;
 var conclusion = "";
 var proofHeight = 2;
 var connection = -1;
+var dotNumber = 0;
+var xPos = 0;
+var yPos = 0;
 
-function object(x, y, w, h, text, type) {
+function dot(number){
+	this.number = number;
+	this.xPos = 0;
+	this.yPos = 0;
+	this.colour = "black";
+	this.formula = "";
+}
+
+function object(x, y, w, h, text, type, dots) {
 	this.x = x;
 	this.y = y;
 	this.w = w;
@@ -28,10 +39,19 @@ function object(x, y, w, h, text, type) {
 	this.type = type;
 	this.proofHeight = 2;
 	this.connection = -1;
+	this.dots = dots;
 }
 
 function createTwoUpOneDown(){
-	r.push(new object(355, 600, 100, 100, ["•", "•", "•", "%"], 2));
+	dot1 = dotNumber++;
+	dot2 = dotNumber++;
+	dot3 = dotNumber++;
+	r.push(new object(355, 600, 100, 100, [dot1, dot2, dot3, "%"], 2, [dot1, dot2, dot3]));
+	//r.push(new object(355, 600, 100, 100, [0, 1, 2, "%"], 2));
+	dotsArray.push(new dot(dot1));
+	dotsArray.push(new dot(dot2));
+	dotsArray.push(new dot(dot3));
+	//window.alert(r[0].text.toString());
 } 
 function createTwoUpTwoDown() {
 	r.push(new object(355, 500, 100, 100, ["•", "•", "•", "•"], 3));
@@ -40,22 +60,27 @@ function createOneUpTwoDown() {
 	r.push(new object(355, 500, 100, 100, ["•", "%", "•", "•"], 4));
 }
 function createOneUpOneDown() {
-	r.push(new object(355, 500, 100, 100, ["•", "%", "•", "%"], 5));
+	dot1 = dotNumber++;
+	dot2 = dotNumber++;
+	//r.push(new object(355, 500, 100, 100, ["•", "%", "•", "%"], 5));
+	r.push(new object(355, 500, 100, 100, [dot1, "%", dot2, "%"], 5, [dot1, dot2]));
+	dotsArray.push(new dot(dot1));
+	dotsArray.push(new dot(dot2));
 }
 function createA(){
-	r.push(new object(55,  55,  100, 100, ["A", "none", "none", "none"], 0));
+	r.push(new object(55,  55,  100, 100, ["A", "none", "none", "none"], 0, []));
 } 
 function createB(){
-	r.push(new object(155, 55,  100, 100, ["B", "none", "none", "none"], 0));
+	r.push(new object(155, 55,  100, 100, ["B", "none", "none", "none"], 0, []));
 } 
 function createC(){
-	r.push(new object(255, 55,  100, 100, ["C", "none", "none", "none"], 0));
+	r.push(new object(255, 55,  100, 100, ["C", "none", "none", "none"], 0, []));
 } 
 function createConjunction(){
-	r.push(new object(355, 55,  100, 100, ["∧", "none", "none", "none"], 1));
+	r.push(new object(355, 55,  100, 100, ["∧", "none", "none", "none"], 1, []));
 }
 function createImplication(){
-	r.push(new object(455, 55,  100, 100, ["→", "none", "none", "none"], 1));
+	r.push(new object(455, 55,  100, 100, ["→", "none", "none", "none"], 1, []));
 }
 
 function levelText(){
@@ -78,6 +103,8 @@ function levelText(){
 
 function deleteAll(){
 	r.splice(0,r.length);
+	dotsArray.splice(0,dotsArray.length);
+	dotNumber = 0;
 }
 
 function rect(x,y,w,h) {
@@ -99,21 +126,21 @@ function init() {
 	return setInterval(drawIterate, 10);
 }
 
-function dotsIterate(updatedX, updatedY) {
-	int i;
-	for (i=0; i++; i<dotsArray.length()){
-		if(dotsArray[i].number == dotNumber) {
-			dotsArray[i].Xpos = updatedX;
-			dotsArray[i].Ypos = updatedY;
-		}
-	}
+function dotsIterate(dotNumber, updatedX, updatedY) {
+	dotsArray[dotNumber].xPos = updatedX;
+	dotsArray[dotNumber].yPos = updatedY;
+	ctx.fillStyle = dotsArray[dotNumber].colour;
 }
 
 //***** TO DO *****
 // 
-//	1) Input numbers instead of dots and create an element of the dot array
-//	2) Put conditionals in to make sure that when numbers appear then they are rendered as dots in the proof tree.
-//	3) Start to put in logic that will set the colour of the dot to change when a proof is dragged over it.
+//	YES 1) Input numbers instead of dots and create an element of the dot array
+//	YES 2) Put conditionals in to make sure that when numbers appear then they are rendered as dots in the proof tree.
+//	YES 3) Start to put in logic that will set the colour of the dot to change when a proof is dragged over it.
+//	YES	4) Add text instead of the dot when statements added to it.
+//		5) Implement for one up one down.
+//		6) Stop highlighting once dot has been removed.
+//		7) Allow proof structures to be merged together. 
 //
 //*****************
 
@@ -191,8 +218,8 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 		drawLines(x,y+h/6,w,h, h/(ph*2), text, border);
 		
 		//left branch			
-		if (typeof text[0] !== 'string' && text[0] !== undefined){
-			colourReplace(border, "yellow", i, true);
+		if ((typeof text[0] !== 'string' && typeof text[0] !== 'number') && text[0] !== undefined){
+			//colourReplace(border, "yellow", i, true);
 			if (text[1] != "%"){
 				drawLines(x-w/4,y-h/6,w/2,h/3, h/(ph*2), text[0], "ignore");
 			}
@@ -201,8 +228,8 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 			}
 		}
 		//right branch
-		if (typeof text[1] !== 'string' && text[1] !== undefined){
-			colourReplace(border, "deeppink", i, true);
+		if ((typeof text[1] !== 'string' && typeof text[1] !== 'number') && text[1] !== undefined){
+			//colourReplace(border, "deeppink", i, true);
 			drawLines(x+w/4,y-h/6,w/2,h/3, h/(ph*2), text[1], "ignore");
 		}
 	}
@@ -213,8 +240,8 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 		drawLines(x,y+h/4,w,h, h/(ph*2), text, border);
 		
 		//left branch
-		if (typeof text[0] !== 'string' && text[0] !== undefined){
-			colourReplace(border, "yellow", i, true);
+		if ((typeof text[0] !== 'string' && typeof text[0] !== 'number') && text[0] !== undefined){
+			//colourReplace(border, "yellow", i, true);
 			if (text[1] != "%") {
 				drawLines(x-w/4,y,w/2,h/2, h/(ph*2), text[0], "ignore");
 			}
@@ -223,13 +250,13 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 			}
 		}
 		//right branch
-		if (typeof text[1] !== 'string' && text[1] !== undefined){
-			colourReplace(border, "deeppink", i, true);
+		if ((typeof text[1] !== 'string' && typeof text[1] !== 'number') && text[1] !== undefined){
+			//colourReplace(border, "deeppink", i, true);
 			drawLines(x+w/4,y,w/2,h/2, h/(ph*2), text[1], "ignore");
 		}	
 		//left left branch
-		if (typeof text[0][0] !== 'string' && text[0][0] !== undefined){
-			colourReplace(border, "yellow", i, true);
+		if ((typeof text[0][0] !== 'string' && typeof text[0][0] !== 'number') && text[0][0] !== undefined){
+			//colourReplace(border, "yellow", i, true);
 			if(text[0][1] != "%" && text[1] != "%"){
 				drawLines(x-(3*w/8),y-h/4,w/4,h/4, h/(ph*2), text[0][0], "ignore");
 			}
@@ -243,13 +270,13 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 		} 
 		
 		// left right branch
-		if (typeof text[0][1] !== 'string' && text[0][1] !== undefined){
-			colourReplace(border, "yellow", i, true);
+		if ((typeof text[0][1] !== 'string' && typeof text[0][1] !== 'number') && text[0][1] !== undefined){
+			//colourReplace(border, "yellow", i, true);
 			drawLines(x-(1*w/8),y-h/4,w/4,h/4, h/(ph*2), text[0][1], "ignore");
 		}
 		//right left branch
-		if (typeof text[1][0] !== 'string' && text[1][0] !== undefined){
-			colourReplace(border, "deeppink", i, true);
+		if ((typeof text[1][0] !== 'string' && typeof text[1][0] !== 'number') && text[1][0] !== undefined){
+			//colourReplace(border, "deeppink", i, true);
 			if(text[1][1] != "%"){
 				drawLines(x+(1*w/8),y-h/4,w/4,h/4, h/(ph*2), text[1][0], "ignore");
 			}
@@ -259,8 +286,8 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 		} 
 		
 		//right right branch
-		if (typeof text[1][1] !== 'string' && text[1][1] !== undefined){
-			colourReplace(border, "deeppink", i, true);
+		if ((typeof text[1][1] !== 'string' && typeof text[1][1] !== 'number') && text[1][1] !== undefined){
+			//colourReplace(border, "deeppink", i, true);
 			drawLines(x+(3*w/8),y-h/4,w/4,h/4, h/(ph*2), text[1][1], "ignore");
 		}
 	}
@@ -271,8 +298,8 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 		drawLines(x,y+h/4,w,h, h/(ph*2), text, border);
 		
 		//left branch
-		if (typeof text[0] !== 'string' && text[0] !== undefined){
-			colourReplace(border, "yellow", i, true);
+		if ((typeof text[0] !== 'string' && typeof text[0] !== 'number') && text[0] !== undefined){
+			//colourReplace(border, "yellow", i, true);
 			if (text[1] != "%") {
 				drawLines(x-w/4,y,w/2,h/2, h/(ph*2), text[0], "ignore");
 			}
@@ -281,24 +308,18 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 			}
 		}
 		//right branch
-		if (typeof text[1] !== 'string' && text[1] !== undefined){
-			colourReplace(border, "deeppink", i, true);
+		if ((typeof text[1] !== 'string' && typeof text[1] !== 'number') && text[1] !== undefined){
+			//colourReplace(border, "deeppink", i, true);
 			drawLines(x+w/4,y,w/2,h/2, h/(ph*2), text[1], "ignore");
 		}	
 		//left left branch
-		if (typeof text[0][0] !== 'string' && text[0][0] !== undefined){
-			colourReplace(border, "yellow", i, true);
+		if ((typeof text[0][0] !== 'string' && typeof text[0][0] !== 'number') && text[0][0] !== undefined){
+			//colourReplace(border, "yellow", i, true);
 			if(text[0][1] != "%" && text[1] != "%"){
 				drawLines(x-(3*w/8),y-h/4,w/4,h/4, h/(ph*2), text[0][0], "ignore");
 				drawExtraBoxes(x -((3*w)/8), y-h/4-h/(ph*2), x-w/2-400, y-h/2-200, 
 				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
 				text[0][0], ph-3, w/4);
-				
-				//ctx.beginPath();
-				//ctx.moveTo (x -((3*w)/8), y-h/4);
-				//ctx.lineTo(x-w/2-50,y-h/2-50); //Draws middle line for the proof
-				//ctx.stroke();
-				//draw(x-w/2-50, y-h/2-50, 200, 200, i, r[i].border, text[0][0][0], ph-3);
 			}
 			else if (text[0][1] != "%" || text[1] != "%") {
 				drawLines(x-w/4,y-h/4,w/2,h/4, h/(ph*2), text[0][0], "ignore");
@@ -316,8 +337,8 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 		} 
 		
 		// left right branch
-		if (typeof text[0][1] !== 'string' && text[0][1] !== undefined){
-			colourReplace(border, "yellow", i, true);
+		if ((typeof text[0][1] !== 'string' && typeof text[0][1] !== 'number') && text[0][1] !== undefined){
+			//colourReplace(border, "yellow", i, true);
 			if(text[0][1] != "%" && text[1] != "%"){
 				drawLines(x-(1*w/8),y-h/4,w/4,h/4, h/(ph*2), text[0][1], "ignore");
 				drawExtraBoxes(x -((1*w)/8), y-h/4-h/(ph*2), x-w/2, y-h/2-200, 
@@ -338,8 +359,8 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 			}
 		}
 		//right left branch
-		if (typeof text[1][0] !== 'string' && text[1][0] !== undefined){
-			colourReplace(border, "deeppink", i, true);
+		if ((typeof text[1][0] !== 'string' && typeof text[1][0] !== 'number') && text[1][0] !== undefined){
+			//colourReplace(border, "deeppink", i, true);
 			if(text[1][1] != "%"){
 				drawLines(x+(1*w/8),y-h/4,w/4,h/4, h/(ph*2), text[1][0], "ignore");
 				drawExtraBoxes(x +((1*w)/8), y-h/4-h/(ph*2), x+w/2, y-h/2-200, 
@@ -355,8 +376,8 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 		} 
 		
 		//right right branch
-		if (typeof text[1][1] !== 'string' && text[1][1] !== undefined){
-			colourReplace(border, "deeppink", i, true);
+		if ((typeof text[1][1] !== 'string' && typeof text[1][1] !== 'number') && text[1][1] !== undefined){
+			//colourReplace(border, "deeppink", i, true);
 			drawLines(x+(3*w/8),y-h/4,w/4,h/4, h/(ph*2), text[1][1], "ignore");
 			drawExtraBoxes(x +((3*w)/8), y-h/4-h/(ph*2), x+w/2+200, y-h/2-200, 
 				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
@@ -389,7 +410,7 @@ function drawExtraBoxes(beginX, beginY, x,y, w, h, i, border, text, ph, width) {
 }
 
 function drawLines(x,y,w,h,dist,text,colour) {
-	r[i].w = Math.min(600, Math.max((text[0].length + text[1].length)*40, (text[2].length + text[3].length)*40, 100, Math.pow(2, r[i].proofHeight) * 50)); //Sets box size
+	r[i].w = Math.min(600, Math.max((text[0].toString().length + text[1].toString().length)*40, (text[2].toString().length + text[3].toString().length)*40, 100, Math.pow(2, r[i].proofHeight) * 50)); //Sets box size
 	//ctx.fillStyle = "#444444";
 	ctx.beginPath();
 	ctx.moveTo (x -((3*w)/8), y);
@@ -398,29 +419,119 @@ function drawLines(x,y,w,h,dist,text,colour) {
 	
 	ctx.textAlign = 'center'; //Draws text in the various boxes in the correct positions.
 	ctx.textBaseline = 'middle';
-	if(text[0] != "%" && text[1] != "%" && typeof text[0] === 'string') {
-		colourReplace(colour, "yellow", i, false);
-		ctx.fillText(text[0], x-(w/4), y-dist);		
-	} else if (text[0] != "%" && typeof text[0] === 'string') {
-		ctx.fillText(text[0], x, y-dist);
+	if(text[0] != "%" && text[1] != "%" && (typeof text[0] === 'string' || typeof text[0] === 'number')) {
+		//colourReplace(colour, "yellow", i, false);
+		ctx.fillStyle = "black";
+		if(typeof text[0] === 'number'){
+			if (dotsArray[text[0]].formula != ""){
+				temp = dotsArray[text[0]].number;
+				text[0] = dotsArray[text[0]].formula;
+				ctx.fillText(text[0], x-(w/4), y-dist);
+				dotsArray[temp].number = "deleted";
+			}
+			else {
+				dotsIterate(text[0], x-(w/4), y-dist);
+				ctx.fillText("•", x-(w/4), y-dist);
+			}
+		}
+		else {
+			ctx.fillText(text[0], x-(w/4), y-dist);	
+		}			
+	} else if (text[0] != "%" && (typeof text[0] === 'string' || typeof text[0] === 'number')) {
+		ctx.fillStyle = "black";
+		if(typeof text[0] === 'number'){
+			if (dotsArray[text[0]].formula != ""){
+				temp = dotsArray[text[0]].number;
+				text[0] = dotsArray[text[0]].formula;
+				ctx.fillText(text[0], x, y-dist);
+				dotsArray[temp].number = "deleted";
+			}
+			else {
+				dotsIterate(text[0], x, y-dist);
+				ctx.fillText("•", x, y-dist);
+			}
+		}
+		else {
+			ctx.fillText(text[0], x, y-dist);
+		}
 	}
 	
-	if(text[1] != "%" && typeof text[1] === 'string'){
-		colourReplace(colour, "deeppink", i, false);
-		ctx.fillText(text[1], x+(w/4), y-dist);
+	if(text[1] != "%" && (typeof text[1] === 'string' || typeof text[1] === 'number')){
+		//colourReplace(colour, "deeppink", i, false);
+		ctx.fillStyle = "black";		
+		if(typeof text[1] === 'number'){
+			if (dotsArray[text[1]].formula != ""){
+				temp = dotsArray[text[1]].number;
+				text[1] = dotsArray[text[1]].formula;
+				ctx.fillText(text[1], x+(w/4), y-dist);
+				dotsArray[temp].number = "deleted";
+			}
+			else {
+				dotsIterate(text[1], x+(w/4), y-dist);
+				ctx.fillText("•", x+(w/4), y-dist);
+			}
+		}
+		else {
+			ctx.fillText(text[1], x+(w/4), y-dist);
+		}
 	}
 	
-	if(text[2] != "%" && text[3] != "%" && typeof text[2] === 'string') {
-		colourReplace(colour, "olive", i, false);
-		ctx.fillText(text[2], x-(w/4), y+dist);
-	} else if (text[2] != "%" && typeof text[2] === 'string'){
-		colourReplace(colour, "LightBlue", i, false);
-		ctx.fillText(text[2], x, y+dist);
+	if(text[2] != "%" && text[3] != "%" && (typeof text[2] === 'string' || typeof text[2] === 'number')) {
+		//colourReplace(colour, "olive", i, false);
+		ctx.fillStyle = "black";
+		if(typeof text[2] === 'number'){
+			if (dotsArray[text[2]].formula != ""){
+				temp = dotsArray[text[2]].number;
+				text[2] = dotsArray[text[2]].formula;
+				ctx.fillText(text[2], x-(w/4), y+dist);
+				dotsArray[temp].number = "deleted";
+			}
+			else {
+				dotsIterate(text[2], x-(w/4), y+dist);
+				ctx.fillText("•", x-(w/4), y+dist);
+			}
+		}
+		else {
+			ctx.fillText(text[2], x-(w/4), y+dist);
+		}	
+	} else if (text[2] != "%" && (typeof text[2] === 'string' || typeof text[2] === 'number')){
+		//colourReplace(colour, "LightBlue", i, false);
+		ctx.fillStyle = "black";
+		if(typeof text[2] === 'number'){
+			if (dotsArray[text[2]].formula != ""){
+				temp = dotsArray[text[2]].number;
+				text[2] = dotsArray[text[2]].formula;
+				ctx.fillText(text[2], x, y+dist);
+				dotsArray[temp].number = "deleted";
+			}
+			else {
+				dotsIterate(text[2], x, y+dist);
+				ctx.fillText("•", x, y+dist);
+			}
+		}
+		else {
+			ctx.fillText(text[2], x, y+dist);
+		}
 	}
 	
-	if(text[3] != "%" && typeof text[3] === 'string') {
-		colourReplace(colour, "LightBlue", i, false);
-		ctx.fillText(text[3], x+(w/4), y+dist);
+	if(text[3] != "%" && (typeof text[3] === 'string' || typeof text[3] === 'number')) {
+		//colourReplace(colour, "LightBlue", i, false);
+		ctx.fillStyle = "black";
+		if(typeof text[3] === 'number'){
+			if (dotsArray[text[3]].formula != ""){
+				temp = dotsArray[text[3]].number;
+				text[3] = dotsArray[text[3]].formula;
+				ctx.fillText(text[3], x+(w/4), y+dist);
+				dotsArray[temp].number = "deleted";
+			}
+			else {
+				dotsIterate(text[3], x+(w/4), y+dist);
+				ctx.fillText("•", x+(w/4), y+dist);
+			}
+		}
+		else {
+			ctx.fillText(text[3], x+(w/4), y+dist);
+		}
 	}
 }
 
@@ -654,7 +765,114 @@ function validMoveBottomRight() {
 	}
 }
 
-function myMove(e){ //Runs when an object is being moved
+function insertFormula(i){
+	if (r[move].text[1] == "none"){
+		dotsArray[i].formula = r[move].text[0];
+	}
+	r.splice(move,1);
+}
+
+function myMove(e){
+	if (dragok){
+		r[move].x = e.pageX - canvas.offsetLeft;
+		r[move].y = e.pageY - canvas.offsetTop;
+		
+		for (i = 0; i < Math.max(1,dotsArray.length); i++){
+			if (dotsArray.length > 0){
+				if (dotsArray[i].number != "deleted"){
+					if (r[move].dots.toString().indexOf(i.toString()) == -1){	
+						if ((r[move].x - (r[move].w/2) < dotsArray[i].xPos) && (r[move].x + (r[move].w/2) > dotsArray[i].xPos)
+							&& (r[move].y - (r[move].h/2) < dotsArray[i].yPos) && (r[move].y + (r[move].h/2) > dotsArray[i].yPos)){
+							r[move].border = "BlueViolet";
+							dotsArray[i].colour = "BlueViolet";
+							//r[move].taken = true;
+							break;
+						}
+					}
+				}
+			}
+			if (r[move].x + (r[move].w/2) >= WIDTH-110 && r[move].y + (r[move].h/2) >= HEIGHT-138) {
+				r[move].border = "Navy";
+			}
+			else if (r[move].x - (r[move].w/2) <= 100 && r[move].y + (r[move].h/2) >= HEIGHT-100) {
+				r[move].border = "Crimson";
+			}
+			else if (r[move].x + (r[move].w/2) >= WIDTH-150  && r[move].y - (r[move].h/2) <= 100) {
+				r[move].border = "Chocolate";
+			}
+			else {
+				r[move].border = "black";
+				dotsArray[i].colour = "black";
+				//r[move].taken = false;
+			}
+		}
+		
+		
+		for(i = 0; i < r.length; i ++) { //Cycle through static elements
+			
+			if (i != move && r[i].taken == r[move].taken && //Move over bottom left
+			(((r[i].x - (r[i].w/2)) < (r[move].x + (r[move].w/2))) && ((r[move].x) < r[i].x)) 
+			&& ((r[move].y -(r[move].h/2)) < (r[i].y + (r[i].h/2))) 
+			&& ((r[move].y -(r[move].h/2)) >= r[i].y - (r[i].h/2))
+			&& (r[move].x <= r[i].x && r[move].y > r[i].y)) {
+				if (r[i].type == 0 || r[i].type == 1) {
+					r[i].border = "green";
+					r[move].border = "green";
+					r[i].taken = true;
+					r[move].taken = true;
+					break;
+				}
+			}
+			else if (i != move && r[i].taken == r[move].taken && //Move over bottom right
+			((r[i].x < (r[move].x + (r[move].w/2))) && ((r[move].x - (r[move].w/2)) < (r[i].x + (r[i].w/2)))) 
+			&& ((r[move].y -(r[move].h/2)) < (r[i].y + (r[i].h/2))) 
+			&& ((r[move].y -(r[move].h/2)) >= r[i].y - (r[i].h/2))
+			&& (r[move].x > r[i].x && r[move].y > r[i].y)) {
+				if (r[i].type == 0 || r[i].type == 1) {
+					r[i].border = "red";
+					r[move].border = "red";
+					r[i].taken = true;
+					r[move].taken = true;
+					break;
+				}
+			}
+			else if (i != move && r[i].taken == r[move].taken && //Move over top right
+				((r[i].x < r[move].x) && ((r[move].x - (r[move].w/2)) < (r[i].x + (r[i].w/2))))
+				&& ((r[move].y + (r[move].h/2)) > (r[i].y -(r[i].h/2)))
+				&& ((r[move].y + (r[move].h/2)) <= r[i].y + (r[i].h/2))
+				&& (r[move].x > r[i].x && r[move].y <= r[i].y)){
+				if (r[i].type == 0 || r[i].type == 1) {
+					r[i].border = "red";
+					r[move].border = "red";
+					r[i].taken = true;
+					r[move].taken = true;
+					break;
+				}
+			}
+			else if (i != move && r[i].taken == r[move].taken && //Move over top left
+				(((r[i].x - (r[i].w/2)) < (r[move].x + (r[move].w/2))) && ((r[move].x - (r[move].w/2)) < r[i].x))
+				&& ((r[move].y + (r[move].h/2)) > (r[i].y -(r[i].h/2)))
+				&& ((r[move].y + (r[move].h/2)) <= r[i].y + (r[i].h/2))
+				&& (r[move].x <= r[i].x && r[move].y <= r[i].y)){
+				if (r[i].type == 0 || r[i].type == 1) {
+					r[i].border = "green";
+					r[move].border = "green";
+					r[i].taken = true;
+					r[move].taken = true;
+					break;
+				}
+			}
+			else if (i != move && r[i].taken == true && r[move].taken == true) { //If it over none of the squares
+				r[i].border = "black";
+				r[move].border = "black";
+				r[i].taken = false;
+				r[move].taken = false;
+			}
+		}
+	}
+}
+
+function myMove2(e){ //Runs when an object is being moved
 	if (dragok){
 		r[move].x = e.pageX - canvas.offsetLeft;
 		r[move].y = e.pageY - canvas.offsetTop;
@@ -793,7 +1011,7 @@ function myDown(e){ //When the mouse is pressed down
 	}
 }
 
-function myUp(){ //When the mouse is released.
+function myUp2(){ //When the mouse is released.
 	dragok = false;
 	canvas.onmousemove = null;
 	for(i = 0; i < r.length; i ++) { //Checking which two elements should be joined or if bin is selected
@@ -809,7 +1027,11 @@ function myUp(){ //When the mouse is released.
 			validMoveTopRight();
 		}if (i != move && r[i].border == "olive" && r[i].taken == r[move].taken) {
 			validMoveBottomLeft();
-		}if (r[move].border == "Navy") {
+		}
+		if (r[move].border == "Navy") {
+			for (j = 0; j < r[move].dots.length; j++){
+				dotsArray[r[move].dots[j]].number = "deleted";
+			}
 			r.splice(move,1);
 		}if (r[move].border == "Crimson" && i == move && (r[move].type == 1 || r[move].type == 0)) {
 			r[move].text[0] = "("+r[move].text[0]+")";
@@ -818,6 +1040,39 @@ function myUp(){ //When the mouse is released.
 		}
 	}
 }
+
+function myUp(){
+	dragok = false;
+	canvas.onmousemove = null;
+	for (i = 0; i < Math.max(1,dotsArray.length); i++){ //Checking which two elements should be joined or if bin is selected
+		if (dotsArray.length > 0){
+			if (dotsArray[i].colour == "BlueViolet" && r[move].border == "BlueViolet") {
+				//window.alert("GREAT SUCCESS");
+				insertFormula(i);
+			}
+		}
+			if (r[move].border == "Navy") {
+				for (j = 0; j < r[move].dots.length; j++){
+					dotsArray[r[move].dots[j]].number = "deleted";
+				}
+				r.splice(move,1);
+			}if (r[move].border == "Crimson" && i == move && (r[move].type == 1 || r[move].type == 0)) {
+				r[move].text[0] = "("+r[move].text[0]+")";
+			}if (r[move].border == "Chocolate" && i == move && (r[move].type == 1 || r[move].type == 0)) {
+				r[move].text[0] = "["+r[move].text[0]+"]";
+			}
+	}
+
+	for(i = 0; i < r.length; i ++) {
+		if (i != move && r[i].border == "green" && r[i].taken == r[move].taken) {
+			validMoveTopLeft();
+		}
+		if (i != move && r[i].border == "red" && r[i].taken == r[move].taken) {
+			validMoveTopRight();
+		}
+	}
+}
+
 
 
 init();
