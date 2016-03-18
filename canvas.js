@@ -207,64 +207,65 @@ function draw(x, y, w, h, i, border, text, ph) {
 }
 
 function multiLineDrawing(x, y, w, h, i, border, text, ph){
+	r[i].h = Math.min(ph*75, 400);
 	if (ph == 2) {
 			ctx.strokeStyle = "black";
-			drawLines(x,y,w,h, h/(ph*2), text, border);
+			drawLines(x,y,w,h, h/(ph*2), text, i);
 		}
 	if (ph == 3) {
 		ctx.font="28px Georgia";
 		ctx.strokeStyle = "black";
 		ctx.fillStyle = "black";
-		drawLines(x,y+h/6,w,h, h/(ph*2), text, border);
+		drawLines(x,y+h/6,w,h, h/(ph*2), text, i);
 		
 		//left branch			
 		if ((typeof text[0] !== 'string' && typeof text[0] !== 'number') && text[0] !== undefined){
 			//colourReplace(border, "yellow", i, true);
 			if (text[1] != "%"){
-				drawLines(x-w/4,y-h/6,w/2,h/3, h/(ph*2), text[0], "ignore");
+				drawLines(x-w/4,y-h/6,w/2,h/3, h/(ph*2), text[0], i);
 			}
 			else {
-				drawLines(x,y-h/6,w,h/3, h/6, text[0], "ignore");
+				drawLines(x,y-h/6,w,h/3, h/6, text[0], i);
 			}
 		}
 		//right branch
 		if ((typeof text[1] !== 'string' && typeof text[1] !== 'number') && text[1] !== undefined){
 			//colourReplace(border, "deeppink", i, true);
-			drawLines(x+w/4,y-h/6,w/2,h/3, h/(ph*2), text[1], "ignore");
+			drawLines(x+w/4,y-h/6,w/2,h/3, h/(ph*2), text[1], i);
 		}
 	}
 	if (ph == 4) {
 		ctx.font="24px Georgia";
 		ctx.strokeStyle = "black";
 		ctx.fillStyle = "black";
-		drawLines(x,y+h/4,w,h, h/(ph*2), text, border);
+		drawLines(x,y+h/4,w,h, h/(ph*2), text, i);
 		
 		//left branch
 		if ((typeof text[0] !== 'string' && typeof text[0] !== 'number') && text[0] !== undefined){
 			//colourReplace(border, "yellow", i, true);
 			if (text[1] != "%") {
-				drawLines(x-w/4,y,w/2,h/2, h/(ph*2), text[0], "ignore");
+				drawLines(x-w/4,y,w/2,h/2, h/(ph*2), text[0], i);
 			}
 			else {
-				drawLines(x,y,w,h/2, h/(ph*2), text[0], "ignore");
+				drawLines(x,y,w,h/2, h/(ph*2), text[0], i);
 			}
 		}
 		//right branch
 		if ((typeof text[1] !== 'string' && typeof text[1] !== 'number') && text[1] !== undefined){
 			//colourReplace(border, "deeppink", i, true);
-			drawLines(x+w/4,y,w/2,h/2, h/(ph*2), text[1], "ignore");
+			drawLines(x+w/4,y,w/2,h/2, h/(ph*2), text[1], i);
 		}	
 		//left left branch
 		if ((typeof text[0][0] !== 'string' && typeof text[0][0] !== 'number') && text[0][0] !== undefined){
 			//colourReplace(border, "yellow", i, true);
 			if(text[0][1] != "%" && text[1] != "%"){
-				drawLines(x-(3*w/8),y-h/4,w/4,h/4, h/(ph*2), text[0][0], "ignore");
+				drawLines(x-(3*w/8),y-h/4,w/4,h/4, h/(ph*2), text[0][0], i);
 			}
 			else if (text[0][1] != "%" || text[1] != "%") {
-				drawLines(x-w/4,y-h/4,w/2,h/4, h/(ph*2), text[0][0], "ignore");
+				drawLines(x-w/4,y-h/4,w/2,h/4, h/(ph*2), text[0][0], i);
 			}
 			else {
-				drawLines(x,y-h/4,w,h/4, h/(ph*2), text[0][0], "ignore");
+				drawLines(x,y-h/4,w,h/4, h/(ph*2), text[0][0], i);
 			}
 			
 		} 
@@ -272,63 +273,63 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 		// left right branch
 		if ((typeof text[0][1] !== 'string' && typeof text[0][1] !== 'number') && text[0][1] !== undefined){
 			//colourReplace(border, "yellow", i, true);
-			drawLines(x-(1*w/8),y-h/4,w/4,h/4, h/(ph*2), text[0][1], "ignore");
+			drawLines(x-(1*w/8),y-h/4,w/4,h/4, h/(ph*2), text[0][1], i);
 		}
 		//right left branch
 		if ((typeof text[1][0] !== 'string' && typeof text[1][0] !== 'number') && text[1][0] !== undefined){
 			//colourReplace(border, "deeppink", i, true);
 			if(text[1][1] != "%"){
-				drawLines(x+(1*w/8),y-h/4,w/4,h/4, h/(ph*2), text[1][0], "ignore");
+				drawLines(x+(1*w/8),y-h/4,w/4,h/4, h/(ph*2), text[1][0], i);
 			}
 			else{
-				drawLines(x+w/4,y-h/4,w/2,h/4, h/(ph*2), text[1][0], "ignore");
+				drawLines(x+w/4,y-h/4,w/2,h/4, h/(ph*2), text[1][0], i);
 			}
 		} 
 		
 		//right right branch
 		if ((typeof text[1][1] !== 'string' && typeof text[1][1] !== 'number') && text[1][1] !== undefined){
 			//colourReplace(border, "deeppink", i, true);
-			drawLines(x+(3*w/8),y-h/4,w/4,h/4, h/(ph*2), text[1][1], "ignore");
+			drawLines(x+(3*w/8),y-h/4,w/4,h/4, h/(ph*2), text[1][1], i);
 		}
 	}
 	if (ph > 4) {
 		ctx.font="24px Georgia";
 		ctx.strokeStyle = "black";
 		ctx.fillStyle = "black";
-		drawLines(x,y+h/4,w,h, h/(ph*2), text, border);
+		drawLines(x,y+h/4,w,h, h/(ph*2), text, i);
 		
 		//left branch
 		if ((typeof text[0] !== 'string' && typeof text[0] !== 'number') && text[0] !== undefined){
 			//colourReplace(border, "yellow", i, true);
 			if (text[1] != "%") {
-				drawLines(x-w/4,y,w/2,h/2, h/(ph*2), text[0], "ignore");
+				drawLines(x-w/4,y,w/2,h/2, h/(ph*2), text[0], i);
 			}
 			else {
-				drawLines(x,y,w,h/2, h/(ph*2), text[0], "ignore");
+				drawLines(x,y,w,h/2, h/(ph*2), text[0], i);
 			}
 		}
 		//right branch
 		if ((typeof text[1] !== 'string' && typeof text[1] !== 'number') && text[1] !== undefined){
 			//colourReplace(border, "deeppink", i, true);
-			drawLines(x+w/4,y,w/2,h/2, h/(ph*2), text[1], "ignore");
+			drawLines(x+w/4,y,w/2,h/2, h/(ph*2), text[1], i);
 		}	
 		//left left branch
 		if ((typeof text[0][0] !== 'string' && typeof text[0][0] !== 'number') && text[0][0] !== undefined){
 			//colourReplace(border, "yellow", i, true);
 			if(text[0][1] != "%" && text[1] != "%"){
-				drawLines(x-(3*w/8),y-h/4,w/4,h/4, h/(ph*2), text[0][0], "ignore");
+				drawLines(x-(3*w/8),y-h/4,w/4,h/4, h/(ph*2), text[0][0], i);
 				drawExtraBoxes(x -((3*w)/8), y-h/4-h/(ph*2), x-w/2-400, y-h/2-200, 
 				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
 				text[0][0], ph-3, w/4);
 			}
 			else if (text[0][1] != "%" || text[1] != "%") {
-				drawLines(x-w/4,y-h/4,w/2,h/4, h/(ph*2), text[0][0], "ignore");
+				drawLines(x-w/4,y-h/4,w/2,h/4, h/(ph*2), text[0][0], i);
 				drawExtraBoxes(x-w/4, y-h/4-h/(ph*2), x-w/2-400, y-h/2-200, 
 				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
 				text[0][0], ph-3, w/2);
 			}
 			else {
-				drawLines(x,y-h/4,w,h/4, h/(ph*2), text[0][0], "ignore");
+				drawLines(x,y-h/4,w,h/4, h/(ph*2), text[0][0], i);
 				drawExtraBoxes(x, y-h/4-h/(ph*2), x-w/2-400, y-h/2-200, 
 				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
 				text[0][0], ph-3, w);
@@ -340,19 +341,19 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 		if ((typeof text[0][1] !== 'string' && typeof text[0][1] !== 'number') && text[0][1] !== undefined){
 			//colourReplace(border, "yellow", i, true);
 			if(text[0][1] != "%" && text[1] != "%"){
-				drawLines(x-(1*w/8),y-h/4,w/4,h/4, h/(ph*2), text[0][1], "ignore");
+				drawLines(x-(1*w/8),y-h/4,w/4,h/4, h/(ph*2), text[0][1], i);
 				drawExtraBoxes(x -((1*w)/8), y-h/4-h/(ph*2), x-w/2, y-h/2-200, 
 					Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
 					text[0][1], ph-3, w/4);
 			}
 			else if (text[0][1] != "%" || text[1] != "%") {
-				drawLines(x+w/4,y,w/2,h/2, h/(ph*2), text[0][1], "ignore");
+				drawLines(x+w/4,y,w/2,h/2, h/(ph*2), text[0][1], i);
 				drawExtraBoxes(x +(w/4), y-h/4-h/(ph*2), x-w/2-400, y-h/2-200, 
 				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
 				text[0][1], ph-3, w/2);
 			}
 			else {
-				drawLines(x,y-h/4,w,h/4, h/(ph*2), text[0][0], "ignore");
+				drawLines(x,y-h/4,w,h/4, h/(ph*2), text[0][0], i);
 				drawExtraBoxes(x, y-h/4-h/(ph*2), x-w/2-400, y-h/2-200, 
 				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
 				text[0][1], ph-3, w);
@@ -362,13 +363,13 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 		if ((typeof text[1][0] !== 'string' && typeof text[1][0] !== 'number') && text[1][0] !== undefined){
 			//colourReplace(border, "deeppink", i, true);
 			if(text[1][1] != "%"){
-				drawLines(x+(1*w/8),y-h/4,w/4,h/4, h/(ph*2), text[1][0], "ignore");
+				drawLines(x+(1*w/8),y-h/4,w/4,h/4, h/(ph*2), text[1][0], i);
 				drawExtraBoxes(x +((1*w)/8), y-h/4-h/(ph*2), x+w/2, y-h/2-200, 
 				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
 				text[1][0], ph-3, w/4);
 			}
 			else{
-				drawLines(x+w/4,y-h/4,w/2,h/4, h/(ph*2), text[1][0], "ignore");
+				drawLines(x+w/4,y-h/4,w/2,h/4, h/(ph*2), text[1][0], i);
 				drawExtraBoxes(x + w/4, y-h/4-h/(ph*2), x+w/2, y-h/2-200, 
 				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
 				text[1][0], ph-3, w/2);
@@ -378,17 +379,17 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 		//right right branch
 		if ((typeof text[1][1] !== 'string' && typeof text[1][1] !== 'number') && text[1][1] !== undefined){
 			//colourReplace(border, "deeppink", i, true);
-			drawLines(x+(3*w/8),y-h/4,w/4,h/4, h/(ph*2), text[1][1], "ignore");
+			drawLines(x+(3*w/8),y-h/4,w/4,h/4, h/(ph*2), text[1][1], i);
 			drawExtraBoxes(x +((3*w)/8), y-h/4-h/(ph*2), x+w/2+200, y-h/2-200, 
 				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
 				text[1][1], ph-3, w/4);
 		}
 	}
-	r[i].h = Math.min(ph*75, 400);
+	//r[i].h = Math.min(ph*75, 400);
 }
 
 function drawExtraBoxes(beginX, beginY, x,y, w, h, i, border, text, ph, width) {
-	if (typeof text[0] !== 'string' && text[0] !== undefined){
+	if ((typeof text[0] !== 'string' && typeof text[0] !== 'number') && text[0] !== undefined){
 		ctx.beginPath();
 		if (text[1] != "%"){
 			ctx.moveTo (beginX - width/4,beginY);
@@ -400,7 +401,7 @@ function drawExtraBoxes(beginX, beginY, x,y, w, h, i, border, text, ph, width) {
 		ctx.stroke();
 		draw(x, y, w, h, i, border, text[0], ph);
 	}
-	if (typeof text[1] !== 'string' && text[1] !== undefined){
+	if ((typeof text[1] !== 'string' && typeof text[1] !== 'number') && text[1] !== undefined){
 		ctx.beginPath();
 		ctx.moveTo (beginX + width/4,beginY);
 		ctx.lineTo(x,y-300);
@@ -409,7 +410,7 @@ function drawExtraBoxes(beginX, beginY, x,y, w, h, i, border, text, ph, width) {
 	}
 }
 
-function drawLines(x,y,w,h,dist,text,colour) {
+function drawLines(x,y,w,h,dist,text,i) {
 	r[i].w = Math.min(600, Math.max((text[0].toString().length + text[1].toString().length)*40, (text[2].toString().length + text[3].toString().length)*40, 100, Math.pow(2, r[i].proofHeight) * 50)); //Sets box size
 	//ctx.fillStyle = "#444444";
 	ctx.beginPath();
@@ -426,7 +427,18 @@ function drawLines(x,y,w,h,dist,text,colour) {
 			if (dotsArray[text[0]].formula != ""){
 				temp = dotsArray[text[0]].number;
 				text[0] = dotsArray[text[0]].formula;
-				ctx.fillText(text[0], x-(w/4), y-dist);
+				if(typeof text[0] === 'string'){
+					ctx.fillText(text[0], x-(w/4), y-dist);
+				}else{
+					if (typeof text[1] === 'string' || typeof text[1] === 'number'){
+						r[i].proofHeight = r[i].proofHeight + r[move].proofHeight - 1;
+					}
+					//window.alert(r[i].dots); 
+					r[i].dots = (r[i].dots).concat(r[move].dots);
+					console.log(r[i].dots);
+					r.splice(move,1);
+					//CONCAT DOTS HERE
+				}
 				dotsArray[temp].number = "deleted";
 			}
 			else {
@@ -443,7 +455,16 @@ function drawLines(x,y,w,h,dist,text,colour) {
 			if (dotsArray[text[0]].formula != ""){
 				temp = dotsArray[text[0]].number;
 				text[0] = dotsArray[text[0]].formula;
-				ctx.fillText(text[0], x, y-dist);
+				if(typeof text[0] === 'string'){
+					ctx.fillText(text[0], x, y-dist);
+				} else {
+					if (typeof text[1] === 'string' || typeof text[1] === 'number'){
+						r[i].proofHeight = r[i].proofHeight + r[move].proofHeight - 1;
+					}
+					//window.alert(r[i].dots);
+					r[i].dots = (r[i].dots).concat(r[move].dots);
+					r.splice(move,1);
+				}
 				dotsArray[temp].number = "deleted";
 			}
 			else {
@@ -463,7 +484,15 @@ function drawLines(x,y,w,h,dist,text,colour) {
 			if (dotsArray[text[1]].formula != ""){
 				temp = dotsArray[text[1]].number;
 				text[1] = dotsArray[text[1]].formula;
-				ctx.fillText(text[1], x+(w/4), y-dist);
+				if(typeof text[1] === 'string'){
+					ctx.fillText(text[1], x+(w/4), y-dist);
+				} else {
+					if (typeof text[0] === 'string' || typeof text[0] === 'number'){
+						r[i].proofHeight = r[i].proofHeight + r[move].proofHeight - 1;
+					}
+					r[i].dots = (r[i].dots).concat(r[move].dots);
+					r.splice(move,1);
+				}	
 				dotsArray[temp].number = "deleted";
 			}
 			else {
@@ -606,7 +635,7 @@ function validMoveTopLeft() {
 		r[i].text[0] = r[move].text[0] + " " + r[i].text[0];
 		delShape(i, move);
 	}
-	else if (r[i].type == 2 || r[i].type == 3 || r[i].type == 4 || r[i].type == 5) {
+	/*else if (r[i].type == 2 || r[i].type == 3 || r[i].type == 4 || r[i].type == 5) {
 		if (r[move].type == 2 || r[move].type == 5){
 			if(r[move].text[2] == "•") {
 				r[move].text[2] = r[i].text[0];
@@ -639,7 +668,7 @@ function validMoveTopLeft() {
 	}
 	else {
 		window.alert("This is not a valid move!");
-	}
+	}*/
 }
 
 function validMoveTopRight() {
@@ -647,7 +676,7 @@ function validMoveTopRight() {
 		r[i].text[0] = r[i].text[0] + " " + r[move].text[0];
 		delShape(i, move);
 	}
-	else if (r[i].type == 2 || r[i].type == 3) {
+	/*else if (r[i].type == 2 || r[i].type == 3) {
 		if(r[move].type == 2 || r[move].type == 5) {
 			if(r[move].text[2] == "•") {
 				r[move].text[2] = r[i].text[1];
@@ -696,10 +725,10 @@ function validMoveTopRight() {
 	}
 	else {
 		window.alert("This is not a valid move!");
-	}
+	}*/
 }
 
-function validMoveBottomLeft() {
+/*function validMoveBottomLeft() {
 	if (r[i].type == 2 || r[i].type == 3 || r[i].type == 4 || r[i].type == 5) {
 		if(r[move].type == 4 || r[move].type == 5) {
 			r[i].text[2] = r[move].text[0];
@@ -722,54 +751,60 @@ function validMoveBottomLeft() {
 	else {
 		window.alert("This is not a valid move!");
 	}
-}
+}*/
 
-function validMoveBottomRight() {
-	if (r[i].type == 2 || r[i].type == 5) {
-		if(r[move].type == 4) {
-			r[i].text[2] = r[move].text[0];
-			delShape(i, move);			
-		}
-		else if (r[move].type == 1 || r[move].type == 0) {
-			if (r[i].text[2] == "•") {
-				r[i].text[2] = r[move].text[0];
-				delShape(i, move);
-			}
-			else {
-				r[i].text[2] = r[i].text[2] + " " + r[move].text[0];
-				delShape(i, move);
-			}
-		}
-	}
-	else if (r[i].type == 3 || r[i].type == 4) {
-		if(r[move].type == 4) {
-			r[i].text[3] = r[move].text[0];
-			delShape(i, move);			
-		}
-		else if (r[move].type == 1 || r[move].type == 0) {
-			if (r[i].text[3] == "•") {
-				r[i].text[3] = r[move].text[0];
-				delShape(i, move);
-			}
-			else {
-				r[i].text[3] = r[i].text[3] + " " + r[move].text[0];
-				delShape(i, move);
-			}
-		}
-		else {
-			window.alert("This is not a valid move!");
-		}
-	}
-	else {
-		window.alert("This is not a valid move!");
-	}
-}
+//function validMoveBottomRight() {
+	//if (r[i].type == 2 || r[i].type == 5) {
+		//if(r[move].type == 4) {
+		//	r[i].text[2] = r[move].text[0];
+		//	delShape(i, move);			
+		//}
+		//else if (r[move].type == 1 || r[move].type == 0) {
+			//if (r[i].text[2] == "•") {
+			//	r[i].text[2] = r[move].text[0];
+			//	delShape(i, move);
+			//}
+			//else {
+			//	r[i].text[2] = r[i].text[2] + " " + r[move].text[0];
+				//delShape(i, move);
+			//}
+		//}
+	//}
+	//else if (r[i].type == 3 || r[i].type == 4) {
+	//	if(r[move].type == 4) {
+	//		r[i].text[3] = r[move].text[0];
+	//		delShape(i, move);			
+	//	}
+	//	else if (r[move].type == 1 || r[move].type == 0) {
+	//		if (r[i].text[3] == "•") {
+	//			r[i].text[3] = r[move].text[0];
+	//			delShape(i, move);
+	//		}
+	//		else {
+	//			r[i].text[3] = r[i].text[3] + " " + r[move].text[0];
+	//			delShape(i, move);
+	//		}
+	//	}
+		//else {
+		//	window.alert("This is not a valid move!");
+		//}
+	//}
+	//else {
+	//	window.alert("This is not a valid move!");
+	//}
+//}
 
 function insertFormula(i){
 	if (r[move].text[1] == "none"){
 		dotsArray[i].formula = r[move].text[0];
+		r.splice(move,1);
 	}
-	r.splice(move,1);
+	else {
+		dotsArray[i].formula = r[move].text;
+		//deleteDots();
+	}
+	
+	//r.splice(move,1);
 }
 
 function myMove(e){
@@ -785,7 +820,6 @@ function myMove(e){
 							&& (r[move].y - (r[move].h/2) < dotsArray[i].yPos) && (r[move].y + (r[move].h/2) > dotsArray[i].yPos)){
 							r[move].border = "BlueViolet";
 							dotsArray[i].colour = "BlueViolet";
-							//r[move].taken = true;
 							break;
 						}
 					}
@@ -802,7 +836,9 @@ function myMove(e){
 			}
 			else {
 				r[move].border = "black";
-				dotsArray[i].colour = "black";
+				if (dotsArray.length > 0){
+					dotsArray[i].colour = "black";
+				}
 				//r[move].taken = false;
 			}
 		}
@@ -870,6 +906,13 @@ function myMove(e){
 			}
 		}
 	}
+}
+
+function deleteDots(){
+	for (j = 0; j < r[move].dots.length; j++){
+		dotsArray[r[move].dots[j]].number = "deleted";
+	}
+	r.splice(move,1);
 }
 
 function myMove2(e){ //Runs when an object is being moved
@@ -1044,31 +1087,33 @@ function myUp2(){ //When the mouse is released.
 function myUp(){
 	dragok = false;
 	canvas.onmousemove = null;
-	for (i = 0; i < Math.max(1,dotsArray.length); i++){ //Checking which two elements should be joined or if bin is selected
-		if (dotsArray.length > 0){
-			if (dotsArray[i].colour == "BlueViolet" && r[move].border == "BlueViolet") {
-				//window.alert("GREAT SUCCESS");
-				insertFormula(i);
-			}
-		}
-			if (r[move].border == "Navy") {
-				for (j = 0; j < r[move].dots.length; j++){
-					dotsArray[r[move].dots[j]].number = "deleted";
-				}
-				r.splice(move,1);
-			}if (r[move].border == "Crimson" && i == move && (r[move].type == 1 || r[move].type == 0)) {
-				r[move].text[0] = "("+r[move].text[0]+")";
-			}if (r[move].border == "Chocolate" && i == move && (r[move].type == 1 || r[move].type == 0)) {
-				r[move].text[0] = "["+r[move].text[0]+"]";
-			}
-	}
-
 	for(i = 0; i < r.length; i ++) {
 		if (i != move && r[i].border == "green" && r[i].taken == r[move].taken) {
 			validMoveTopLeft();
+			break;
 		}
 		if (i != move && r[i].border == "red" && r[i].taken == r[move].taken) {
 			validMoveTopRight();
+			break;
+		}
+		if (r[move].border == "Navy") {
+			deleteDots();
+			break;
+		}if (r[move].border == "Crimson" && i == move && (r[move].type == 1 || r[move].type == 0)) {
+			r[move].text[0] = "("+r[move].text[0]+")";
+			break;
+		}if (r[move].border == "Chocolate" && i == move && (r[move].type == 1 || r[move].type == 0)) {
+			r[move].text[0] = "["+r[move].text[0]+"]";
+			break;
+		}
+	}
+	
+	for (i = 0; i < Math.max(1,dotsArray.length); i++){ 
+		if (dotsArray.length > 0){
+			if (dotsArray[i].colour == "BlueViolet" && r[move].border == "BlueViolet") {
+				insertFormula(i);
+				break;
+			}
 		}
 	}
 }
