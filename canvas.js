@@ -138,9 +138,9 @@ function dotsIterate(dotNumber, updatedX, updatedY) {
 //	YES 2) Put conditionals in to make sure that when numbers appear then they are rendered as dots in the proof tree.
 //	YES 3) Start to put in logic that will set the colour of the dot to change when a proof is dragged over it.
 //	YES	4) Add text instead of the dot when statements added to it.
-//		5) Implement for one up one down.
+//	YES 5) Implement for one up one down.
 //		6) Stop highlighting once dot has been removed.
-//		7) Allow proof structures to be merged together. 
+//	YES	7) Allow proof structures to be merged together. 
 //
 //*****************
 
@@ -153,6 +153,9 @@ function drawIterate() {
     ctx.drawImage(bin, WIDTH-110, HEIGHT-138, 110, 138); 
 	ctx.drawImage(brackets, 0, HEIGHT-100, 100, 100); 
 	ctx.drawImage(premise, WIDTH-150, 0, 150, 75);
+	if (r.length == 0) {
+		deleteAll();
+	}
 	for (i = 0; i < r.length ; i++) {
 		draw(r[i].x, r[i].y, r[i].w, r[i].h, i, r[i].border, r[i].text, r[i].proofHeight);
 		//drawConnections(r[i].connection);
@@ -509,7 +512,7 @@ function drawLines(x,y,w,h,dist,text,i) {
 		//colourReplace(colour, "olive", i, false);
 		ctx.fillStyle = "black";
 		if(typeof text[2] === 'number'){
-			if (dotsArray[text[2]].formula != ""){
+			if (dotsArray[text[2]].formula != "" && typeof dotsArray[text[2]].formula === 'string'){
 				temp = dotsArray[text[2]].number;
 				text[2] = dotsArray[text[2]].formula;
 				ctx.fillText(text[2], x-(w/4), y+dist);
@@ -527,7 +530,7 @@ function drawLines(x,y,w,h,dist,text,i) {
 		//colourReplace(colour, "LightBlue", i, false);
 		ctx.fillStyle = "black";
 		if(typeof text[2] === 'number'){
-			if (dotsArray[text[2]].formula != ""){
+			if (dotsArray[text[2]].formula != "" && typeof dotsArray[text[2]].formula === 'string'){
 				temp = dotsArray[text[2]].number;
 				text[2] = dotsArray[text[2]].formula;
 				ctx.fillText(text[2], x, y+dist);
@@ -547,7 +550,7 @@ function drawLines(x,y,w,h,dist,text,i) {
 		//colourReplace(colour, "LightBlue", i, false);
 		ctx.fillStyle = "black";
 		if(typeof text[3] === 'number'){
-			if (dotsArray[text[3]].formula != ""){
+			if (dotsArray[text[3]].formula != "" && typeof dotsArray[text[2]].formula === 'string'){
 				temp = dotsArray[text[3]].number;
 				text[3] = dotsArray[text[3]].formula;
 				ctx.fillText(text[3], x+(w/4), y+dist);
@@ -815,7 +818,16 @@ function myMove(e){
 		for (i = 0; i < Math.max(1,dotsArray.length); i++){
 			if (dotsArray.length > 0){
 				if (dotsArray[i].number != "deleted"){
-					if (r[move].dots.toString().indexOf(i.toString()) == -1){	
+					console.log("Moving Dots: " + r[move].dots.toString());
+					console.log("Dots Array: " + dotsArray.toString());
+					var isTrue = false;
+					for (j = 0; j < r[move].dots.length; j ++){
+						if (i == r[move].dots[j]){
+							isTrue = true;
+						}
+					}
+					//if (r[move].dots.toString().indexOf(i.toString() + ",") === -1 && r[move].dots.toString().indexOf("," + i.toString()) === -1){	
+					if (isTrue == false){	
 						if ((r[move].x - (r[move].w/2) < dotsArray[i].xPos) && (r[move].x + (r[move].w/2) > dotsArray[i].xPos)
 							&& (r[move].y - (r[move].h/2) < dotsArray[i].yPos) && (r[move].y + (r[move].h/2) > dotsArray[i].yPos)){
 							r[move].border = "BlueViolet";
