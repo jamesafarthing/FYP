@@ -97,16 +97,16 @@ function setButtons(bool1,bool2,bool3,bool4,bool5,bool6,bool7,bool8){
 function levelText(){
 	if (freePlay == false){
 		if (levelNum == 1) {
-			document.getElementById("level").innerHTML = "Level 1: The goal is to create A ∧ B. <br> This uses Conjunction Introduction.";
+			document.getElementById("level").innerHTML = "Level 1: The goal is to prove A ∧ B. <br> This uses Conjunction Introduction.";
 			proof = ["A","B", "A ∧ B", "%"];
 			setButtons(false,true,false,false,true,false,true,false);
 		}
 		else if (levelNum == 2){
-			document.getElementById("level").innerHTML = "Level 2: The goal is to create B ∧ (A ∧ C). <br> This uses Conjunction Introduction.";
+			document.getElementById("level").innerHTML = "Level 2: The goal is to prove B ∧ (A ∧ C). <br> This uses Conjunction Introduction.";
 			proof = ["B", ["A","C", "A ∧ C", "%"], "B ∧ (A ∧ C)", "%"];
 			setButtons(false,true,false,false,false,false,true,false);
 		} else if (levelNum == 3){
-			document.getElementById("level").innerHTML = "Level 3: The goal is to create B ∧ A. Assume A ∧ B is true. <br> This uses Conjunction Introduction and Conjunction Elimination.";
+			document.getElementById("level").innerHTML = "Level 3: The goal is to prove B ∧ A. Assume A ∧ B is true. <br> This uses Conjunction Introduction and Conjunction Elimination.";
 			proof = [["A ∧ B", "%", "B", "%"], ["A ∧ B","%", "A", "%"], "B ∧ A", "%"];
 			setButtons(false,false,false,false,true,false,true,false);
 		} else if (levelNum == 4) {
@@ -120,9 +120,9 @@ function levelText(){
 		//else if (levelNum == 3) {
 		//	document.getElementById("level").innerHTML = "Level 3: The goal is to create A → C using A, B, C and →.";
 		//}
-		else if (levelNum == 4) {
-			document.getElementById("level").innerHTML = "Level 4: The goal is to create (A ∧ B) → C using A, B, C, ∧, →.";
-		}
+		//else if (levelNum == 4) {
+		//	document.getElementById("level").innerHTML = "Level 4: The goal is to create (A ∧ B) → C using A, B, C, ∧, →.";
+		//}
 		else if (levelNum > 4){
 			levelNum = 1;
 		}
@@ -164,6 +164,7 @@ function done(proof){
 			popup('correct');
 			deleteAll();
 			levelNum++;
+			//popup('level'+levelNum);
 		} else {
 			//window.alert("Not correct. Try again!");
 			popup('incorrect');

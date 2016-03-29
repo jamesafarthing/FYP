@@ -59,13 +59,14 @@
 		<img id="premise" width="0" height="0" src="premise.jpg" alt="brackets" style="visibility:hidden"> 
 	</div>
 	
+	
 	<div id="blanket" style="display:none"></div>
 	
 	<div id="incorrect" style="display:none">
 	<h3> Not correct. Try again! </h3>
 	<br>
 		<div class="centered">
-			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('incorrect')" >Close</a>
+			<button type="button" class="btn btn-warning btn-lg text-center" href="#" onclick="popup('incorrect')" >Close</a>
 		</div>
 	</div>
 	
@@ -73,7 +74,40 @@
 	<h3> YIPPEE. You're correct! </h3>
 	<br>
 		<div class="centered">
-			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('correct')" >Next Level</a>
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="level('level')" >Next Level</a>
+		</div>
+	</div>
+	
+	<div id="level1" style="display:none">
+	<h1> Level 1 </h1> <br>
+	<h2> The goal is to prove A ∧ B. <br> This uses Conjunction Introduction. </h2> <br>
+		<div class="centered">
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('level1')" >OK</a>
+		</div>
+		<body   onload="popup('level1')">
+	</div>
+	
+	<div id="level2" style="display:none">
+	<h1> Level 2 </h1> <br>
+	<h2> The goal is to prove B ∧ (A ∧ C). <br> This uses Conjunction Introduction. </h2> <br>
+		<div class="centered">
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('level2')" >OK</a>
+		</div>
+	</div>
+	
+	<div id="level3" style="display:none">
+	<h1> Level 3 </h1> <br>
+	<h2> The goal is to prove B ∧ A. Assume A ∧ B is true. <br> This uses Conjunction Introduction and Conjunction Elimination. </h2> <br>
+		<div class="centered">
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('level3')" >OK</a>
+		</div>
+	</div>
+	
+	<div id="level4" style="display:none">
+	<h1> Level 4 </h1> <br>
+	<h2> Level 4: The goal is to proof A → (A ∧ B). Assume A is true and B ∧ C is true. <br> This uses Conjunction Introduction, Conjunction Elimination and Implication Introduction. </h2> <br>
+		<div class="centered">
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('level4')" >OK</a>
 		</div>
 	</div>
 	

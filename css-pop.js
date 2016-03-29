@@ -1,3 +1,5 @@
+var levNum = 1;
+
 function toggle(div_id) {
 	var el = document.getElementById(div_id);
 	if ( el.style.display == 'none' ) {	el.style.display = 'block';}
@@ -20,6 +22,7 @@ function blanket_size(popUpDivVar) {
 	}
 	var blanket = document.getElementById('blanket');
 	blanket.style.height = blanket_height + 'px';
+	console.log(popUpDivVar);
 	var popUpDiv = document.getElementById(popUpDivVar);
 	popUpDiv_height=blanket_height/2-200;//200 is half popup's height
 	popUpDiv.style.top = popUpDiv_height + 'px';
@@ -47,5 +50,17 @@ function popup(windowname) {
 	blanket_size(windowname);
 	window_pos(windowname);
 	toggle('blanket');
-	toggle(windowname);		
+	toggle(windowname);	
+	if (windowname == 'correct'){
+		levNum++;
+	}
+}
+
+function level(windowname){
+	blanket_size(windowname + levelNum);
+	window_pos(windowname  + levelNum);
+	toggle('blanket');
+	toggle('correct');
+	toggle(windowname + levelNum);
+	toggle('blanket');
 }
