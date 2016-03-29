@@ -20,6 +20,8 @@ var dotNumber = 0;
 var xPos = 0;
 var yPos = 0;
 var dotTaken = [-1 ,false];
+var correctProof = true;
+var freePlay = false;
 
 function dot(number){
 	this.number = number;
@@ -81,21 +83,141 @@ function createImplication(){
 	r.push(new object(455, 55,  100, 100, ["→", "none", "none", "none"], 1, []));
 }
 
+function setButtons(bool1,bool2,bool3,bool4,bool5,bool6,bool7,bool8){
+	$('#1').prop('disabled', bool1);
+	$('#2').prop('disabled', bool2);
+	$('#3').prop('disabled', bool3);
+	$('#4').prop('disabled', bool4);
+	$('#5').prop('disabled', bool5);
+	$('#6').prop('disabled', bool6);
+	$('#7').prop('disabled', bool7);
+	$('#8').prop('disabled', bool8);
+}
+
 function levelText(){
-	if (levelNum == 1) {
-		document.getElementById("level").innerHTML = "Level 1: The goal is to create A ∧ B. <br> This uses Conjunction Introduction.";
+	if (freePlay == false){
+		if (levelNum == 1) {
+			document.getElementById("level").innerHTML = "Level 1: The goal is to create A ∧ B. <br> This uses Conjunction Introduction.";
+			proof = ["A","B", "A ∧ B", "%"];
+			setButtons(false,true,false,false,true,false,true,false);
+		}
+		else if (levelNum == 2){
+			document.getElementById("level").innerHTML = "Level 2: The goal is to create B ∧ (A ∧ C). <br> This uses Conjunction Introduction.";
+			proof = ["B", ["A","C", "A ∧ C", "%"], "B ∧ (A ∧ C)", "%"];
+			setButtons(false,true,false,false,false,false,true,false);
+		} else if (levelNum == 3){
+			document.getElementById("level").innerHTML = "Level 3: The goal is to create B ∧ A. Assume A ∧ B is true. <br> This uses Conjunction Introduction and Conjunction Elimination.";
+			proof = [["A ∧ B", "%", "B", "%"], ["A ∧ B","%", "A", "%"], "B ∧ A", "%"];
+			setButtons(false,false,false,false,true,false,true,false);
+		} else if (levelNum == 4) {
+			document.getElementById("level").innerHTML = "Level 4: The goal is to proof A → (A ∧ B). Assume A is true and B ∧ C is true. <br> This uses Conjunction Introduction, Conjunction Elimination and Implication Introduction.";
+			proof = [["A", ["B ∧ C", "%", "B", "%"], "A ∧ B", "%"], "%", "A → (A ∧ B)", "%"];
+			setButtons(false,false,false,false,false,false,false,false);
+		}
+		//else if (levelNum == 2) {
+			//document.getElementById("level").innerHTML = "Level 2: The goal is to create B using A, B and →. Assume A is true. <br> This uses Implication Elimination.";
+		//}
+		//else if (levelNum == 3) {
+		//	document.getElementById("level").innerHTML = "Level 3: The goal is to create A → C using A, B, C and →.";
+		//}
+		else if (levelNum == 4) {
+			document.getElementById("level").innerHTML = "Level 4: The goal is to create (A ∧ B) → C using A, B, C, ∧, →.";
+		}
+		else if (levelNum > 4){
+			levelNum = 1;
+		}
 	}
-	else if (levelNum == 2) {
-		document.getElementById("level").innerHTML = "Level 2: The goal is to create B using A, B and →. Assume A is true. <br> This uses Implication Elimination.";
+	else {
+		proof = [];
+		document.getElementById("level").innerHTML = "FREE PLAY! HAVE SOME FUN!!!";
+		setButtons(false,false,false,false,false,false,false,true);
 	}
-	else if (levelNum == 3) {
-		document.getElementById("level").innerHTML = "Level 3: The goal is to create A → C using A, B, C and →.";
+}
+
+function runDone(){
+	done(proof);
+}
+
+function play(){
+	if (freePlay == true) {
+		freePlay = false;
+	} else{
+		freePlay = true;
 	}
-	else if (levelNum == 4) {
-		document.getElementById("level").innerHTML = "Level 4: The goal is to create (A ∧ B) → C using A, B, C, ∧, →.";
+	levelText();
+}
+
+function done(proof){
+	correctProof = true;
+	if (typeof r[0] === 'undefined'){
+		window.alert("There is no proof on the screen. Please create a proof.");
+	} else if (typeof r[1] != 'undefined'){
+		window.alert("There are too many proofs on the screen. Please delete items you do not want.");
+	} else {
+		console.log(r[0].text);
+		//unification(r[0].text, ["A","B", "A ∧ B", "%"]);
+		//unification(r[0].text, [["C ∧ A", "%", "A", "%"],"B", "A ∧ B", "%"]);
+		//unification(r[0].text, ["A", ["B","C", "B ∧ C", "%"], "A ∧ (B ∧ C)", "%"]);
+		unification(r[0].text, proof);
+		if (correctProof == true){
+			//window.alert("YIPPEE. You're correct!");
+			popup('correct');
+			deleteAll();
+			levelNum++;
+		} else {
+			//window.alert("Not correct. Try again!");
+			popup('incorrect');
+		}
 	}
-	else if (levelNum > 4){
-		levelNum = 1;
+}
+
+//["A", ["B","C", "B ∧ C", "%"], "A ∧ (B ∧ C)", "%"]
+function unification(userEntry, idealSolution){
+	if (userEntry[2] == idealSolution[2]){
+		if (typeof userEntry[0] == 'string' && (userEntry[0] == idealSolution[0] || userEntry[0] == idealSolution[1])){
+			console.log("This part is correct 0 :" + userEntry[0]);
+		} else if(typeof userEntry[0] == 'number'){
+			console.log("This proof is wrong: " + userEntry[0]);
+			correctProof = false;
+		} else{
+			if (userEntry[0][2] == idealSolution[0][2] 
+				&& typeof userEntry[0][2] != 'undefined' && typeof idealSolution[0][2] != 'undefined'){
+				unification(userEntry[0], idealSolution[0]);
+			}
+			else if (userEntry[0][2] == idealSolution[1][2]
+					&& typeof userEntry[0][2] != 'undefined' && typeof idealSolution[1][2] != 'undefined'){
+				unification(userEntry[0], idealSolution[1]);
+			}
+			else {
+				console.log("This proof is wrong: " + userEntry[0]);
+				correctProof = false;
+			}
+		}
+		if (userEntry[1] != "%"){
+			if (typeof userEntry[1] == 'string' && (userEntry[1] == idealSolution[0] || userEntry[1] == idealSolution[1])){
+				console.log("This part is correct 1: " + userEntry[1]);
+			} else if(typeof userEntry[1] == 'number'){
+				console.log("This proof is wrong: " + userEntry[1]);
+				correctProof = false;
+			} else {
+				if(userEntry[1][2] == idealSolution[0][2]
+					&& typeof userEntry[1][2] != 'undefined' && typeof idealSolution[0][2] != 'undefined') {
+					unification(userEntry[1], idealSolution[0]);
+				}
+				else if (userEntry[1][2] == idealSolution[1][2]
+						&& typeof userEntry[1][2] != 'undefined' && typeof idealSolution[1][2] != 'undefined'){
+					unification(userEntry[1], idealSolution[1]);
+				}
+				else {
+					console.log("This proof is wrong: " + userEntry[1]);
+					correctProof = false;
+				}
+			}
+		}		
+	}
+	else {
+		console.log("This proof is wrong: " + userEntry[2]);
+		correctProof = false;
 	}
 }
 
@@ -130,18 +252,6 @@ function dotsIterate(dotNumber, updatedX, updatedY) {
 	ctx.fillStyle = dotsArray[dotNumber].colour;
 }
 
-//***** TO DO *****
-// 
-//	YES 1) Input numbers instead of dots and create an element of the dot array
-//	YES 2) Put conditionals in to make sure that when numbers appear then they are rendered as dots in the proof tree.
-//	YES 3) Start to put in logic that will set the colour of the dot to change when a proof is dragged over it.
-//	YES	4) Add text instead of the dot when statements added to it.
-//	YES 5) Implement for one up one down.
-//	YES	6) Stop highlighting once dot has been removed.
-//	YES	7) Allow proof structures to be merged together. 
-//
-//*****************
-
 function drawIterate() {
 	clear();
 	levelText();
@@ -156,31 +266,6 @@ function drawIterate() {
 	}
 	for (i = 0; i < r.length ; i++) {
 		draw(r[i].x, r[i].y, r[i].w, r[i].h, i, r[i].border, r[i].text, r[i].proofHeight);
-	}
-}
-
-function drawConnections(connection){
-	if (connection != -1){
-		ctx.strokeStyle = "grey";
-		ctx.beginPath();
-		ctx.moveTo (r[i].x - r[i].w/2,r[i].y - r[i].h/2);
-		ctx.lineTo(r[connection].x,(r[connection].y + (r[connection].h/2))); 
-		ctx.stroke();	
-	}
-	
-}
-
-function colourReplace(border, colour, i, lines) {
-	if (border != "ignore") {
-		if (border == colour && i != move) {
-			if (lines == true) {
-				ctx.strokeStyle = border;
-			}
-			ctx.fillStyle = border;
-		} else {
-			ctx.strokeStyle = "black";
-			ctx.fillStyle = "black";
-		}
 	}
 }
 
@@ -199,7 +284,7 @@ function draw(x, y, w, h, i, border, text, ph) {
 		r[i].w = Math.max(50, text[0].length * 30);
 		r[i].h = 50;
 		ctx.textAlign = "center";
-		ctx. fillText(text[0], x, y);
+		ctx.fillText(text[0], x, y);
 	}
 	else {
 		multiLineDrawing(x, y, w, h, i, border, text, ph);
@@ -267,7 +352,12 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 		
 		// left right branch
 		if ((typeof text[0][1] !== 'string' && typeof text[0][1] !== 'number') && text[0][1] !== undefined){
-			drawLines(x-(1*w/8),y-h/4,w/4,h/4, h/(ph*2), text[0][1], i);
+			if(text[1] != "%"){
+				drawLines(x-(1*w/8),y-h/4,w/4,h/4, h/(ph*2), text[0][1], i);
+			}
+			else{
+				drawLines(x+w/4,y-h/4,w/2,h/4, h/(ph*2), text[0][1], i);
+			}
 		}
 		//right left branch
 		if ((typeof text[1][0] !== 'string' && typeof text[1][0] !== 'number') && text[1][0] !== undefined){
@@ -630,52 +720,6 @@ function insertFormula(i){
 	}
 }
 
-function runDone(){
-	done(levelNum);
-}
-function done(levelNum){
-	console.log(r[0].text);
-	//unification(r[0].text, ["A","B", "A ∧ B", "%"]);
-	unification(r[0].text, ["A", ["B","C", "B ∧ C", "%"], "A ∧ (B ∧ C)", "%"]);
-}
-
-//["A", ["B","C", "B ∧ C", "%"], "A ∧ (B ∧ C)", "%"]
-function unification(userEntry, idealSolution){
-	if (userEntry[2] == idealSolution[2]){
-		if (typeof userEntry[0] == 'string' && (userEntry[0] == idealSolution[0] || userEntry[0] == idealSolution[1])){
-			console.log("This part is correct 0 :" + userEntry[0]);
-		} else{
-			if (userEntry[0][2] == idealSolution[0][2] 
-				&& typeof userEntry[0][2] != 'undefined' && typeof idealSolution[0][2] != 'undefined'){
-				unification(userEntry[0], idealSolution[0]);
-			}
-			else if (userEntry[0][2] == idealSolution[1][2]
-					&& typeof userEntry[0][2] != 'undefined' && typeof idealSolution[1][2] != 'undefined'){
-				unification(userEntry[0], idealSolution[1]);
-			}
-			else {
-				console.log("This proof is wrong: " + userEntry[0]);
-			}
-		}
-		if (typeof userEntry[1] == 'string' && (userEntry[1] == idealSolution[0] || userEntry[1] == idealSolution[1])){
-			console.log("This part is correct 1: " + userEntry[1]);
-		} else {
-			if(userEntry[1][2] == idealSolution[0][2]
-				&& typeof userEntry[1][2] != 'undefined' && typeof idealSolution[0][2] != 'undefined') {
-				unification(userEntry[1], idealSolution[0]);
-			}
-			else if (userEntry[1][2] == idealSolution[1][2]
-					&& typeof userEntry[1][2] != 'undefined' && typeof idealSolution[1][2] != 'undefined'){
-				unification(userEntry[1], idealSolution[1]);
-			}
-			else {
-				console.log("This proof is wrong: " + userEntry[1]);
-			}
-		}	
-	}
-	
-}
-
 function myMove(e){
 	if (dragok){
 		r[move].x = e.pageX - canvas.offsetLeft;
@@ -853,158 +897,3 @@ init();
 //unification([["A","C","A^C","%"],"B","A^B","%"],["B",["B","A","A^C","%"],"A^B","%"]);
 canvas.onmousedown = myDown;
 canvas.onmouseup = myUp;
-
-
-/*function myUp2(){ //When the mouse is released.
-	dragok = false;
-	canvas.onmousemove = null;
-	for(i = 0; i < r.length; i ++) { //Checking which two elements should be joined or if bin is selected
-		if (i != move && r[i].border == "green" && r[i].taken == r[move].taken) {
-			validMoveLeft();
-		}if (i != move && r[i].border == "LightBlue" && r[i].taken == r[move].taken) {
-			validMoveBottomRight();
-		}if (i != move && r[i].border == "red" && r[i].taken == r[move].taken) {
-			validMoveRight();
-		}if (i != move && r[i].border == "yellow" && r[i].taken == r[move].taken) {
-			validMoveLeft();
-		}if (i != move && r[i].border == "deeppink" && r[i].taken == r[move].taken) {
-			validMoveRight();
-		}if (i != move && r[i].border == "olive" && r[i].taken == r[move].taken) {
-			validMoveBottomLeft();
-		}
-		if (r[move].border == "Navy") {
-			for (j = 0; j < r[move].dots.length; j++){
-				dotsArray[r[move].dots[j]].number = "deleted";
-			}
-			r.splice(move,1);
-		}if (r[move].border == "Crimson" && i == move && (r[move].type == 1 || r[move].type == 0)) {
-			r[move].text[0] = "("+r[move].text[0]+")";
-		}if (r[move].border == "Chocolate" && i == move && (r[move].type == 1 || r[move].type == 0)) {
-			r[move].text[0] = "["+r[move].text[0]+"]";
-		}
-	}
-}
-
-function myMove2(e){ //Runs when an object is being moved
-	if (dragok){
-		r[move].x = e.pageX - canvas.offsetLeft;
-		r[move].y = e.pageY - canvas.offsetTop;
-		
-		for(i = 0; i < r.length; i ++) { //Cycle through static elements
-			
-			if (i != move && r[i].taken == r[move].taken && //Move over bottom left
-			(((r[i].x - (r[i].w/2)) < (r[move].x + (r[move].w/2))) && ((r[move].x) < r[i].x)) 
-			&& ((r[move].y -(r[move].h/2)) < (r[i].y + (r[i].h/2))) 
-			&& ((r[move].y -(r[move].h/2)) >= r[i].y - (r[i].h/2))
-			&& (r[move].x <= r[i].x && r[move].y > r[i].y)) {
-				if (r[i].type == 0 || r[i].type == 1) {
-					r[i].border = "green";
-					r[move].border = "green";
-					r[i].taken = true;
-					r[move].taken = true;
-					break;
-				}
-				else if (r[i].type == 2 || r[i].type == 5) {
-					r[i].border = "LightBlue";
-					r[move].border = "LightBlue";
-					r[i].taken = true;
-					r[move].taken = true;
-					break;
-				}
-				else if (r[i].type == 3 || r[i].type == 4) {
-					r[i].border = "olive";
-					r[move].border = "olive";
-					r[i].taken = true;
-					r[move].taken = true;
-					break;
-				}
-			}
-			else if (i != move && r[i].taken == r[move].taken && //Move over bottom right
-			((r[i].x < (r[move].x + (r[move].w/2))) && ((r[move].x - (r[move].w/2)) < (r[i].x + (r[i].w/2)))) 
-			&& ((r[move].y -(r[move].h/2)) < (r[i].y + (r[i].h/2))) 
-			&& ((r[move].y -(r[move].h/2)) >= r[i].y - (r[i].h/2))
-			&& (r[move].x > r[i].x && r[move].y > r[i].y)) {
-				if (r[i].type == 0 || r[i].type == 1) {
-					r[i].border = "red";
-					r[move].border = "red";
-					r[i].taken = true;
-					r[move].taken = true;
-					break;
-				}
-				else if (r[i].type == 2 || r[i].type == 3 || r[i].type ==4 || r[i].type ==5) {
-					r[i].border = "LightBlue";
-					r[move].border = "LightBlue";
-					r[i].taken = true;
-					r[move].taken = true;
-					break;
-				}
-			}
-			else if (i != move && r[i].taken == r[move].taken && //Move over top right
-				((r[i].x < r[move].x) && ((r[move].x - (r[move].w/2)) < (r[i].x + (r[i].w/2))))
-				&& ((r[move].y + (r[move].h/2)) > (r[i].y -(r[i].h/2)))
-				&& ((r[move].y + (r[move].h/2)) <= r[i].y + (r[i].h/2))
-				&& (r[move].x > r[i].x && r[move].y <= r[i].y)){
-				if (r[i].type == 0 || r[i].type == 1) {
-					r[i].border = "red";
-					r[move].border = "red";
-					r[i].taken = true;
-					r[move].taken = true;
-					break;
-				}
-				else if (r[i].type == 2 || r[i].type == 3) {
-					r[i].border = "deeppink";
-					r[move].border = "deeppink";
-					r[i].taken = true;
-					r[move].taken = true;
-					break;
-				}
-				else if (r[i].type == 4 || r[i].type == 5) {
-					r[i].border = "yellow";
-					r[move].border = "yellow";
-					r[i].taken = true;
-					r[move].taken = true;
-					break;
-				}
-			}
-			else if (i != move && r[i].taken == r[move].taken && //Move over top left
-				(((r[i].x - (r[i].w/2)) < (r[move].x + (r[move].w/2))) && ((r[move].x - (r[move].w/2)) < r[i].x))
-				&& ((r[move].y + (r[move].h/2)) > (r[i].y -(r[i].h/2)))
-				&& ((r[move].y + (r[move].h/2)) <= r[i].y + (r[i].h/2))
-				&& (r[move].x <= r[i].x && r[move].y <= r[i].y)){
-				if (r[i].type == 0 || r[i].type == 1) {
-					r[i].border = "green";
-					r[move].border = "green";
-					r[i].taken = true;
-					r[move].taken = true;
-					break;
-				}
-				else if (r[i].type == 2 || r[i].type == 3 || r[i].type == 4 || r[i].type == 5) {
-					r[i].border = "yellow";
-					r[move].border = "yellow";
-					r[i].taken = true;
-					r[move].taken = true;
-					break;
-				}
-			}
-			else if (i != move && r[i].taken == true && r[move].taken == true) { //If it over none of the squares
-				r[i].border = "black";
-				r[move].border = "black";
-				r[i].taken = false;
-				r[move].taken = false;
-			}
-				
-			if (r[move].x + (r[move].w/2) >= WIDTH-110 && r[move].y + (r[move].h/2) >= HEIGHT-138) {
-				r[move].border = "Navy";
-			}
-			else if (r[move].x - (r[move].w/2) <= 100 && r[move].y + (r[move].h/2) >= HEIGHT-100) {
-				r[move].border = "Crimson";
-			}
-			else if (r[move].x + (r[move].w/2) >= WIDTH-150  && r[move].y - (r[move].h/2) <= 100) {
-				r[move].border = "Chocolate";
-			}
-			else {
-				r[move].border = "black";
-			}
-		}
-	}
-}*/
