@@ -4,6 +4,8 @@ var x = 75;
 var y = 50;
 var WIDTH = 1500;
 var HEIGHT = 1000;
+//var WIDTH = 1000;
+//var HEIGHT = 750;
 var dragok = false;
 var r = [];
 var dotsArray = [];
@@ -22,6 +24,10 @@ var yPos = 0;
 var dotTaken = [-1 ,false];
 var correctProof = true;
 var freePlay = false;
+var userScore = 0;
+var levelScore = 10;
+var proof = [];
+var structure = [];
 
 function dot(number){
 	this.number = number;
@@ -49,7 +55,7 @@ function createTwoUpOneDown(){
 	dot1 = dotNumber++;
 	dot2 = dotNumber++;
 	dot3 = dotNumber++;
-	r.push(new object(355, 600, 100, 100, [dot1, dot2, dot3, "%"], 2, [dot1, dot2, dot3]));
+	r.push(new object((WIDTH/2)-200, 500, 75, 75, [dot1, dot2, dot3, "%"], 2, [dot1, dot2, dot3]));
 	dotsArray.push(new dot(dot1));
 	dotsArray.push(new dot(dot2));
 	dotsArray.push(new dot(dot3));
@@ -63,7 +69,7 @@ function createOneUpTwoDown() {
 function createOneUpOneDown() {
 	dot1 = dotNumber++;
 	dot2 = dotNumber++;
-	r.push(new object(355, 500, 100, 100, [dot1, "%", dot2, "%"], 5, [dot1, dot2]));
+	r.push(new object((WIDTH/2)+200, 500, 100, 100, [dot1, "%", dot2, "%"], 5, [dot1, dot2]));
 	dotsArray.push(new dot(dot1));
 	dotsArray.push(new dot(dot2));
 }
@@ -114,15 +120,6 @@ function levelText(){
 			proof = [["A", ["B ∧ C", "%", "B", "%"], "A ∧ B", "%"], "%", "A → (A ∧ B)", "%"];
 			setButtons(false,false,false,false,false,false,false,false);
 		}
-		//else if (levelNum == 2) {
-			//document.getElementById("level").innerHTML = "Level 2: The goal is to create B using A, B and →. Assume A is true. <br> This uses Implication Elimination.";
-		//}
-		//else if (levelNum == 3) {
-		//	document.getElementById("level").innerHTML = "Level 3: The goal is to create A → C using A, B, C and →.";
-		//}
-		//else if (levelNum == 4) {
-		//	document.getElementById("level").innerHTML = "Level 4: The goal is to create (A ∧ B) → C using A, B, C, ∧, →.";
-		//}
 		else if (levelNum > 4){
 			levelNum = 1;
 		}
@@ -155,19 +152,17 @@ function done(proof){
 		window.alert("There are too many proofs on the screen. Please delete items you do not want.");
 	} else {
 		console.log(r[0].text);
-		//unification(r[0].text, ["A","B", "A ∧ B", "%"]);
-		//unification(r[0].text, [["C ∧ A", "%", "A", "%"],"B", "A ∧ B", "%"]);
-		//unification(r[0].text, ["A", ["B","C", "B ∧ C", "%"], "A ∧ (B ∧ C)", "%"]);
 		unification(r[0].text, proof);
 		if (correctProof == true){
-			//window.alert("YIPPEE. You're correct!");
+			document.getElementById("levelScore").innerHTML= levelScore;
 			popup('correct');
 			deleteAll();
 			levelNum++;
-			//popup('level'+levelNum);
+			userScore = userScore + levelScore;
+			levelScore = 10;
 		} else {
-			//window.alert("Not correct. Try again!");
 			popup('incorrect');
+			levelScore = Math.max(1, levelScore - 2);
 		}
 	}
 }
@@ -262,6 +257,10 @@ function drawIterate() {
     ctx.drawImage(bin, WIDTH-110, HEIGHT-138, 110, 138); 
 	ctx.drawImage(brackets, 0, HEIGHT-100, 100, 100); 
 	ctx.drawImage(premise, WIDTH-150, 0, 150, 75);
+	ctx.font = "32px Georgia";
+	ctx.textAlign = 'left';
+	ctx.textBaseline = 'middle';
+	ctx.fillText("Score: " + userScore, 20, 35);
 	if (r.length == 0) {
 		deleteAll();
 	}
@@ -276,14 +275,14 @@ function draw(x, y, w, h, i, border, text, ph) {
 	ctx.strokeStyle = border;
 	ctx.lineWidth=3;
 	ctx.stroke();
-	ctx.font="32px Georgia";
+	ctx.font="24px Georgia";
 	ctx.fillStyle = "#444444";
 	ctx.textAlign = 'center';
 	ctx.textBaseline = 'middle';
 	//ctx.strokeStyle = "black";
 	if (text[2] == "none") { //Figures out whether it is a form or a var/operator.
-		r[i].w = Math.max(50, text[0].length * 30);
-		r[i].h = 50;
+		r[i].w = Math.max(50, text[0].length * 25);
+		r[i].h = 40;
 		ctx.textAlign = "center";
 		ctx.fillText(text[0], x, y);
 	}
@@ -293,13 +292,13 @@ function draw(x, y, w, h, i, border, text, ph) {
 }
 
 function multiLineDrawing(x, y, w, h, i, border, text, ph){
-	r[i].h = Math.min(ph*75, 400);
+	r[i].h = Math.min(ph*50, 300);
 	if (ph == 2) {
 			ctx.strokeStyle = "black";
 			drawLines(x,y,w,h, h/(ph*2), text, i);
 		}
 	if (ph == 3) {
-		ctx.font="28px Georgia";
+		ctx.font="22px Georgia";
 		ctx.strokeStyle = "black";
 		ctx.fillStyle = "black";
 		drawLines(x,y+h/6,w,h, h/(ph*2), text, i);
@@ -319,7 +318,7 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 		}
 	}
 	if (ph == 4) {
-		ctx.font="24px Georgia";
+		ctx.font="20px Georgia";
 		ctx.strokeStyle = "black";
 		ctx.fillStyle = "black";
 		drawLines(x,y+h/4,w,h, h/(ph*2), text, i);
@@ -376,7 +375,7 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 		}
 	}
 	if (ph > 4) {
-		ctx.font="24px Georgia";
+		ctx.font="20px Georgia";
 		ctx.strokeStyle = "black";
 		ctx.fillStyle = "black";
 		drawLines(x,y+h/4,w,h, h/(ph*2), text, i);
@@ -487,7 +486,9 @@ function drawExtraBoxes(beginX, beginY, x,y, w, h, i, border, text, ph, width) {
 }
 
 function drawLines(x,y,w,h,dist,text,i) {
-	r[i].w = Math.min(600, Math.max((text[0].toString().length + text[1].toString().length)*40, (text[2].toString().length + text[3].toString().length)*40, 100, Math.pow(2, r[i].proofHeight) * 50)); //Sets box size
+	//r[i].w = Math.min(600, Math.max((text[0].toString().length + text[1].toString().length)*40, (text[2].toString().length + text[3].toString().length)*40, 100, Math.pow(2, r[i].proofHeight) * 50)); //Sets box size
+	//r[i].w = Math.max(r[i].proofHeight*150, text[2].toString().length*50);
+	r[i].w = Math.min(500, Math.max((text[0].toString().length + text[1].toString().length)*35, (text[2].toString().length + text[3].toString().length)*35, 80, Math.pow(2, r[i].proofHeight) * 40)); //Sets box size
 	ctx.beginPath();
 	ctx.moveTo (x -((3*w)/8), y);
 	ctx.lineTo( x + ((3*w)/8) , y); //Draws middle line for the proof

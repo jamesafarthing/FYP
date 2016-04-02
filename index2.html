@@ -33,6 +33,7 @@
 		
 	<div class = "canvasholder">
 	<canvas id="canvas" width="1500" height="1000" style="border:1px solid #000000;">
+	<!--<canvas id="canvas" width="1000" height="750" style="border:1px solid #000000;">-->
 	<!--<canvas id="canvas" class='img-responsive' style="border:1px solid #000000;">-->
 	This text is displayed if your browser does not support HTML5 Canvas.
 	</canvas>
@@ -54,10 +55,17 @@
 		
 		<button type="button" class="btn btn-secondary btn-lg" onclick="play()">Free Play</button>
 		
+		<button id="hints" type="button" class="btn btn-secondary btn-lg" onclick="toggleHints()">Hints</button>
+		
 		<img id="bin" width="0" height="0" src="bin3.jpg" alt="bin" style="visibility:hidden">
 		<img id="brackets" width="0" height="0" src="brackets.jpg" alt="brackets" style="visibility:hidden"> 
 		<img id="premise" width="0" height="0" src="premise.jpg" alt="brackets" style="visibility:hidden"> 
 	</div>
+	<br>
+	<canvas id="canvas2" width="1500" height="400" style="display:none">
+	This text is displayed if your browser does not support HTML5 Canvas.
+	</canvas>
+	<br>
 	
 	
 	<div id="blanket" style="display:none"></div>
@@ -72,6 +80,7 @@
 	
 	<div id="correct" style="display:none">
 	<h3> YIPPEE. You're correct! </h3>
+	<h4> You scored <a id="levelScore"></a> for this level.</h4>
 	<br>
 		<div class="centered">
 			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="level('level')" >Next Level</a>
@@ -84,7 +93,7 @@
 		<div class="centered">
 			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('level1')" >OK</a>
 		</div>
-		<body   onload="popup('level1')">
+		<body   onload="popup('level1')"></body>
 	</div>
 	
 	<div id="level2" style="display:none">
@@ -111,7 +120,7 @@
 		</div>
 	</div>
 	
-	<!--<button type="button" class="btn btn-success btn-lg" href="#" onclick="popup('popUpDiv')">Click to Open CSS Pop Up</a>
+	<!--<button type="button" class="btn btn-success btn-lg" href="#" onclick="popup('popUpDiv')">Click to Open CSS Pop Up</a>-->
 	
 	</section>	
 	
@@ -123,5 +132,6 @@
 	
 	<script src="canvas.js"></script>
 	<script src="css-pop.js"></script>
+	<script src="hints.js"></script>
   </body>
 </html>
