@@ -57,6 +57,7 @@ function popup(windowname) {
 }
 
 function level(windowname){
+	document.getElementById("canvas2").style.display = "none";
 	blanket_size(windowname + levelNum);
 	window_pos(windowname  + levelNum);
 	toggle('blanket');
