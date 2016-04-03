@@ -29,6 +29,10 @@ var levelScore = 10;
 var proof = [];
 var structure = [];
 
+function reduceScore(){
+	levelScore = Math.max(1, levelScore - 2);
+}
+
 function dot(number){
 	this.number = number;
 	this.xPos = 0;
@@ -74,19 +78,19 @@ function createOneUpOneDown() {
 	dotsArray.push(new dot(dot2));
 }
 function createA(){
-	r.push(new object(55,  55,  100, 100, ["A", "none", "none", "none"], 0, []));
+	r.push(new object((WIDTH/2)-200,  55,  100, 100, ["A", "none", "none", "none"], 0, []));
 } 
 function createB(){
-	r.push(new object(155, 55,  100, 100, ["B", "none", "none", "none"], 0, []));
+	r.push(new object((WIDTH/2)-100, 55,  100, 100, ["B", "none", "none", "none"], 0, []));
 } 
 function createC(){
-	r.push(new object(255, 55,  100, 100, ["C", "none", "none", "none"], 0, []));
+	r.push(new object((WIDTH/2), 55,  100, 100, ["C", "none", "none", "none"], 0, []));
 } 
 function createConjunction(){
-	r.push(new object(355, 55,  100, 100, ["∧", "none", "none", "none"], 1, []));
+	r.push(new object((WIDTH/2)+100, 55,  100, 100, ["∧", "none", "none", "none"], 1, []));
 }
 function createImplication(){
-	r.push(new object(455, 55,  100, 100, ["→", "none", "none", "none"], 1, []));
+	r.push(new object((WIDTH/2)+200, 55,  100, 100, ["→", "none", "none", "none"], 1, []));
 }
 
 function setButtons(bool1,bool2,bool3,bool4,bool5,bool6,bool7,bool8){
@@ -162,7 +166,8 @@ function done(proof){
 			levelScore = 10;
 		} else {
 			popup('incorrect');
-			levelScore = Math.max(1, levelScore - 2);
+			//levelScore = Math.max(1, levelScore - 2);
+			reduceScore();
 		}
 	}
 }
