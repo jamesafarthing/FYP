@@ -4,6 +4,7 @@ var x = 75;
 var y = 50;
 var WIDTH = 1500;
 var HEIGHT = 1000;
+var scale=1.00;
 //var WIDTH = 1000;
 //var HEIGHT = 750;
 var dragok = false;
@@ -63,6 +64,10 @@ function createTwoUpOneDown(){
 	dotsArray.push(new dot(dot1));
 	dotsArray.push(new dot(dot2));
 	dotsArray.push(new dot(dot3));
+	if(levelNum == 100){
+		levelNum++;
+		levelText();
+	}
 } 
 function createTwoUpTwoDown() {
 	r.push(new object(355, 500, 100, 100, ["•", "•", "•", "•"], 3));
@@ -79,6 +84,10 @@ function createOneUpOneDown() {
 }
 function createA(){
 	r.push(new object((WIDTH/2)-200,  55,  100, 100, ["A", "none", "none", "none"], 0, []));
+	if(levelNum == 101){
+		levelNum++;
+		levelText();
+	}
 } 
 function createB(){
 	r.push(new object((WIDTH/2)-100, 55,  100, 100, ["B", "none", "none", "none"], 0, []));
@@ -93,38 +102,78 @@ function createImplication(){
 	r.push(new object((WIDTH/2)+200, 55,  100, 100, ["→", "none", "none", "none"], 1, []));
 }
 
-function setButtons(bool1,bool2,bool3,bool4,bool5,bool6,bool7,bool8){
-	$('#1').prop('disabled', bool1);
-	$('#2').prop('disabled', bool2);
-	$('#3').prop('disabled', bool3);
-	$('#4').prop('disabled', bool4);
-	$('#5').prop('disabled', bool5);
-	$('#6').prop('disabled', bool6);
-	$('#7').prop('disabled', bool7);
-	$('#8').prop('disabled', bool8);
+function setButtons(bool1,bool2,bool3,bool4,bool5,bool6,bool7,bool8,bool9,bool10,bool11){
+	$('#twoOne').prop('disabled', bool1);
+	$('#oneOne').prop('disabled', bool2);
+	$('#A').prop('disabled', bool3);
+	$('#B').prop('disabled', bool4);
+	$('#C').prop('disabled', bool5);
+	$('#con').prop('disabled', bool6);
+	$('#imp').prop('disabled', bool7);
+	$('#del').prop('disabled', bool8);
+	$('#check').prop('disabled', bool9);
+	$('#free').prop('disabled', bool10);
+	$('#hints').prop('disabled', bool11);
 }
 
 function levelText(){
 	if (freePlay == false){
+		if (levelNum == 100){
+			document.getElementById("level").innerHTML = "Welcome to the Natural Deduction Tutorial. <br> Start by clicking the '2 Top\\1 Bottom' button.";
+			proof = [];
+			setButtons(false,true,true,true,true,true,true,true,true,true,true);
+		}
+		if (levelNum == 101){
+			document.getElementById("level").innerHTML = "Well done. This creates a proof structure. You can left click on it and drag it around. <br> Now click on the 'A' button.";
+			setButtons(true,true,false,true,true,true,true,true,true,true,true);
+		}
+		if (levelNum == 102){
+			document.getElementById("level").innerHTML = "Great. Now click and drag the 'A' to move it around. Drag it over a dot. <br> You will see the dot and the border of the 'A' goes purple. <br> This means the items will connect if you release the mouse. <br> The 'Check Proof' button checks a finished proof. Press that when you have connected the 'A' to the top left dot.";
+			setButtons(true,true,true,true,true,true,true,true,false,true,true);
+		}
+		if (levelNum == 103){
+			document.getElementById("level").innerHTML = "Awesome. You're learning how to build proofs.<br> Proof structures can also be dragged onto each other. Drag a '1 Top\\1 Bottom' structure onto the top right of the proof. <br> Once again, click 'Check Proof' when you are done.";
+			setButtons(true,false,true,true,true,true,true,true,false,true,true);
+		}
+		
+		if (levelNum ==104){
+			document.getElementById("level").innerHTML = "Drag what you've created over the bin icon to delete it.<br> Once the border goes blue, release it and it will be deleted."
+			setButtons(true,true,true,true,true,true,true,true,true,true,true);
+		}
+		if (levelNum == 105){
+			document.getElementById("level").innerHTML = "Good work. Statements can also be joined together to create longer statements. <br> Dragging a statement to the right of another turns the borders red. This will add the object you are moving to the right. <br> Dragging a statement to the left of another will turn the borders green will add the object to the left. <br> See if you can create 'A ∧ B. When you are done, click 'Check Proof'."
+			setButtons(true,true,false,false,true,false,true,true,false,true,true);
+		}
+		if (levelNum == 106){
+			document.getElementById("level").innerHTML = "Nice. Drag this proof over to the brackets. Once the border goes pink release it. <br> This surrounds the outside of the current statement with brackets.";
+		}
+		if (levelNum == 107){
+			document.getElementById("level").innerHTML = "Fantastic. The tutorial is done! In 5 seconds Level 1 will start! Enjoy.";
+			levelNum = 108;
+			window.setTimeout(start, 5000);
+		}
+		if (levelNum == 108){
+			document.getElementById("level").innerHTML = "Fantastic. The tutorial is done! In 5 seconds Level 1 will start! Enjoy.";
+		}
 		if (levelNum == 1) {
 			document.getElementById("level").innerHTML = "Level 1: The goal is to prove A ∧ B. <br> This uses Conjunction Introduction.";
 			proof = ["A","B", "A ∧ B", "%"];
-			setButtons(false,true,false,false,true,false,true,false);
+			setButtons(false,true,false,false,true,false,true,false,false,false,false);
 		}
 		else if (levelNum == 2){
 			document.getElementById("level").innerHTML = "Level 2: The goal is to prove B ∧ (A ∧ C). <br> This uses Conjunction Introduction.";
 			proof = ["B", ["A","C", "A ∧ C", "%"], "B ∧ (A ∧ C)", "%"];
-			setButtons(false,true,false,false,false,false,true,false);
+			setButtons(false,true,false,false,false,false,true,false,false,false,false);
 		} else if (levelNum == 3){
 			document.getElementById("level").innerHTML = "Level 3: The goal is to prove B ∧ A. Assume A ∧ B is true. <br> This uses Conjunction Introduction and Conjunction Elimination.";
 			proof = [["A ∧ B", "%", "B", "%"], ["A ∧ B","%", "A", "%"], "B ∧ A", "%"];
-			setButtons(false,false,false,false,true,false,true,false);
+			setButtons(false,false,false,false,true,false,true,false,false,false,false);
 		} else if (levelNum == 4) {
 			document.getElementById("level").innerHTML = "Level 4: The goal is to proof A → (A ∧ B). Assume A is true and B ∧ C is true. <br> This uses Conjunction Introduction, Conjunction Elimination and Implication Introduction.";
 			proof = [["A", ["B ∧ C", "%", "B", "%"], "A ∧ B", "%"], "%", "A → (A ∧ B)", "%"];
-			setButtons(false,false,false,false,false,false,false,false);
+			setButtons(false,false,false,false,false,false,false,false,false,false,false);
 		}
-		else if (levelNum > 4){
+		else if (levelNum == 5){
 			levelNum = 1;
 		}
 	}
@@ -137,6 +186,12 @@ function levelText(){
 
 function runDone(){
 	done(proof);
+}
+
+function start(){
+		popup('start');
+		levelNum = 1;
+		deleteAll();
 }
 
 function play(){
@@ -154,7 +209,41 @@ function done(proof){
 		window.alert("There is no proof on the screen. Please create a proof.");
 	} else if (typeof r[1] != 'undefined'){
 		window.alert("There are too many proofs on the screen. Please delete items you do not want.");
-	} else {
+	} else if (levelNum == 102){
+		if(r[0].text[0] == "A"){
+			levelNum++;
+			levelText();
+		}
+		else{
+			window.alert("You've gone wrong. Start the tutorial again.");
+			deleteAll();
+			levelNum = 100;
+			levelText();
+		}
+	} else if (levelNum == 103){
+		if (typeof r[0].text[1][0] == 'number' && r[0].text[1][1] == "%"){
+			levelNum++;
+			levelText();
+		}
+		else {
+			window.alert("You've gone wrong. Start the tutorial again.");
+			deleteAll();
+			levelNum = 100;
+			levelText();
+		}
+	}
+	
+	else if (levelNum == 105){
+		if(r[0].text[0] == "A ∧ B"){
+			levelNum++;
+			levelText();
+		} else {
+			window.alert("You've gone wrong. Try that again.");
+			deleteAll();
+			//levelNum = 103;
+			//levelText();
+		}
+	} else{
 		console.log(r[0].text);
 		unification(r[0].text, proof);
 		if (correctProof == true){
@@ -172,8 +261,28 @@ function done(proof){
 	}
 }
 
+function removeBrackets(statement){
+	if (typeof statement == 'string'){ 
+		if(statement.charAt(0) == '(' && statement.charAt(statement.length-1) == ')'){
+			statement = statement.slice(1,statement.length-1);
+		}
+	}
+	return statement;
+}
+
 //["A", ["B","C", "B ∧ C", "%"], "A ∧ (B ∧ C)", "%"]
 function unification(userEntry, idealSolution){
+	userEntry[0] = removeBrackets(userEntry[0]);
+	userEntry[1] = removeBrackets(userEntry[1]);
+	userEntry[2] = removeBrackets(userEntry[2]);
+	idealSolution[0] = removeBrackets(idealSolution[0]);
+	idealSolution[1] = removeBrackets(idealSolution[1]);
+	idealSolution[2] = removeBrackets(idealSolution[2]);
+	userEntry[0][2] = removeBrackets(userEntry[0][2]);
+	userEntry[1][2] = removeBrackets(userEntry[1][2]);
+	idealSolution[0][2] = removeBrackets(idealSolution[0][2]);
+	idealSolution[1][2] = removeBrackets(idealSolution[1][2]);
+	
 	if (userEntry[2] == idealSolution[2]){
 		if (typeof userEntry[0] == 'string' && (userEntry[0] == idealSolution[0] || userEntry[0] == idealSolution[1])){
 			console.log("This part is correct 0 :" + userEntry[0]);
@@ -242,7 +351,7 @@ function clear() {
 function init() {
 	canvas = document.getElementById("canvas");
 	ctx = canvas.getContext("2d");
-	levelNum = 1;
+	levelNum = 100;
 	levelText();
 	return setInterval(drawIterate, 10);
 }
@@ -552,7 +661,7 @@ function drawLines(x,y,w,h,dist,text,i) {
 		else {
 			ctx.fillText(text[0], x, y-dist);
 		}
-	}
+	} 
 	
 	if(text[1] != "%" && (typeof text[1] === 'string' || typeof text[1] === 'number')){
 		ctx.fillStyle = "black";		
@@ -579,7 +688,7 @@ function drawLines(x,y,w,h,dist,text,i) {
 		else {
 			ctx.fillText(text[1], x+(w/4), y-dist);
 		}
-	}
+	} 
 	
 	if(text[2] != "%" && text[3] != "%" && (typeof text[2] === 'string' || typeof text[2] === 'number')) {
 		ctx.fillStyle = "black";
@@ -634,51 +743,7 @@ function drawLines(x,y,w,h,dist,text,i) {
 		else {
 			ctx.fillText(text[3], x+(w/4), y+dist);
 		}
-	}
-}
-
-function doneCheck() { //Checks to see if the code is correct and fill it in.
-	if(levelNum == 1) {
-		if (r[i].text == "A,B,∧,%" || r[i].text == "A,B,A ∧ B,%") {
-			r[i].text[2] = "A ∧ B";
-			return true;
-		}
-		else if (r[i].text == "B,A,∧,%" || r[i].text == "B,A,B ∧ A,%") {
-			r[i].text[2] = "B ∧ A";
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-	else if(levelNum == 2) {
-		if (r[i].text == "A → B,A,B,%" || r[i].text == "A,A → B,B,%") {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-	else if (levelNum == 3){
-		if (r[i].text == "A → B,B → C,→,%" || r[i].text == "B → C,A → B,→,%") {
-			r[i].text[2] = "A → C";
-			return true;
-		}
-		else if (r[i].text == "A → B,B → C,A → C,%" || r[i].text == "B → C,A → B,A → C,%") {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-	else if (levelNum == 4){
-		if (r[i].text == "A,B,A ∧ B,%,C,(A ∧ B) ∧ C,%") {
-			return true; 0
-		}
-		else {
-			return false;
-		}
-	}
+	} 
 }
 
 function delShape(i, move) {
@@ -692,15 +757,7 @@ function delShape(i, move) {
 				r[i].connection = r[move].connection -1;
 		}
 	}
-	var done = doneCheck();
 	r.splice(move,1);
-	if (done == true) {
-		drawIterate();
-		drawIterate();
-		window.alert("Congratulations! Level " + levelNum + " Complete.");
-		levelNum++;
-		deleteAll();
-	}
 }
 
 function validMoveLeft() {
@@ -848,6 +905,11 @@ function deleteDots(){
 		dotsArray[r[move].dots[j]].number = "deleted";
 	}
 	r.splice(move,1);
+	
+	if(levelNum == 104){
+		levelNum++;
+		levelText();
+	}
 }
 
 function myDown(e){ //When the mouse is pressed down
@@ -883,6 +945,10 @@ function myUp(){
 			break;
 		}if (r[move].border == "Crimson" && i == move && (r[move].type == 1 || r[move].type == 0)) {
 			r[move].text[0] = "("+r[move].text[0]+")";
+			if(levelNum == 106){
+				levelNum++;
+				levelText();
+			}
 			break;
 		}if (r[move].border == "Chocolate" && i == move && (r[move].type == 1 || r[move].type == 0)) {
 			r[move].text[0] = "["+r[move].text[0]+"]";

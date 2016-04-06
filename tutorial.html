@@ -39,22 +39,22 @@
 	</div>
 	<br>
 	<div class="centered">
-		<button id="twoOne" type="button" class="btn btn-primary btn-lg" onclick="createTwoUpOneDown()">2 Top / 1 Bottom</button>
-		<button id="oneOne" type="button" class="btn btn-primary btn-lg" onclick="createOneUpOneDown()" disabled="disabled">1 Top / 1 Bottom</button>
+		<button id="1" type="button" class="btn btn-primary btn-lg" onclick="createTwoUpOneDown()">2 Top / 1 Bottom</button>
+		<button id="2" type="button" class="btn btn-primary btn-lg" onclick="createOneUpOneDown()" disabled="disabled">1 Top / 1 Bottom</button>
 
-		<button id="A" type="button" class="btn btn-info btn-lg" onclick="createA()">A</button>
-		<button id="B" type="button" class="btn btn-info btn-lg" onclick="createB()">B</button>
-		<button  id="C" type="button" class="btn btn-info btn-lg" onclick="createC()">C</button>
+		<button id="3" type="button" class="btn btn-info btn-lg" onclick="createA()">A</button>
+		<button id="4" type="button" class="btn btn-info btn-lg" onclick="createB()">B</button>
+		<button  id="5" type="button" class="btn btn-info btn-lg" onclick="createC()">C</button>
 
-		<button id="con" type="button" class="btn btn-warning btn-lg" onclick="createConjunction()">∧</button>
-		<button id="imp" type="button" class="btn btn-warning btn-lg" onclick="createImplication()">→</button>
+		<button id="6" type="button" class="btn btn-warning btn-lg" onclick="createConjunction()">∧</button>
+		<button id="7" type="button" class="btn btn-warning btn-lg" onclick="createImplication()">→</button>
 
-		<button id="del" type="button" class="btn btn-danger btn-lg" onclick="deleteAll()">Delete All</button>
-		<button id="check" type="button" class="btn btn-success btn-lg" onclick="runDone()">Check Proof</button>
+		<button type="button" class="btn btn-danger btn-lg" onclick="deleteAll()">Delete All</button>
+		<button id="8" type="button" class="btn btn-success btn-lg" onclick="runDone()">Check Proof</button>
 		
-		<button id="free" type="button" class="btn btn-secondary btn-lg" onclick="play()">Free Play</button>
+		<button type="button" class="btn btn-secondary btn-lg" onclick="play()">Free Play</button>
 		
-		<button id="hints" id="hints" type="button" class="btn btn-secondary btn-lg" onclick="toggleHints()">Hints</button>
+		<button id="hints" type="button" class="btn btn-secondary btn-lg" onclick="toggleHints()">Hints</button>
 		
 		<img id="bin" width="0" height="0" src="bin3.jpg" alt="bin" style="visibility:hidden">
 		<img id="brackets" width="0" height="0" src="brackets.jpg" alt="brackets" style="visibility:hidden"> 
@@ -86,32 +86,13 @@
 		</div>
 	</div>
 	
-	<div id="start" style="display:none">
-	<h2> Welcome to the Natural Deduction Game.</h2>
-	<h3>Each level has a max score of 10. <br>Asking for hints deducts you 2 points from that level's score. <br>Submitting an incorrect answer also loses you 2 points.</h3>
-	<br>
-		<div class="centered">
-			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="level('level')" >OK</a>
-		</div>
-	</div>
-	
-	<div id="splash" style="display:none">
-	<h2> Welcome to the Natural Deduction Game.</h2>
-	<h3>This tutorial will teach you the basics of how to play. <br> Messages are displayed at the top of the screen.</h3>
-	<br>
-		<div class="centered">
-			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('splash')" >OK</a>
-		</div>
-		<body   onload="popup('splash')"></body>
-	</div>
-	
 	<div id="level1" style="display:none">
 	<h1> Level 1 </h1> <br>
 	<h2> The goal is to prove A ∧ B. <br> This uses Conjunction Introduction. </h2> <br>
 		<div class="centered">
 			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('level1')" >OK</a>
 		</div>
-		<!--<body   onload="popup('level1')"></body> -->
+		<body   onload="popup('level1')"></body>
 	</div>
 	
 	<div id="level2" style="display:none">

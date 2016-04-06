@@ -61,7 +61,12 @@ function level(windowname){
 	blanket_size(windowname + levelNum);
 	window_pos(windowname  + levelNum);
 	toggle('blanket');
-	toggle('correct');
+	if(levelNum != 1){
+		toggle('correct');
+	}
+	else{
+		toggle('start');
+	}
 	toggle(windowname + levelNum);
 	toggle('blanket');
 }
