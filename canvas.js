@@ -124,7 +124,7 @@ function levelText(){
 			setButtons(false,true,true,true,true,true,true,true,true,true,true);
 		}
 		if (levelNum == 101){
-			document.getElementById("level").innerHTML = "Well done. This creates a proof structure. You can left click on it and drag it around. <br> Now click on the 'A' button.";
+			document.getElementById("level").innerHTML = "Well done. This creates a proof structure. You can left click on it and drag it around. <br> Now click on the 'A' button below.";
 			setButtons(true,true,false,true,true,true,true,true,true,true,true);
 		}
 		if (levelNum == 102){
@@ -174,7 +174,7 @@ function levelText(){
 			setButtons(false,false,false,false,false,false,false,false,false,false,false);
 		}
 		else if (levelNum == 5){
-			levelNum = 1;
+			//levelNum = 1;
 		}
 	}
 	else {
@@ -244,18 +244,22 @@ function done(proof){
 			//levelText();
 		}
 	} else{
-		console.log(r[0].text);
+		//console.log(r[0].text);
 		unification(r[0].text, proof);
 		if (correctProof == true){
 			document.getElementById("levelScore").innerHTML= levelScore;
-			popup('correct');
+			if(levelNum == 4){
+				popup('finish');
+			} else {
+				popup('correct');
+			}
 			deleteAll();
 			levelNum++;
 			userScore = userScore + levelScore;
+			document.getElementById("userScore").innerHTML= userScore;
 			levelScore = 10;
 		} else {
 			popup('incorrect');
-			//levelScore = Math.max(1, levelScore - 2);
 			reduceScore();
 		}
 	}

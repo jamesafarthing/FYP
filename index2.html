@@ -26,8 +26,9 @@
     <div class="page-header">
 	<h1>Natural Deduction Drag and Drop Game </h1>
 	</div>
-	
-	<h3 id="level"></h3>
+	<div class="jumbotron">
+    <h3 id="level"></h3>
+	</div>
 	
 	<section>
 		
@@ -65,9 +66,52 @@
 	This text is displayed if your browser does not support HTML5 Canvas.
 	</canvas>
 	<br>
-	
+	</section>	
 	
 	<div id="blanket" style="display:none"></div>
+	
+	<div id="finish" style="display:none">
+	<h2>Well Done! You've completed the game!</h2>
+	<h3>You've scored <a id="userScore"></a> out of a posible score of 40.</h3>
+	<br>
+		<div class="centered">
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('finish2')" >Freeplay</a></button>
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('done')" >Play Again</a></button>
+		</div>
+	</div>
+	
+	<div id="impintro" style="display:none">
+	<h2>Implication Introduction</h2>
+	<h3>Implication Introduction means something assumed to be true later leads to something else to be true.</h3>
+	<br>
+		<div class="centered">
+		<img id ="impin" src="implicationintroduction.png" alt="" style="width:362px;height:206px;">
+		<br>
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="level('impintro', 'level')" >Got it!</a>
+		</div>
+	</div>
+	
+	<div id="conintro" style="display:none">
+	<h2>Conjunction Introduction</h2>
+	<h3>The two statements on the top are assumed true. This means the statement on the bottom is true.</h3>
+	<br>
+		<div class="centered">
+		<img id ="conin" src="conjunctionintroduction.png" alt="" style="width:362px;height:206px;">
+		<br>
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="level('conintro', 'level')" >Got it!</a>
+		</div>
+	</div>
+	
+	<div id="conelim" style="display:none">
+	<h2>Conjunction Elimination</h2>
+	<h3>The conjunction on the top is assumed true. This means A and C are both indivdually true and this is shown by eliminating the conjuction.</h3>
+	<br>
+		<div class="centered">
+		<img id ="conel" src="conjunctionelimination.png" alt="" style="width:362px;height:206px;">
+		<br>
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="level('conelim', 'level')" >Got it!</a>
+		</div>
+	</div>
 	
 	<div id="incorrect" style="display:none">
 	<h3> Not correct. Try again! </h3>
@@ -82,7 +126,7 @@
 	<h4> You scored <a id="levelScore"></a> for this level.</h4>
 	<br>
 		<div class="centered">
-			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="level('level')" >Next Level</a>
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="level('correct','level')" >Next Level</a>
 		</div>
 	</div>
 	
@@ -91,7 +135,7 @@
 	<h3>Each level has a max score of 10. <br>Asking for hints deducts you 2 points from that level's score. <br>Submitting an incorrect answer also loses you 2 points.</h3>
 	<br>
 		<div class="centered">
-			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="level('level')" >OK</a>
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="skip('start','conintro')" >OK</a>
 		</div>
 	</div>
 	
@@ -100,14 +144,15 @@
 	<h3>This tutorial will teach you the basics of how to play. <br> Messages are displayed at the top of the screen.</h3>
 	<br>
 		<div class="centered">
-			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('splash')" >OK</a>
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('splash')" >Start Tutorial</a></button>
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="skip('splash','start')" >Skip</a></button>
 		</div>
 		<body   onload="popup('splash')"></body>
 	</div>
 	
 	<div id="level1" style="display:none">
 	<h1> Level 1 </h1> <br>
-	<h2> The goal is to prove A ∧ B. <br> This uses Conjunction Introduction. </h2> <br>
+	<h2> The goal is to prove A ∧ B.  Assume A, B are true.<br> This uses Conjunction Introduction. </h2> <br>
 		<div class="centered">
 			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('level1')" >OK</a>
 		</div>
@@ -116,7 +161,7 @@
 	
 	<div id="level2" style="display:none">
 	<h1> Level 2 </h1> <br>
-	<h2> The goal is to prove B ∧ (A ∧ C). <br> This uses Conjunction Introduction. </h2> <br>
+	<h2> The goal is to prove B ∧ (A ∧ C). Assume A, B, C are true.<br> This also uses Conjunction Introduction. </h2> <br>
 		<div class="centered">
 			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('level2')" >OK</a>
 		</div>
@@ -132,16 +177,14 @@
 	
 	<div id="level4" style="display:none">
 	<h1> Level 4 </h1> <br>
-	<h2> Level 4: The goal is to proof A → (A ∧ B). Assume A is true and B ∧ C is true. <br> This uses Conjunction Introduction, Conjunction Elimination and Implication Introduction. </h2> <br>
+	<h2> The goal is to proof A → (A ∧ B). <br> Assume A is true and B ∧ C is true. <br> This uses Conjunction Introduction, Conjunction Elimination and Implication Introduction. </h2> <br>
 		<div class="centered">
 			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('level4')" >OK</a>
 		</div>
 	</div>
 	
 	<!--<button type="button" class="btn btn-success btn-lg" href="#" onclick="popup('popUpDiv')">Click to Open CSS Pop Up</a>-->
-	
-	</section>	
-	
+		
 	</div>
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>

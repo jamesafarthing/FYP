@@ -22,9 +22,9 @@ function blanket_size(popUpDivVar) {
 	}
 	var blanket = document.getElementById('blanket');
 	blanket.style.height = blanket_height + 'px';
-	console.log(popUpDivVar);
+	//console.log(popUpDivVar);
 	var popUpDiv = document.getElementById(popUpDivVar);
-	popUpDiv_height=blanket_height/2-200;//200 is half popup's height
+	popUpDiv_height=blanket_height/2-350;//150 is half popup's height
 	popUpDiv.style.top = popUpDiv_height + 'px';
 }
 function window_pos(popUpDivVar) {
@@ -43,30 +43,59 @@ function window_pos(popUpDivVar) {
 		}
 	}
 	var popUpDiv = document.getElementById(popUpDivVar);
-	window_width=window_width/2-200;//200 is half popup's width
+	window_width=window_width/2-400;//400 is half popup's width
 	popUpDiv.style.left = window_width + 'px';
 }
 function popup(windowname) {
-	blanket_size(windowname);
-	window_pos(windowname);
-	toggle('blanket');
-	toggle(windowname);	
-	if (windowname == 'correct'){
-		levNum++;
+	if (windowname == 'finish2'){
+		toggle('blanket');
+		toggle('finish');
+		blanket_size('finish');
+		window_pos('finish');
+		play();
+		levelNum = 1;
+		userScore = 0;
+	} else if (windowname == 'done'){
+		//toggle('finish');
+		blanket_size('finish');
+		window_pos('finish');
+		skip('finish','start');
 	}
+	else {
+		toggle('blanket');
+		toggle(windowname);	
+		blanket_size(windowname);
+		window_pos(windowname);
+	}
+	
 }
 
-function level(windowname){
+function level(off,windowname){
 	document.getElementById("canvas2").style.display = "none";
 	blanket_size(windowname + levelNum);
 	window_pos(windowname  + levelNum);
-	toggle('blanket');
-	if(levelNum != 1){
-		toggle('correct');
+	toggle(off);
+	if (levelNum == 3 && off =='correct'){
+		toggle('blanket');
+		popup('conelim');
+	} else if (levelNum == 4 && off =='correct') {
+		toggle('blanket');
+		popup('impintro');
+	} else if (levelNum == 5) {
+		toggle('blanket');
+		popup('finish')
+	} else{
+		toggle(windowname + levelNum);
 	}
-	else{
-		toggle('start');
-	}
-	toggle(windowname + levelNum);
-	toggle('blanket');
+	
+}
+
+function skip(off,windowname){
+	userScore = 0;
+	levelNum = 1;
+	blanket_size(windowname);
+	window_pos(windowname);
+	//toggle('blanket');
+	toggle(off);
+	toggle(windowname);	
 }

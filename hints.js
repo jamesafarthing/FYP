@@ -22,6 +22,17 @@ function toggleHints(){
 			reduceScore();
 		}
 		else if(levelNum == 2){
+			drawHints1(hints2);
+			drawHints4(hints1);
+			reduceScore();
+		}else if(levelNum == 3){
+			drawHints1(hints2);
+			drawHints4(hints1);
+			drawHints2(hints3);
+			reduceScore();
+		}else if(levelNum == 4){
+			drawHints1(hints2);
+			drawHints4(hints1);
 			drawHints2(hints3);
 			drawHints3(hints4);
 			reduceScore();
@@ -61,16 +72,37 @@ function drawLines(){
 function drawHints1(x){
 	ctx2.font = "30px Arial";
 	ctx2.fillText("Conjunction Introduction",x,50);
+	ctx2.font = "24px Arial";
+	ctx2.fillText("The two statements on the top are",x,90);
+	ctx2.fillText("assumed true. This means the",x,120);
+	ctx2.fillText("statement on the bottom is true.",x,150);
+	
+	ctx2.drawImage(conin, x+42, 190, 271,154);
+	
 }
 
 function drawHints2(x){
 	ctx2.font = "30px Arial";
-	ctx2.fillText("Implication Introduction",x,50);
+	ctx2.fillText("Conjunction Elimination",x,50);
+	ctx2.font = "24px Arial";
+	ctx2.fillText("The conjunction on the top is",x,90);
+	ctx2.fillText("assumed true. This means A and",x,120);
+	ctx2.fillText("C are both indivdually true and",x,150);
+	ctx2.fillText("this is shown by eliminating the",x,180);
+	ctx2.fillText("conjunction",x,210);
+	
+	ctx2.drawImage(conel, x+42, 240, 271,154);
 }
 
 function drawHints3(x){
 	ctx2.font = "30px Arial";
-	ctx2.fillText("Negation",x,50);
+	ctx2.fillText("Implication Introduction",x,50);
+	ctx2.font = "24px Arial";
+	ctx2.fillText("Implication Introduction means", x,90);
+	ctx2.fillText("something assumed to be true", x,120);
+	ctx2.fillText("later leads to something else",x,150);
+	ctx2.fillText("to be true.", x,180);
+	ctx2.drawImage(impin, x+42, 220, 271,154);
 }
 
 function drawHints4(x){
