@@ -29,6 +29,7 @@ var userScore = 0;
 var levelScore = 10;
 var proof = [];
 var structure = [];
+var wrong = "";
 
 function reduceScore(){
 	levelScore = Math.max(1, levelScore - 2);
@@ -95,6 +96,9 @@ function createB(){
 function createC(){
 	r.push(new object((WIDTH/2), 55,  100, 100, ["C", "none", "none", "none"], 0, []));
 } 
+function copycat(text){
+	r.push(new object((WIDTH/2)-300, 55,  100, 100, text, 0, []));
+}
 function createConjunction(){
 	r.push(new object((WIDTH/2)+100, 55,  100, 100, ["∧", "none", "none", "none"], 1, []));
 }
@@ -119,56 +123,77 @@ function setButtons(bool1,bool2,bool3,bool4,bool5,bool6,bool7,bool8,bool9,bool10
 function levelText(){
 	if (freePlay == false){
 		if (levelNum == 100){
+			document.getElementById("proofTable").style.display = "none";
 			document.getElementById("level").innerHTML = "Welcome to the Natural Deduction Tutorial. <br> Start by clicking the '2 Top\\1 Bottom' button.";
 			proof = [];
 			setButtons(false,true,true,true,true,true,true,true,true,true,true);
 		}
 		if (levelNum == 101){
+			document.getElementById("proofTable").style.display = "none";
 			document.getElementById("level").innerHTML = "Well done. This creates a proof structure. You can left click on it and drag it around. <br> Now click on the 'A' button below.";
 			setButtons(true,true,false,true,true,true,true,true,true,true,true);
 		}
 		if (levelNum == 102){
+			document.getElementById("proofTable").style.display = "none";
 			document.getElementById("level").innerHTML = "Great. Now click and drag the 'A' to move it around. Drag it over a dot. <br> You will see the dot and the border of the 'A' goes purple. <br> This means the items will connect if you release the mouse. <br> The 'Check Proof' button checks a finished proof. Press that when you have connected the 'A' to the top left dot.";
 			setButtons(true,true,true,true,true,true,true,true,false,true,true);
 		}
 		if (levelNum == 103){
+			document.getElementById("proofTable").style.display = "none";
 			document.getElementById("level").innerHTML = "Awesome. You're learning how to build proofs.<br> Proof structures can also be dragged onto each other. Drag a '1 Top\\1 Bottom' structure onto the top right of the proof. <br> Once again, click 'Check Proof' when you are done.";
 			setButtons(true,false,true,true,true,true,true,true,false,true,true);
 		}
 		
 		if (levelNum ==104){
+			document.getElementById("proofTable").style.display = "none";
 			document.getElementById("level").innerHTML = "Drag what you've created over the bin icon to delete it.<br> Once the border goes blue, release it and it will be deleted."
 			setButtons(true,true,true,true,true,true,true,true,true,true,true);
 		}
 		if (levelNum == 105){
+			document.getElementById("proofTable").style.display = "none";
 			document.getElementById("level").innerHTML = "Good work. Statements can also be joined together to create longer statements. <br> Dragging a statement to the right of another turns the borders red. This will add the object you are moving to the right. <br> Dragging a statement to the left of another will turn the borders green will add the object to the left. <br> See if you can create 'A ∧ B. When you are done, click 'Check Proof'."
 			setButtons(true,true,false,false,true,false,true,true,false,true,true);
 		}
 		if (levelNum == 106){
+			document.getElementById("proofTable").style.display = "none";
 			document.getElementById("level").innerHTML = "Nice. Drag this proof over to the brackets. Once the border goes pink release it. <br> This surrounds the outside of the current statement with brackets.";
 		}
 		if (levelNum == 107){
+			document.getElementById("proofTable").style.display = "none";
 			document.getElementById("level").innerHTML = "Fantastic. The tutorial is done! In 5 seconds Level 1 will start! Enjoy.";
 			levelNum = 108;
 			window.setTimeout(start, 5000);
 		}
 		if (levelNum == 108){
+			document.getElementById("proofTable").style.display = "none";
 			document.getElementById("level").innerHTML = "Fantastic. The tutorial is done! In 5 seconds Level 1 will start! Enjoy.";
 		}
 		if (levelNum == 1) {
+			document.getElementById("proofTable").style.display = "block";
+			document.getElementById("ass").innerHTML = "A, B";
+			document.getElementById("conc").innerHTML = "A ∧ B";
 			document.getElementById("level").innerHTML = "Level 1: The goal is to prove A ∧ B. Assume A, B are true.<br> This uses Conjunction Introduction.";
 			proof = ["A","B", "A ∧ B", "%"];
 			setButtons(false,true,false,false,true,false,true,false,false,false,false);
 		}
 		else if (levelNum == 2){
-			document.getElementById("level").innerHTML = "Level 2: The goal is to prove B ∧ (A ∧ C). <br> This uses Conjunction Introduction.";
+			document.getElementById("proofTable").style.display = "block";
+			document.getElementById("ass").innerHTML = "A, B, C";
+			document.getElementById("conc").innerHTML = "B ∧ (A ∧ C)";
+			document.getElementById("level").innerHTML = "Level 2: The goal is to prove B ∧ (A ∧ C).<br> Assume A, B, C are true.<br> This uses Conjunction Introduction.";
 			proof = ["B", ["A","C", "A ∧ C", "%"], "B ∧ (A ∧ C)", "%"];
 			setButtons(false,true,false,false,false,false,true,false,false,false,false);
 		} else if (levelNum == 3){
+			document.getElementById("proofTable").style.display = "block";
+			document.getElementById("ass").innerHTML = "A ∧ B";
+			document.getElementById("conc").innerHTML = "B ∧ A";
 			document.getElementById("level").innerHTML = "Level 3: The goal is to prove B ∧ A. Assume A ∧ B is true. <br> This uses Conjunction Introduction and Conjunction Elimination.";
 			proof = [["A ∧ B", "%", "B", "%"], ["A ∧ B","%", "A", "%"], "B ∧ A", "%"];
 			setButtons(false,false,false,false,true,false,true,false,false,false,false);
 		} else if (levelNum == 4) {
+			document.getElementById("proofTable").style.display = "block";
+			document.getElementById("ass").innerHTML = "A, B ∧ C";
+			document.getElementById("conc").innerHTML = "A → (A ∧ B)";
 			document.getElementById("level").innerHTML = "Level 4: The goal is to proof A → (A ∧ B). Assume A is true and B ∧ C is true. <br> This uses Conjunction Introduction, Conjunction Elimination and Implication Introduction.";
 			proof = [["A", ["B ∧ C", "%", "B", "%"], "A ∧ B", "%"], "%", "A → (A ∧ B)", "%"];
 			setButtons(false,false,false,false,false,false,false,false,false,false,false);
@@ -259,6 +284,7 @@ function done(proof){
 			document.getElementById("userScore").innerHTML= userScore;
 			levelScore = 10;
 		} else {
+			document.getElementById("wrong").innerHTML= wrong;
 			popup('incorrect');
 			reduceScore();
 		}
@@ -274,7 +300,6 @@ function removeBrackets(statement){
 	return statement;
 }
 
-//["A", ["B","C", "B ∧ C", "%"], "A ∧ (B ∧ C)", "%"]
 function unification(userEntry, idealSolution){
 	userEntry[0] = removeBrackets(userEntry[0]);
 	userEntry[1] = removeBrackets(userEntry[1]);
@@ -288,49 +313,51 @@ function unification(userEntry, idealSolution){
 	idealSolution[1][2] = removeBrackets(idealSolution[1][2]);
 	
 	if (userEntry[2] == idealSolution[2]){
-		if (typeof userEntry[0] == 'string' && (userEntry[0] == idealSolution[0] || userEntry[0] == idealSolution[1])){
+		//if (typeof userEntry[0] == 'string' && (userEntry[0] == idealSolution[0] || userEntry[0] == idealSolution[1])){
+			if (typeof userEntry[0] == 'string' && userEntry[0] == idealSolution[0]){
 			console.log("This part is correct 0 :" + userEntry[0]);
 		} else if(typeof userEntry[0] == 'number'){
-			console.log("This proof is wrong: " + userEntry[0]);
+			wrong = "This proof is wrong. Take a look at " + userEntry[0];
 			correctProof = false;
 		} else{
 			if (userEntry[0][2] == idealSolution[0][2] 
 				&& typeof userEntry[0][2] != 'undefined' && typeof idealSolution[0][2] != 'undefined'){
 				unification(userEntry[0], idealSolution[0]);
 			}
-			else if (userEntry[0][2] == idealSolution[1][2]
-					&& typeof userEntry[0][2] != 'undefined' && typeof idealSolution[1][2] != 'undefined'){
-				unification(userEntry[0], idealSolution[1]);
-			}
+			//else if (userEntry[0][2] == idealSolution[1][2]
+			//		&& typeof userEntry[0][2] != 'undefined' && typeof idealSolution[1][2] != 'undefined'){
+			//	unification(userEntry[0], idealSolution[1]);
+			//}
 			else {
-				console.log("This proof is wrong: " + userEntry[0]);
+				wrong = "This proof is wrong. Take a look at " + userEntry[0];
 				correctProof = false;
 			}
 		}
 		if (userEntry[1] != "%"){
-			if (typeof userEntry[1] == 'string' && (userEntry[1] == idealSolution[0] || userEntry[1] == idealSolution[1])){
+			//if (typeof userEntry[1] == 'string' && (userEntry[1] == idealSolution[0] || userEntry[1] == idealSolution[1])){
+				if (typeof userEntry[1] == 'string' && userEntry[1] == idealSolution[1]){
 				console.log("This part is correct 1: " + userEntry[1]);
 			} else if(typeof userEntry[1] == 'number'){
-				console.log("This proof is wrong: " + userEntry[1]);
+				wrong = "This proof is wrong. Take a look at " + userEntry[1];
 				correctProof = false;
 			} else {
-				if(userEntry[1][2] == idealSolution[0][2]
-					&& typeof userEntry[1][2] != 'undefined' && typeof idealSolution[0][2] != 'undefined') {
-					unification(userEntry[1], idealSolution[0]);
-				}
-				else if (userEntry[1][2] == idealSolution[1][2]
+				//if(userEntry[1][2] == idealSolution[0][2]
+				//	&& typeof userEntry[1][2] != 'undefined' && typeof idealSolution[0][2] != 'undefined') {
+				//	unification(userEntry[1], idealSolution[0]);
+				//}
+				/*else*/ if (userEntry[1][2] == idealSolution[1][2]
 						&& typeof userEntry[1][2] != 'undefined' && typeof idealSolution[1][2] != 'undefined'){
 					unification(userEntry[1], idealSolution[1]);
 				}
 				else {
-					console.log("This proof is wrong: " + userEntry[1]);
+					wrong = "This proof is wrong. Take a look at " + userEntry[1];
 					correctProof = false;
 				}
 			}
 		}		
 	}
 	else {
-		console.log("This proof is wrong: " + userEntry[2]);
+		wrong = "This proof is wrong. Take a look at " + userEntry[2];
 		correctProof = false;
 	}
 }
@@ -371,10 +398,10 @@ function drawIterate() {
 	levelText();
 	var bin = document.getElementById("bin");
 	var brackets = document.getElementById("brackets");
-	var premise = document.getElementById("premise");
+	var duplicate = document.getElementById("duplicate");
     ctx.drawImage(bin, WIDTH-110, HEIGHT-138, 110, 138); 
 	ctx.drawImage(brackets, 0, HEIGHT-100, 100, 100); 
-	ctx.drawImage(premise, WIDTH-150, 0, 150, 75);
+	ctx.drawImage(duplicate, WIDTH-150, 0, 150, 75);
 	ctx.font = "32px Georgia";
 	ctx.textAlign = 'left';
 	ctx.textBaseline = 'middle';
@@ -384,6 +411,9 @@ function drawIterate() {
 	}
 	for (i = 0; i < r.length ; i++) {
 		draw(r[i].x, r[i].y, r[i].w, r[i].h, i, r[i].border, r[i].text, r[i].proofHeight);
+	}
+	if (move < r.length){
+		draw(r[move].x, r[move].y, r[move].w, r[move].h, move, r[move].border, r[move].text, r[move].proofHeight);
 	}
 }
 
@@ -720,7 +750,7 @@ function drawLines(x,y,w,h,dist,text,i) {
 				ctx.fillText(text[2], x, y+dist);
 				dotsArray[temp].number = "deleted";
 			}
-			else {
+			else{
 				dotsIterate(text[2], x, y+dist);
 				ctx.fillText("•", x, y+dist);
 			}
@@ -847,7 +877,7 @@ function myMove(e){
 			&& ((r[move].y -(r[move].h/2)) < (r[i].y + (r[i].h/2))) 
 			&& ((r[move].y -(r[move].h/2)) >= r[i].y - (r[i].h/2))
 			&& (r[move].x <= r[i].x && r[move].y > r[i].y)) {
-				if (r[i].type == 0 || r[i].type == 1) {
+				if ((r[i].type == 0 || r[i].type == 1) && (r[move].type == 0 || r[move].type == 1)) {
 					r[i].border = "green";
 					r[move].border = "green";
 					r[i].taken = true;
@@ -860,7 +890,7 @@ function myMove(e){
 			&& ((r[move].y -(r[move].h/2)) < (r[i].y + (r[i].h/2))) 
 			&& ((r[move].y -(r[move].h/2)) >= r[i].y - (r[i].h/2))
 			&& (r[move].x > r[i].x && r[move].y > r[i].y)) {
-				if (r[i].type == 0 || r[i].type == 1) {
+				if ((r[i].type == 0 || r[i].type == 1) && (r[move].type == 0 || r[move].type == 1)) {
 					r[i].border = "red";
 					r[move].border = "red";
 					r[i].taken = true;
@@ -873,7 +903,7 @@ function myMove(e){
 				&& ((r[move].y + (r[move].h/2)) > (r[i].y -(r[i].h/2)))
 				&& ((r[move].y + (r[move].h/2)) <= r[i].y + (r[i].h/2))
 				&& (r[move].x > r[i].x && r[move].y <= r[i].y)){
-				if (r[i].type == 0 || r[i].type == 1) {
+				if ((r[i].type == 0 || r[i].type == 1) && (r[move].type == 0 || r[move].type == 1)) {
 					r[i].border = "red";
 					r[move].border = "red";
 					r[i].taken = true;
@@ -886,7 +916,7 @@ function myMove(e){
 				&& ((r[move].y + (r[move].h/2)) > (r[i].y -(r[i].h/2)))
 				&& ((r[move].y + (r[move].h/2)) <= r[i].y + (r[i].h/2))
 				&& (r[move].x <= r[i].x && r[move].y <= r[i].y)){
-				if (r[i].type == 0 || r[i].type == 1) {
+				if ((r[i].type == 0 || r[i].type == 1) && (r[move].type == 0 || r[move].type == 1)) {
 					r[i].border = "green";
 					r[move].border = "green";
 					r[i].taken = true;
@@ -936,11 +966,11 @@ function myUp(){
 	dotTaken = [-1 ,false]
 	canvas.onmousemove = null;
 	for(i = 0; i < r.length; i ++) {
-		if (i != move && r[i].border == "green" && r[i].taken == r[move].taken) {
+		if (i != move && r[i].border == "green" && r[i].taken == r[move].taken && (r[move].type == 1 || r[move].type == 0)) {
 			validMoveLeft();
 			break;
 		}
-		if (i != move && r[i].border == "red" && r[i].taken == r[move].taken) {
+		if (i != move && r[i].border == "red" && r[i].taken == r[move].taken && (r[move].type == 1 || r[move].type == 0)) {
 			validMoveRight();
 			break;
 		}
@@ -955,14 +985,15 @@ function myUp(){
 			}
 			break;
 		}if (r[move].border == "Chocolate" && i == move && (r[move].type == 1 || r[move].type == 0)) {
-			r[move].text[0] = "["+r[move].text[0]+"]";
+			var text2 = Object.assign({}, r[move].text);
+			copycat(text2);
 			break;
 		}
 	}
 	
 	for (i = 0; i < Math.max(1,dotsArray.length); i++){ 
 		if (dotsArray.length > 0){
-			if (dotsArray[i].colour == "BlueViolet" && r[move].border == "BlueViolet") {
+			if (dotsArray[i].colour == "BlueViolet" && r[move].border == "BlueViolet" ){//&& r[i].type != 0 && r[i].type != 1) {
 				insertFormula(i);
 				break;
 			}

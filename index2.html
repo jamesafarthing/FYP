@@ -27,7 +27,32 @@
 	<h1>Natural Deduction Drag and Drop Game </h1>
 	</div>
 	<div class="jumbotron">
-    <h3 id="level"></h3>
+    <!--<h3 id="level"></h3>-->
+
+<div class="row">
+  <div class="col-md-4"> 
+  <div id="proofTable">
+  <center>
+  <table style="width:50%">
+  <tr>
+    <td><p>Assumptions</p></td>
+    <td><p id="ass"></p></td>		
+  </tr>
+  <tr>
+    <td><p>Conclusions</p></td>
+    <td><p id="conc"></p></td>
+  </tr>
+</table>
+</center>
+</div>
+</div>
+  <div class="col-md-4">
+  <center>
+  <p id="level"></p>
+  <p id="conc"></p>
+  </center>
+  </div>
+</div>
 	</div>
 	
 	<section>
@@ -59,7 +84,7 @@
 		
 		<img id="bin" width="0" height="0" src="bin3.jpg" alt="bin" style="visibility:hidden">
 		<img id="brackets" width="0" height="0" src="brackets.jpg" alt="brackets" style="visibility:hidden"> 
-		<img id="premise" width="0" height="0" src="premise.jpg" alt="brackets" style="visibility:hidden"> 
+		<img id="duplicate" width="0" height="0" src="premise.jpg" alt="duplicate" style="visibility:hidden"> 
 	</div>
 	<br>
 	<canvas id="canvas2" width="1500" height="400" style="display:none">
@@ -115,6 +140,7 @@
 	
 	<div id="incorrect" style="display:none">
 	<h3> Not correct. Try again! </h3>
+	<h4 id="wrong"></h4>
 	<br>
 		<div class="centered">
 			<button type="button" class="btn btn-warning btn-lg text-center" href="#" onclick="popup('incorrect')" >Close</a>

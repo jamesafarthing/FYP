@@ -145,3 +145,8 @@ height:300px;
 border:5px solid #000;
 z-index: 9002;
 }
+
+table, th, td {
+    border: 1px solid black;
+	text-align: center;
+}

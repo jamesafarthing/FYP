@@ -102,7 +102,7 @@ function drawHints3(x){
 	ctx2.fillText("something assumed to be true", x,120);
 	ctx2.fillText("later leads to something else",x,150);
 	ctx2.fillText("to be true.", x,180);
-	ctx2.drawImage(impin, x+42, 220, 271,154);
+	ctx2.drawImage(impin, x+42, 180, 275*0.9,233*0.9);
 }
 
 function drawHints4(x){
