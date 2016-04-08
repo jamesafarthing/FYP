@@ -156,7 +156,7 @@ function levelText(){
 			document.getElementById("level").innerHTML = "Fantastic. The tutorial is done! In 5 seconds Level 1 will start! Enjoy.";
 		}
 		if (levelNum == 1) {
-			document.getElementById("level").innerHTML = "Level 1: The goal is to prove A ∧ B. <br> This uses Conjunction Introduction.";
+			document.getElementById("level").innerHTML = "Level 1: The goal is to prove A ∧ B. Assume A, B are true.<br> This uses Conjunction Introduction.";
 			proof = ["A","B", "A ∧ B", "%"];
 			setButtons(false,true,false,false,true,false,true,false,false,false,false);
 		}
