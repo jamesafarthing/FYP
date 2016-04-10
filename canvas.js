@@ -132,17 +132,17 @@ function levelText(){
 		if (levelNum == 101){
 			document.getElementById("proofTable").style.display = "none";
 			document.getElementById("level").innerHTML = "Well done. This creates a proof structure. You can left click on it and drag it around. <br> Now click on the 'A' button below.";
-			setButtons(true,true,false,true,true,true,true,true,true,true,true);
+			setButtons(false,true,false,true,true,true,true,true,true,true,true);
 		}
 		if (levelNum == 102){
 			document.getElementById("proofTable").style.display = "none";
 			document.getElementById("level").innerHTML = "Great. Now click and drag the 'A' over a dot. You will see the border of the 'A' goes purple. This means the items will connect if you release the mouse. The 'Check Proof' button checks a finished proof. Press that when you have connected the 'A' to the top left dot.";
-			setButtons(true,true,true,true,true,true,true,true,false,true,true);
+			setButtons(false,true,false,true,true,true,true,true,false,true,true);
 		}
 		if (levelNum == 103){
 			document.getElementById("proofTable").style.display = "none";
 			document.getElementById("level").innerHTML = "Awesome. You're learning how to build proofs.<br> Proof structures can also be dragged onto each other. Drag a '1 Top\\1 Bottom' structure onto the top right of the proof. Once again, click 'Check Proof' when you are done.";
-			setButtons(true,false,true,true,true,true,true,true,false,true,true);
+			setButtons(false,false,false,true,true,true,true,true,false,true,true);
 		}
 		
 		if (levelNum ==104){
