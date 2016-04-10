@@ -1,48 +1,252 @@
-<!doctype html>
-<html>
-<head>
-<link href='https://fonts.googleapis.com/css?family=Crimson+Text' rel='stylesheet' type='text/css'>
-<meta charset="UTF-8" />
-<title>FYP!</title>
-<header>
-<h1> Natural Deduction Drag and Drop Game </h1>
-</header>
-</head>
-<body>
-<h3 id="level"></h3>
-<section>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Natural Deduction</title>
 
-<div class = "canvasholder">
-<canvas id="canvas" width="1500" height="1000" style="border:1px solid #000000;">
-This text is displayed if your browser does not support HTML5 Canvas.
-</canvas>
+    <!-- Bootstrap -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	
+	<link rel="stylesheet" type="text/css" href="css.css">
+  </head>
+  <body>
+  
+  <div class="container-fluid">
+  
+    <div class="page-header">
+	<h1>Natural Deduction Drag and Drop Game </h1>
+	</div>
+	<div class="jumbotron">
+    <!--<h3 id="level"></h3>-->
+
+<div class="row">
+  <div class="col-md-4"> 
+  <div id="proofTable">
+  <center>
+  <table style="width:50%">
+  <tr>
+    <td><p>Assumptions</p></td>
+    <td><p id="ass"></p></td>		
+  </tr>
+  <tr>
+    <td><p>Conclusions</p></td>
+    <td><p id="conc"></p></td>
+  </tr>
+</table>
+</center>
 </div>
+</div>
+  <div class="col-md-4">
+  <center>
+  <p id="level"></p>
+  <p id="conc"></p>
+  </center>
+  </div>
+</div>
+	</div>
+	
+	<section>
+		
+	<div class = "canvasholder">
+	<canvas id="canvas" width="1500" height="1000" style="border:1px solid #000000;">
+	<!--<canvas id="canvas" class='img-responsive' style="border: 1px solid black;"></canvas>-->
+	This text is displayed if your browser does not support HTML5 Canvas.
+	</canvas>
+	</div>
+	<br>
+	<div class="centered">
+		<button id="twoOne" type="button" class="btn btn-primary btn-lg" onclick="createTwoUpOneDown()">2 Top / 1 Bottom</button>
+		<button id="oneOne" type="button" class="btn btn-primary btn-lg" onclick="createOneUpOneDown()" disabled="disabled">1 Top / 1 Bottom</button>
 
-<button onclick="createTwoUpOneDown()">2 Top / 1 Bottom</button>
-<!--<button onclick="createTwoUpTwoDown()">2 Top / 2 Bottom</button>
-<button onclick="createOneUpTwoDown()">1 Top / 2 Bottom</button> -->
-<button onclick="createOneUpOneDown()">1 Top / 1 Bottom</button>
+		<button id="A" type="button" class="btn btn-info btn-lg" onclick="createA()">A</button>
+		<button id="B" type="button" class="btn btn-info btn-lg" onclick="createB()">B</button>
+		<button  id="C" type="button" class="btn btn-info btn-lg" onclick="createC()">C</button>
 
-<button onclick="createA()">A</button>
-<button onclick="createB()">B</button>
-<button onclick="createC()">C</button>
+		<button id="con" type="button" class="btn btn-warning btn-lg" onclick="createConjunction()">∧</button>
+		<button id="imp" type="button" class="btn btn-warning btn-lg" onclick="createImplication()">→</button>
 
-<button onclick="createConjunction()">∧</button>
-<button onclick="createImplication()">→</button>
-
-<button onclick="deleteAll()">Delete All</button>
-<button onclick="runDone()">Bun and Done</button>
-
-<img id="bin" width="0" height="0" src="bin.jpg" alt="bin" style="visibility:hidden">
-<img id="brackets" width="0" height="0" src="brackets.jpg" alt="brackets" style="visibility:hidden"> 
-<img id="premise" width="0" height="0" src="premise.jpg" alt="brackets" style="visibility:hidden"> 
-
-<script src="canvas.js"></script>
-
-</section>
-
-</body>
+		<button id="del" type="button" class="btn btn-danger btn-lg" onclick="deleteAll()">Delete All</button>
+		<button id="check" type="button" class="btn btn-success btn-lg" onclick="runDone()">Check Proof</button>
+		
+		<button id="free" type="button" class="btn btn-secondary btn-lg" onclick="play()">Free Play</button>
+		
+		<button id="hints" id="hints" type="button" class="btn btn-secondary btn-lg" onclick="toggleHints()">Hints</button>
+		
+		<img id="bin" width="0" height="0" src="bin3.jpg" alt="bin" style="visibility:hidden">
+		<img id="brackets" width="0" height="0" src="brackets.jpg" alt="brackets" style="visibility:hidden"> 
+		<img id="duplicate" width="0" height="0" src="premise.jpg" alt="duplicate" style="visibility:hidden"> 
+	</div>
+	<br>
+	<canvas id="canvas2" width="1500" height="400" style="display:none">
+	This text is displayed if your browser does not support HTML5 Canvas.
+	</canvas>
+	<br>
+	</section>	
+	
+	<div id="blanket" style="display:none"></div>
+	
+	<div id="finish" style="display:none">
+	<h2>Well Done! You've completed the game!</h2>
+	<h3>You've scored <a id="userScore"></a> out of a posible score of 60.</h3>
+	<br>
+		<div class="centered">
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('finish2')" >Freeplay</a></button>
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('done')" >Play Again</a></button>
+		</div>
+	</div>
+	
+	<div id="impintro" style="display:none">
+	<h2>Implication Introduction</h2>
+	<h3>Implication Introduction means something assumed to be true later leads to something else to be true.</h3>
+	<br>
+		<div class="centered">
+		<img id ="impin" src="implicationintroduction.jpg" alt="" style="width:362px;height:206px;">
+		<br>
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="level('impintro', 'level')" >Got it!</a>
+		</div>
+	</div>
+	
+	<div id="conintro" style="display:none">
+	<h2>Conjunction Introduction</h2>
+	<h3>The two statements on the top are assumed true. This means the statement on the bottom is true.</h3>
+	<br>
+		<div class="centered">
+		<img id ="conin" src="conjunctionintroduction.jpg" alt="" style="width:362px;height:206px;">
+		<br>
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="level('conintro', 'level')" >Got it!</a>
+		</div>
+	</div>
+	
+	<div id="conelim" style="display:none">
+	<h2>Conjunction Elimination</h2>
+	<h3>The conjunction on the top is assumed true. This means A and C are both indivdually true and this is shown by eliminating the conjuction.</h3>
+	<br>
+		<div class="centered">
+		<img id ="conel" src="conjunctionelimination.jpg" alt="" style="width:362px;height:206px;">
+		<br>
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="level('conelim', 'level')" >Got it!</a>
+		</div>
+	</div>
+	
+	<div id="impelim" style="display:none">
+	<h2>Implication Elimination</h2>
+	<h3>A implies B being true means that if A is also true then B is true by Implication Elimination.</h3>
+	<br>
+		<div class="centered">
+		<img id ="impel" src="implicationelimination.jpg" alt="" style="width:362px;height:206px;">
+		<br>
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="level('impelim', 'level')" >Got it!</a>
+		</div>
+	</div>
+	
+	<div id="incorrect" style="display:none">
+	<h3> Not correct. Try again! </h3>
+	<h4 id="wrong"></h4>
+	<br>
+		<div class="centered">
+			<button type="button" class="btn btn-warning btn-lg text-center" href="#" onclick="popup('incorrect')" >Close</a>
+		</div>
+	</div>
+	
+	<div id="correct" style="display:none">
+	<h3> YIPPEE. You're correct! </h3>
+	<h4> You scored <a id="levelScore"></a> for this level.</h4>
+	<br>
+		<div class="centered">
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="level('correct','level')" >Next Level</a>
+		</div>
+	</div>
+	
+	<div id="start" style="display:none">
+	<h2> Welcome to the Natural Deduction Game.</h2>
+	<h3>The goals to the level are displayed at the top of the screen.<br><br>Each level has a max score of 10. <br>There is a hints button at the bottom of the screen. Pressing this displays hints below it, but it deducts you 2 points from that level's score. <br>Submitting an incorrect answer also loses you 2 points.</h3>
+	<br>
+		<div class="centered">
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="skip('start','conintro')" >OK</a>
+		</div>
+	</div>
+	
+	<div id="splash" style="display:none">
+	<h2> Welcome to the Natural Deduction Game.</h2>
+	<h3>Natural Deduction is a proof system where rules express logical reasoning closely to how we think naturally. <br><br>This tutorial will teach you the basics of how to play this game. <br> Messages are displayed at the top of the screen.</h3>
+	<br>
+		<div class="centered">
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('splash')" >Start Tutorial</a></button>
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="skip('splash','start')" >Skip</a></button>
+		</div>
+		<body   onload="popup('splash')"></body>
+	</div>
+	
+	<div id="level1" style="display:none">
+	<h1> Level 1 </h1> <br>
+	<h2> The goal is to prove A ∧ B.  Assume A, B are true.<br> This uses Conjunction Introduction. </h2> <br>
+		<div class="centered">
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('level1')" >OK</a>
+		</div>
+		<!--<body   onload="popup('level1')"></body> -->
+	</div>
+	
+	<div id="level2" style="display:none">
+	<h1> Level 2 </h1> <br>
+	<h2> The goal is to prove B ∧ (A ∧ C). Assume A, B, C are true.<br> This also uses Conjunction Introduction. </h2> <br>
+		<div class="centered">
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('level2')" >OK</a>
+		</div>
+	</div>
+	
+	<div id="level3" style="display:none">
+	<h1> Level 3 </h1> <br>
+	<h2> The goal is to prove B ∧ A. Assume A ∧ B is true. <br> This uses Conjunction Introduction and Conjunction Elimination. </h2> <br>
+		<div class="centered">
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('level3')" >OK</a>
+		</div>
+	</div>
+	
+	<div id="level4" style="display:none">
+	<h1> Level 4 </h1> <br>
+	<h2> The goal is to proof A → A. <br> Assume A is true. <br> This uses Implication Introduction. </h2> <br>
+		<div class="centered">
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('level4')" >OK</a>
+		</div>
+	</div>
+	
+	<div id="level5" style="display:none">
+	<h1> Level 5 </h1> <br>
+	<h2> The goal is to proof A → (A ∧ B). <br> Assume A is true and B ∧ C is true. <br> This uses Conjunction Introduction, Conjunction Elimination and Implication Introduction. </h2> <br>
+		<div class="centered">
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('level5')" >OK</a>
+		</div>
+	</div>
+	
+	<div id="level6" style="display:none">
+	<h1> Level 6 </h1> <br>
+	<h2> The goal is to proof B → C. Assume A → (B → C) is true and A ∧ C is true. <br> This uses Conjunction Elimination and Implication Elimination. </h2> <br>
+		<div class="centered">
+			<button type="button" class="btn btn-success btn-lg text-center" href="#" onclick="popup('level6')" >OK</a>
+		</div>
+	</div>
+	
+	<!--<button type="button" class="btn btn-success btn-lg" href="#" onclick="popup('popUpDiv')">Click to Open CSS Pop Up</a>-->
+		
+	</div>
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+	<script src="hints.js"></script>
+	<script src="canvas.js"></script>
+	<script src="css-pop.js"></script>
+	<!--<script src="testing.js"></script>-->
+	
+  </body>
 </html>
-
-
-<!--http://html5.litten.com/how-to-drag-and-drop-on-an-html5-canvas/-->

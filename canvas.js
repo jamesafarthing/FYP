@@ -30,6 +30,7 @@ var levelScore = 10;
 var proof = [];
 var structure = [];
 var wrong = "";
+var endLevel = 7;
 
 function reduceScore(){
 	levelScore = Math.max(1, levelScore - 2);
@@ -135,12 +136,12 @@ function levelText(){
 		}
 		if (levelNum == 102){
 			document.getElementById("proofTable").style.display = "none";
-			document.getElementById("level").innerHTML = "Great. Now click and drag the 'A' to move it around. Drag it over a dot. <br> You will see the dot and the border of the 'A' goes purple. <br> This means the items will connect if you release the mouse. <br> The 'Check Proof' button checks a finished proof. Press that when you have connected the 'A' to the top left dot.";
+			document.getElementById("level").innerHTML = "Great. Now click and drag the 'A' over a dot. You will see the border of the 'A' goes purple. This means the items will connect if you release the mouse. The 'Check Proof' button checks a finished proof. Press that when you have connected the 'A' to the top left dot.";
 			setButtons(true,true,true,true,true,true,true,true,false,true,true);
 		}
 		if (levelNum == 103){
 			document.getElementById("proofTable").style.display = "none";
-			document.getElementById("level").innerHTML = "Awesome. You're learning how to build proofs.<br> Proof structures can also be dragged onto each other. Drag a '1 Top\\1 Bottom' structure onto the top right of the proof. <br> Once again, click 'Check Proof' when you are done.";
+			document.getElementById("level").innerHTML = "Awesome. You're learning how to build proofs.<br> Proof structures can also be dragged onto each other. Drag a '1 Top\\1 Bottom' structure onto the top right of the proof. Once again, click 'Check Proof' when you are done.";
 			setButtons(true,false,true,true,true,true,true,true,false,true,true);
 		}
 		
@@ -151,7 +152,7 @@ function levelText(){
 		}
 		if (levelNum == 105){
 			document.getElementById("proofTable").style.display = "none";
-			document.getElementById("level").innerHTML = "Good work. Statements can also be joined together to create longer statements. <br> Dragging a statement to the right of another turns the borders red. This will add the object you are moving to the right. <br> Dragging a statement to the left of another will turn the borders green will add the object to the left. <br> See if you can create 'A ∧ B. When you are done, click 'Check Proof'."
+			document.getElementById("level").innerHTML = "Good work. Statements can also be joined together to create longer statements. <br> Dragging a statement to the right of another turns the borders orange and dragging to the left will turn the borders green. This will join the objects together. <br> See if you can create 'A ∧ B'. When you are done, click 'Check Proof'."
 			setButtons(true,true,false,false,true,false,true,true,false,true,true);
 		}
 		if (levelNum == 106){
@@ -192,20 +193,34 @@ function levelText(){
 			setButtons(false,false,false,false,true,false,true,false,false,false,false);
 		} else if (levelNum == 4) {
 			document.getElementById("proofTable").style.display = "block";
-			document.getElementById("ass").innerHTML = "A, B ∧ C";
-			document.getElementById("conc").innerHTML = "A → (A ∧ B)";
-			document.getElementById("level").innerHTML = "Level 4: The goal is to proof A → (A ∧ B). Assume A is true and B ∧ C is true. <br> This uses Conjunction Introduction, Conjunction Elimination and Implication Introduction.";
-			proof = [["A", ["B ∧ C", "%", "B", "%"], "A ∧ B", "%"], "%", "A → (A ∧ B)", "%"];
-			setButtons(false,false,false,false,false,false,false,false,false,false,false);
+			document.getElementById("ass").innerHTML = "A";
+			document.getElementById("conc").innerHTML = "A → A";
+			document.getElementById("level").innerHTML = "Level 4: The goal is to proof A → A. Assume A is true. <br> This uses Implication Introduction.";
+			proof = ["A", "%", "A → A", "%"];
+			setButtons(true,false,false,true,true,true,false,false,false,false,false);
 		}
 		else if (levelNum == 5){
-			//levelNum = 1;
+			document.getElementById("proofTable").style.display = "block";
+			document.getElementById("ass").innerHTML = "A, B ∧ C";
+			document.getElementById("conc").innerHTML = "A → (A ∧ B)";
+			document.getElementById("level").innerHTML = "Level 5: The goal is to proof A → (A ∧ B). Assume A is true and B ∧ C is true. <br> This uses Conjunction Introduction, Conjunction Elimination and Implication Introduction.";
+			proof = [["A", ["B ∧ C", "%", "B", "%"], "A ∧ B", "%"], "%", "A → (A ∧ B)", "%"];
+			setButtons(false,false,false,false,false,false,false,false,false,false,false);
+		
+		} else if (levelNum == 6){
+			document.getElementById("proofTable").style.display = "block";
+			document.getElementById("ass").innerHTML = "A → (B → C) , A ∧ C";
+			document.getElementById("conc").innerHTML = "B → C";
+			document.getElementById("level").innerHTML = "Level 6: The goal is to proof B → C. Assume A → (B → C) is true and A ∧ C is true. <br> This uses Conjunction Elimination and Implication Elimination.";
+			proof = ["A → (B → C)", ["A ∧ C", "%", "A", "%"], "B → C", "%"];
+			setButtons(false,false,false,false,false,false,false,false,false,false,false);
 		}
 	}
 	else {
 		proof = [];
+		document.getElementById("proofTable").style.display = "none";
 		document.getElementById("level").innerHTML = "FREE PLAY! HAVE SOME FUN!!!";
-		setButtons(false,false,false,false,false,false,false,true);
+		setButtons(false,false,false,false,false,false,false,false,true,false,false);
 	}
 }
 
@@ -265,15 +280,13 @@ function done(proof){
 		} else {
 			window.alert("You've gone wrong. Try that again.");
 			deleteAll();
-			//levelNum = 103;
-			//levelText();
 		}
 	} else{
 		//console.log(r[0].text);
 		unification(r[0].text, proof);
 		if (correctProof == true){
 			document.getElementById("levelScore").innerHTML= levelScore;
-			if(levelNum == 4){
+			if(levelNum == endLevel-1){
 				popup('finish');
 			} else {
 				popup('correct');
@@ -545,19 +558,19 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 		if ((typeof text[0][0] !== 'string' && typeof text[0][0] !== 'number') && text[0][0] !== undefined){
 			if(text[0][1] != "%" && text[1] != "%"){
 				drawLines(x-(3*w/8),y-h/4,w/4,h/4, h/(ph*2), text[0][0], i);
-				drawExtraBoxes(x -((3*w)/8), y-h/4-h/(ph*2), x-w/2-400, y-h/2-200, 
+				drawExtraBoxes(x -((3*w)/8), y-h/4-h/(ph*2), x-w, y-h/2, 
 				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
 				text[0][0], ph-3, w/4);
 			}
 			else if (text[0][1] != "%" || text[1] != "%") {
 				drawLines(x-w/4,y-h/4,w/2,h/4, h/(ph*2), text[0][0], i);
-				drawExtraBoxes(x-w/4, y-h/4-h/(ph*2), x-w/2-400, y-h/2-200, 
+				drawExtraBoxes(x-w/4, y-h/4-h/(ph*2), x-w, y-h/2, 
 				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
 				text[0][0], ph-3, w/2);
 			}
 			else {
 				drawLines(x,y-h/4,w,h/4, h/(ph*2), text[0][0], i);
-				drawExtraBoxes(x, y-h/4-h/(ph*2), x-w/2-400, y-h/2-200, 
+				drawExtraBoxes(x, y-h/4-h/(ph*2), x-w, y-h/2, 
 				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
 				text[0][0], ph-3, w);
 			}
@@ -568,19 +581,19 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 		if ((typeof text[0][1] !== 'string' && typeof text[0][1] !== 'number') && text[0][1] !== undefined){
 			if(text[0][1] != "%" && text[1] != "%"){
 				drawLines(x-(1*w/8),y-h/4,w/4,h/4, h/(ph*2), text[0][1], i);
-				drawExtraBoxes(x -((1*w)/8), y-h/4-h/(ph*2), x-w/2, y-h/2-200, 
+				drawExtraBoxes(x -((1*w)/8), y-h/4-h/(ph*2), x-w/4, y-h/2-100, 
 					Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
 					text[0][1], ph-3, w/4);
 			}
 			else if (text[0][1] != "%" || text[1] != "%") {
 				drawLines(x+w/4,y,w/2,h/2, h/(ph*2), text[0][1], i);
-				drawExtraBoxes(x +(w/4), y-h/4-h/(ph*2), x-w/2-400, y-h/2-200, 
+				drawExtraBoxes(x +(w/4), y-h/4-h/(ph*2), x-w/4, y-h/2-100, 
 				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
 				text[0][1], ph-3, w/2);
 			}
 			else {
 				drawLines(x,y-h/4,w,h/4, h/(ph*2), text[0][0], i);
-				drawExtraBoxes(x, y-h/4-h/(ph*2), x-w/2-400, y-h/2-200, 
+				drawExtraBoxes(x, y-h/4-h/(ph*2), x-w/4, y-h/2-100, 
 				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
 				text[0][1], ph-3, w);
 			}
@@ -589,13 +602,13 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 		if ((typeof text[1][0] !== 'string' && typeof text[1][0] !== 'number') && text[1][0] !== undefined){
 			if(text[1][1] != "%"){
 				drawLines(x+(1*w/8),y-h/4,w/4,h/4, h/(ph*2), text[1][0], i);
-				drawExtraBoxes(x +((1*w)/8), y-h/4-h/(ph*2), x+w/2, y-h/2-200, 
+				drawExtraBoxes(x +((1*w)/8), y-h/4-h/(ph*2), x+w/2, y-h/2-100, 
 				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
 				text[1][0], ph-3, w/4);
 			}
 			else{
 				drawLines(x+w/4,y-h/4,w/2,h/4, h/(ph*2), text[1][0], i);
-				drawExtraBoxes(x + w/4, y-h/4-h/(ph*2), x+w/2, y-h/2-200, 
+				drawExtraBoxes(x + w/4, y-h/4-h/(ph*2), x+w/2, y-h/2-100, 
 				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
 				text[1][0], ph-3, w/2);
 			}
@@ -604,7 +617,7 @@ function multiLineDrawing(x, y, w, h, i, border, text, ph){
 		//right right branch
 		if ((typeof text[1][1] !== 'string' && typeof text[1][1] !== 'number') && text[1][1] !== undefined){
 			drawLines(x+(3*w/8),y-h/4,w/4,h/4, h/(ph*2), text[1][1], i);
-			drawExtraBoxes(x +((3*w)/8), y-h/4-h/(ph*2), x+w/2+200, y-h/2-200, 
+			drawExtraBoxes(x +((3*w)/8), y-h/4-h/(ph*2), x+w+100, y-h/2, 
 				Math.max(300, (ph-3)*75), Math.min((ph-3)*75, 200), i, r[i].border, 
 				text[1][1], ph-3, w/4);
 		}
@@ -627,9 +640,9 @@ function drawExtraBoxes(beginX, beginY, x,y, w, h, i, border, text, ph, width) {
 	if ((typeof text[1] !== 'string' && typeof text[1] !== 'number') && text[1] !== undefined){
 		ctx.beginPath();
 		ctx.moveTo (beginX + width/4,beginY);
-		ctx.lineTo(x,y-300);
+		ctx.lineTo(x,y-200);
 		ctx.stroke();
-		draw(x, y-300, w, h, i, border, text[1], ph);
+		draw(x, y-200, w, h, i, border, text[1], ph);
 	}
 }
 
@@ -891,8 +904,8 @@ function myMove(e){
 			&& ((r[move].y -(r[move].h/2)) >= r[i].y - (r[i].h/2))
 			&& (r[move].x > r[i].x && r[move].y > r[i].y)) {
 				if ((r[i].type == 0 || r[i].type == 1) && (r[move].type == 0 || r[move].type == 1)) {
-					r[i].border = "red";
-					r[move].border = "red";
+					r[i].border = "orange";
+					r[move].border = "orange";
 					r[i].taken = true;
 					r[move].taken = true;
 					break;
@@ -904,8 +917,8 @@ function myMove(e){
 				&& ((r[move].y + (r[move].h/2)) <= r[i].y + (r[i].h/2))
 				&& (r[move].x > r[i].x && r[move].y <= r[i].y)){
 				if ((r[i].type == 0 || r[i].type == 1) && (r[move].type == 0 || r[move].type == 1)) {
-					r[i].border = "red";
-					r[move].border = "red";
+					r[i].border = "orange";
+					r[move].border = "orange";
 					r[i].taken = true;
 					r[move].taken = true;
 					break;
@@ -970,7 +983,7 @@ function myUp(){
 			validMoveLeft();
 			break;
 		}
-		if (i != move && r[i].border == "red" && r[i].taken == r[move].taken && (r[move].type == 1 || r[move].type == 0)) {
+		if (i != move && r[i].border == "orange" && r[i].taken == r[move].taken && (r[move].type == 1 || r[move].type == 0)) {
 			validMoveRight();
 			break;
 		}

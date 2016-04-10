@@ -14,27 +14,27 @@ function initial(){
 function toggleHints(){
 	if(document.getElementById("canvas2").style.display == "none"){
 		document.getElementById("canvas2").style.display = "block";
-		if(levelNum == 1){
-			//ctx2.clearRect(0,0, canvas2.width, canvas2.height);
-			//drawLines();
+		if(levelNum == 1 || levelNum == 2){
 			drawHints1(hints2);
 			drawHints4(hints1);
 			reduceScore();
-		}
-		else if(levelNum == 2){
-			drawHints1(hints2);
-			drawHints4(hints1);
-			reduceScore();
-		}else if(levelNum == 3){
+		} else if(levelNum == 3){
 			drawHints1(hints2);
 			drawHints4(hints1);
 			drawHints2(hints3);
 			reduceScore();
-		}else if(levelNum == 4){
+		}else if(levelNum == 4 || levelNum == 5){
 			drawHints1(hints2);
 			drawHints4(hints1);
 			drawHints2(hints3);
 			drawHints3(hints4);
+			reduceScore();
+		}else if(levelNum == 6){
+			drawHints1(hints1);
+			drawHints5(hints4);
+			drawHints2(hints2);
+			drawHints3(hints3);
+			
 			reduceScore();
 		}
 	}
@@ -118,6 +118,16 @@ function drawHints4(x){
 	ctx2.fillText("moving and a dot turns purple",x,310);
 	ctx2.fillText("then these two elements will",x,340);
 	ctx2.fillText("join when the mouse is released.",x,370);
+}
+
+function drawHints5(x){
+	ctx2.font = "30px Arial";
+	ctx2.fillText("Implication Elimination",x,50);
+	ctx2.font = "24px Arial"; 
+	ctx2.fillText("A implies B being true means that", x,90);
+	ctx2.fillText("if A is also true then B is", x,120);
+	ctx2.fillText("true by Implication Elimination.",x,150);
+	ctx2.drawImage(impel, x+42, 180, 271,154);
 }
 
 initial();

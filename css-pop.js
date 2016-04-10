@@ -81,7 +81,10 @@ function level(off,windowname){
 	} else if (levelNum == 4 && off =='correct') {
 		toggle('blanket');
 		popup('impintro');
-	} else if (levelNum == 5) {
+	}else if (levelNum == 6 && off =='correct') {
+		toggle('blanket');
+		popup('impelim');
+	} else if (levelNum == endLevel) {
 		toggle('blanket');
 		popup('finish')
 	} else{
@@ -95,7 +98,6 @@ function skip(off,windowname){
 	levelNum = 1;
 	blanket_size(windowname);
 	window_pos(windowname);
-	//toggle('blanket');
 	toggle(off);
 	toggle(windowname);	
 }
