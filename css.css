@@ -4,7 +4,6 @@ canvas {
     margin-left: auto;
     margin-right: auto;
     display: block;
-    width: 1500px;
 }
 
 h1,h2,h3,h4{
@@ -132,7 +131,7 @@ z-index: 9002;
 position:absolute;
 background-color:#ffffff;
 width:800px;
-height:430px;
+height:450px;
 border:5px solid #000;
 z-index: 9002;
 }

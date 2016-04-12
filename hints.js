@@ -15,26 +15,29 @@ function toggleHints(){
 	if(document.getElementById("canvas2").style.display == "none"){
 		document.getElementById("canvas2").style.display = "block";
 		if(levelNum == 1 || levelNum == 2){
+			ctx2.clearRect(0, 0, 1500, 400);
 			drawHints1(hints2);
 			drawHints4(hints1);
 			reduceScore();
 		} else if(levelNum == 3){
+			ctx2.clearRect(0, 0, 1500, 400);
 			drawHints1(hints2);
 			drawHints4(hints1);
 			drawHints2(hints3);
 			reduceScore();
 		}else if(levelNum == 4 || levelNum == 5){
+			ctx2.clearRect(0, 0, 1500, 400);
 			drawHints1(hints2);
 			drawHints4(hints1);
 			drawHints2(hints3);
 			drawHints3(hints4);
 			reduceScore();
 		}else if(levelNum == 6){
+			ctx2.clearRect(0, 0, 1500, 400);
 			drawHints1(hints1);
 			drawHints5(hints4);
 			drawHints2(hints2);
 			drawHints3(hints3);
-			
 			reduceScore();
 		}
 	}
@@ -99,10 +102,13 @@ function drawHints3(x){
 	ctx2.fillText("Implication Introduction",x,50);
 	ctx2.font = "24px Arial";
 	ctx2.fillText("Implication Introduction means", x,90);
-	ctx2.fillText("something assumed to be true", x,120);
-	ctx2.fillText("later leads to something else",x,150);
-	ctx2.fillText("to be true.", x,180);
-	ctx2.drawImage(impin, x+42, 180, 275*0.9,233*0.9);
+	ctx2.fillText("something assumed to be true,", x,120);
+	ctx2.fillText("in this 'A' leads to further",x,150);
+	ctx2.fillText("down the proof something else ", x,180);
+	ctx2.fillText("to be true, in this case 'B'.", x,210);
+	ctx2.fillText("The following line can then be", x, 240);
+	ctx2.fillText("written as 'A → B'.", x, 270);
+	ctx2.drawImage(impin, x+190, 250, 275*0.6,233*0.6);
 }
 
 function drawHints4(x){

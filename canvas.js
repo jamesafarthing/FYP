@@ -5,8 +5,6 @@ var y = 50;
 var WIDTH = 1500;
 var HEIGHT = 1000;
 var scale=1.00;
-//var WIDTH = 1000;
-//var HEIGHT = 750;
 var dragok = false;
 var r = [];
 var dotsArray = [];
@@ -330,7 +328,7 @@ function unification(userEntry, idealSolution){
 			if (typeof userEntry[0] == 'string' && userEntry[0] == idealSolution[0]){
 			console.log("This part is correct 0 :" + userEntry[0]);
 		} else if(typeof userEntry[0] == 'number'){
-			wrong = "This proof is wrong. Take a look at " + userEntry[0];
+			wrong = "This proof is wrong. You still have dots in your proof";
 			correctProof = false;
 		} else{
 			if (userEntry[0][2] == idealSolution[0][2] 
@@ -342,7 +340,7 @@ function unification(userEntry, idealSolution){
 			//	unification(userEntry[0], idealSolution[1]);
 			//}
 			else {
-				wrong = "This proof is wrong. Take a look at " + userEntry[0];
+				wrong = "This proof is wrong. Take a look at " + userEntry[0][2];
 				correctProof = false;
 			}
 		}
@@ -351,7 +349,7 @@ function unification(userEntry, idealSolution){
 				if (typeof userEntry[1] == 'string' && userEntry[1] == idealSolution[1]){
 				console.log("This part is correct 1: " + userEntry[1]);
 			} else if(typeof userEntry[1] == 'number'){
-				wrong = "This proof is wrong. Take a look at " + userEntry[1];
+				wrong = "This proof is wrong. You still have dots in your proof";
 				correctProof = false;
 			} else {
 				//if(userEntry[1][2] == idealSolution[0][2]
@@ -363,14 +361,19 @@ function unification(userEntry, idealSolution){
 					unification(userEntry[1], idealSolution[1]);
 				}
 				else {
-					wrong = "This proof is wrong. Take a look at " + userEntry[1];
+					wrong = "This proof is wrong. Take a look at " + userEntry[1][2];
 					correctProof = false;
 				}
 			}
 		}		
 	}
 	else {
-		wrong = "This proof is wrong. Take a look at " + userEntry[2];
+		if (typeof userEntry[2] == 'number'){
+			wrong = "This proof is wrong. You still have dots in your proof";
+		}
+		else {
+			wrong = "This proof is wrong. Take a look at " + userEntry[2];
+		}
 		correctProof = false;
 	}
 }
@@ -395,6 +398,8 @@ function clear() {
 function init() {
 	canvas = document.getElementById("canvas");
 	ctx = canvas.getContext("2d");
+	WIDTH = canvas.width;
+	LENGTH = canvas.length;
 	levelNum = 100;
 	levelText();
 	return setInterval(drawIterate, 10);
@@ -867,10 +872,10 @@ function myMove(e){
 			if (r[move].x + (r[move].w/2) >= WIDTH-110 && r[move].y + (r[move].h/2) >= HEIGHT-138) {
 				r[move].border = "Navy";
 			}
-			else if (r[move].x - (r[move].w/2) <= 100 && r[move].y + (r[move].h/2) >= HEIGHT-100) {
+			else if (r[move].x - (r[move].w/2) <= 100 && r[move].y + (r[move].h/2) >= HEIGHT-100 && (r[move].type == 0 || r[move].type == 1)) {
 				r[move].border = "Crimson";
 			}
-			else if (r[move].x + (r[move].w/2) >= WIDTH-150  && r[move].y - (r[move].h/2) <= 100) {
+			else if (r[move].x + (r[move].w/2) >= WIDTH-150  && r[move].y - (r[move].h/2) <= 100 && (r[move].type == 0 || r[move].type == 1)) {
 				r[move].border = "Chocolate";
 			}
 			else {
