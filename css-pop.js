@@ -95,7 +95,7 @@ function level(off,windowname){
 
 function skip(off,windowname){
 	userScore = 0;
-	levelNum = 5;
+	levelNum = 1;
 	blanket_size(windowname);
 	window_pos(windowname);
 	toggle(off);
