@@ -8,7 +8,7 @@ var hints4 = 1135;
 function initial(){
 	canvas2 = document.getElementById("canvas2");
 	ctx2 = canvas2.getContext("2d");
-	drawLines();
+	drawOutline();
 }
 
 function toggleHints(){
@@ -16,17 +16,20 @@ function toggleHints(){
 		document.getElementById("canvas2").style.display = "block";
 		if(levelNum == 1 || levelNum == 2){
 			ctx2.clearRect(0, 0, 1500, 400);
+			drawOutline();
 			drawHints1(hints2);
 			drawHints4(hints1);
 			reduceScore();
 		} else if(levelNum == 3){
 			ctx2.clearRect(0, 0, 1500, 400);
+			drawOutline();
 			drawHints1(hints2);
 			drawHints4(hints1);
 			drawHints2(hints3);
 			reduceScore();
 		}else if(levelNum == 4 || levelNum == 5){
 			ctx2.clearRect(0, 0, 1500, 400);
+			drawOutline();
 			drawHints1(hints2);
 			drawHints4(hints1);
 			drawHints2(hints3);
@@ -34,6 +37,7 @@ function toggleHints(){
 			reduceScore();
 		}else if(levelNum == 6){
 			ctx2.clearRect(0, 0, 1500, 400);
+			drawOutline()
 			drawHints1(hints1);
 			drawHints5(hints4);
 			drawHints2(hints2);
@@ -46,7 +50,7 @@ function toggleHints(){
 	}
 }
 
-function drawLines(){
+function drawOutline(){
 	ctx2.beginPath();
 	
 	ctx2.moveTo(0,0);

@@ -445,8 +445,7 @@ function draw(x, y, w, h, i, border, text, ph) {
 	ctx.fillStyle = "#444444";
 	ctx.textAlign = 'center';
 	ctx.textBaseline = 'middle';
-	//ctx.strokeStyle = "black";
-	if (text[2] == "none") { //Figures out whether it is a form or a var/operator.
+	if (text[2] == "none") { //Figures out whether it is a structure or a var/operator.
 		r[i].w = Math.max(50, text[0].length * 25);
 		r[i].h = 40;
 		ctx.textAlign = "center";
@@ -663,25 +662,26 @@ function drawLines(x,y,w,h,dist,text,i) {
 	ctx.textAlign = 'center'; //Draws text in the various boxes in the correct positions.
 	ctx.textBaseline = 'middle';
 	if(text[0] != "%" && text[1] != "%" && (typeof text[0] === 'string' || typeof text[0] === 'number')) {
+		//'%' in text[1] would mean one statement at the top of the proof.
+		//A string means some statement can be written, a number represents a dot.
 		ctx.fillStyle = "black";
-		if(typeof text[0] === 'number'){
-			if (dotsArray[text[0]].formula != ""){
-				temp = dotsArray[text[0]].number;
-				text[0] = dotsArray[text[0]].formula;
+		if(typeof text[0] === 'number'){ //Dot
+			if (dotsArray[text[0]].formula != ""){    //If a statement has been dragged on 
+				temp = dotsArray[text[0]].number;     //to an object, change the array to 
+				text[0] = dotsArray[text[0]].formula; //represent that statement in the object
 				if(typeof text[0] === 'string'){
 					ctx.fillText(text[0], x-(w/4), y-dist);
-				}else{
+				}else{ //Proof structure dragged on
 					if (typeof text[1] === 'string' || typeof text[1] === 'number'){
 						r[i].proofHeight = r[i].proofHeight + r[move].proofHeight - 1;
 					}
-					r[i].dots = (r[i].dots).concat(r[move].dots);
-					console.log(r[i].dots);
-					r.splice(move,1);
+					r[i].dots = (r[i].dots).concat(r[move].dots); //Update the dots an object holds
+					r.splice(move,1); //remove the old object from the canvas
 				}
-				dotsArray[temp].number = "deleted";
+				dotsArray[temp].number = "deleted"; //ignore the dots in the old object
 			}
 			else {
-				dotsIterate(text[0], x-(w/4), y-dist);
+				dotsIterate(text[0], x-(w/4), y-dist); //update position of dots 
 				ctx.fillText("•", x-(w/4), y-dist);
 			}
 		}
@@ -840,21 +840,19 @@ function myMove(e){
 	if (dragok){
 		r[move].x = e.pageX - canvas.offsetLeft;
 		r[move].y = e.pageY - canvas.offsetTop;
-		for (i = 0; i < Math.max(1,dotsArray.length); i++){
+		for (i = 0; i < Math.max(1,dotsArray.length); i++){ //Iterates through all the dots
 			if (dotsArray.length > 0){
-				if (dotsArray[i].number != "deleted"){
-					//console.log("Moving Dots: " + r[move].dots.toString());
-					//console.log("Dots Array: " + dotsArray.toString());
+				if (dotsArray[i].number != "deleted"){ //Check if the dot still exists
 					var isTrue = false;
-					for (j = 0; j < r[move].dots.length; j ++){
+					for (j = 0; j < r[move].dots.length; j ++){ //Dots existing in that proof structure
 						if (i == r[move].dots[j]){
 							isTrue = true;
 						}
 					}
-					if (dotTaken[1] == false){
+					if (dotTaken[1] == false){ //Stops >1 dot being highlighted at once
 						dotTaken[0] = i;
 					}
-					if (isTrue == false && dotTaken[0] == i){	
+					if (isTrue == false && dotTaken[0] == i){ //If dot and object over the same point
 						if ((r[move].x - (r[move].w/2) < dotsArray[i].xPos) && (r[move].x + (r[move].w/2) > dotsArray[i].xPos)
 							&& (r[move].y - (r[move].h/2) < dotsArray[i].yPos) && (r[move].y + (r[move].h/2) > dotsArray[i].yPos)){
 							r[move].border = "BlueViolet";
@@ -975,6 +973,7 @@ function myDown(e){ //When the mouse is pressed down
 				r[j].y = e.pageY - canvas.offsetTop;
 				dragok = true;
 				canvas.onmousemove = myMove;
+				break;
 		}
 	}
 }
